@@ -20,3 +20,6 @@ def test_cifar10():
     print(train_dataset.get_soft_labels_acc())
 
     pdb.set_trace()
+
+
+test_cifar10()
