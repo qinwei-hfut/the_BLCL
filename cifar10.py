@@ -82,15 +82,8 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
 
 
     def get_soft_labels_acc(self):
-        # count=0.0
-        # for j in range(len(self.soft_labels)):
-        #     _, k = torch.max(torch.tensor(self.soft_labels[j]),dim=0)
-        #     if self.gt_labels[j] == k:
-        #         count = count + 1
-        # _, k = torch.max(torch.tensor(self.soft_labels),dim=1)
         return (np.argmax(self.soft_labels,axis=1)  == self.gt_labels).sum() / len(self.gt_labels)
-        # return torch.sum(k == torch.tensor(self.gt_labels)) / len(self.gt_labels)
-        # return count/len(self.gt_labels)    
+
 
     def get_noisy_label_acc(self):
         return sum(self.noisy_labels == self.gt_labels)/len(self.gt_labels)
@@ -101,7 +94,6 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
 
     def init_soft_labels_from_constant_values(self):
         for i,train_label in enumerate(self.noisy_labels):
-            # self.soft_labels[i][train_label]= 5.0
             self.soft_labels[i] = -1.0
             self.soft_labels[i][train_label] = 1.0
 
