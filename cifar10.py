@@ -46,7 +46,6 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
                  transform=transform, target_transform=target_transform,
                  download=download)
         self.args = args
-        # pdb.set_trace()
         if indexs is not None:
             self.train_data = self.data[indexs]                            #image 本身
             self.noisy_labels = np.array(self.targets)[indexs]             #noisy label
@@ -169,14 +168,3 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
 
 
 
-# class CIFAR10_val(torchvision.datasets.CIFAR10):
-
-#     def __init__(self, root, indexs, train=True,
-#                  transform=None, target_transform=None,
-#                  download=False):
-#         super(CIFAR10_val, self).__init__(root, train=train,
-#                  transform=transform, target_transform=target_transform,
-#                  download=download)
-
-#         self.data = self.data[indexs]
-#         self.targets = np.array(self.targets)[indexs]
