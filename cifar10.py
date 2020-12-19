@@ -6,17 +6,18 @@ import torch
 import torchvision
 
 def get_cifar10_train(root, args, train=True,
-                 transform=None,
+                 transform_train=None,
+                 transform_val=None,
                  download=False):
 
     base_dataset = torchvision.datasets.CIFAR10(root, train=train, download=download)
     # pdb.set_trace()
     train_idxs, val_idxs = train_val_split(base_dataset.targets)
 
-    train_Nval_dataset = CIFAR10_train(root, train_idxs+val_idxs, val_indices=None, args=args, train=train, transform=transform)
-    train_dataset = CIFAR10_train(root, train_idxs, val_indices=None, args=args, train=train, transform=transform)
-    val_dataset = CIFAR10_train(root, val_idxs, val_indices=None, args=args, train=train, transform=transform)
-    train_Cval_dataset = CIFAR10_train(root, train_idxs,val_idxs, args, train=train, transform=transform)
+    train_Nval_dataset = CIFAR10_train(root, train_idxs+val_idxs, val_indices=None, args=args, train=train, transform=transform_train)
+    train_dataset = CIFAR10_train(root, train_idxs, val_indices=None, args=args, train=train, transform=transform_train)
+    val_dataset = CIFAR10_train(root, val_idxs, val_indices=None, args=args, train=train, transform=transform_val)
+    train_Cval_dataset = CIFAR10_train(root, train_idxs,val_idxs, args, train=train, transform=transform_train)
 
     # train_dataset:仅仅45K的noisy trainset(但是noisy label; gt label; soft label都输出)
     # val_dataset: 5K的noisy val set，同样，由于同时输出noisy label，gt label，soft label，可以既满足clean val进行val，可以满足使用noisy val进行val
