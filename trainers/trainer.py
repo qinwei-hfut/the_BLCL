@@ -1,7 +1,7 @@
 import torchvision
 import torch
 import numpy as np
-from trainers import BaseTrainer
+from .base_trainer import BaseTrainer
 import torch.utils.data as data
 from tqdm import tqdm
 import os
