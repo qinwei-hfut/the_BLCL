@@ -61,7 +61,7 @@ state = {k: v for k, v in args._get_kwargs()}
 print(state)
 
 # TODO expid 需要更加详细的
-exp_id = args.noise_type+str(args.noise_rate)+'/'+time.time()+'/'
+exp_id = args.noise_type+str(args.noise_rate)+'/'+str(time.time())+'/'
 print(exp_id)
 
 result_output_path = './result/'+exp_id
