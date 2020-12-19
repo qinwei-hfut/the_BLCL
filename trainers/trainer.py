@@ -84,14 +84,14 @@ class Trainer(BaseTrainer):
 
 
     def _save_checkpoint(self,epoch,results):
-        self.best_test = max(results['test_acc'],self.best_test)
+        self.best_test = max(results['test_acc_1'],self.best_test)
         state = {'epoch':epoch,
                 'state_dict':self.model.state_dict(),
-                'acc':results['test_acc'],
+                'acc':results['test_acc_1'],
                 'best_acc':self.best_test}
         torch.save(state,os.path.join(self.result_saved_path,'checkpoint_epoch_'+str(epoch)+'.ckp'))
-        if self.best_test == results['test_acc']:
-            torch.save(state,os.path.join(self.result_saved_path,'best_test_acc_'+results['test_acc']+'_epoch'+str(epoch)+'.ckp'))
+        if self.best_test == results['test_acc_1']:
+            torch.save(state,os.path.join(self.result_saved_path,'best_test_acc_'+results['test_acc_1']+'_epoch'+str(epoch)+'.ckp'))
 
 
     def train(self):
