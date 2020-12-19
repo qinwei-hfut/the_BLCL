@@ -97,9 +97,11 @@ class Trainer(BaseTrainer):
     def train(self):
         # for epoch in tqdm(range(self.args.epochs),decs='Total progress: '):
         for epoch in range(self.args.epochs):
+            print('epoch: '+str(epoch))
             self.adjust_learning_rate(epoch)
             results = self._train_epoch(epoch)
-            self.logger.append(self.args.lr, results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1'])
+            print(results)
+            self.logger.append([self.args.lr, results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
 
             self._save_checkpoint(epoch,results)
         self.logger.close()
