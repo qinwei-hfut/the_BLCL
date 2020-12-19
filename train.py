@@ -119,7 +119,7 @@ optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, we
 
 title = 'noisy label'
 logger = Logger(os.path.join(result_output_path, 'log.txt'), title=title)
-logger.set_names(['Learning Rate', 'Train Loss', 'Test Loss', 'Train N Acc.', 'Train C Acc' 'Test Acc'])
+logger.set_names(['Learning Rate', 'Train Loss', 'Test Loss', 'Train N Acc.', 'Train C Acc', 'Test Acc'])
 
 trainer = trainer.Trainer(model,datasets,optimizer,ce_criterion,logger,result_output_path,args)
 trainer.train()
