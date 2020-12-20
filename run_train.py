@@ -9,7 +9,7 @@ def run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_
         +' --noise-rate='+str(noise_rate)\
         +' --gpu='+str(gpu) \
         +' --train-loss='+train_criterion \
-        +' --weight-decay='+weight_decay \
+        +' --weight-decay='+str(weight_decay) \
 
     os.system(the_cammand)
 
