@@ -16,8 +16,22 @@ class BaseTrainer:
         self.best_val = 0
         self.best_test = 0
 
-    def ce_loss(self,output,target):
-        return F.cross_entropy(output,target)
+    def adjust_learning_rate(self, epoch):
+        if epoch in self.args.lr_schedule:
+            self.args.lr *= 0.1
+            for param_group in self.optimizer.param_groups:
+                param_group['lr'] *= 0.1
+
+
+    def _save_checkpoint(self,epoch,results):
+        self.best_test = max(results['test_acc_1'],self.best_test)
+        state = {'epoch':epoch,
+                'state_dict':self.model.state_dict(),
+                'acc':results['test_acc_1'],
+                'best_acc':self.best_test}
+        # torch.save(state,os.path.join(self.result_saved_path,'checkpoint_epoch_'+str(epoch)+'.ckp'))
+        if self.best_test == results['test_acc_1']:
+            torch.save(state,os.path.join(self.result_saved_path,'best_test_acc_'+str(results['test_acc_1'])+'_epoch'+str(epoch)+'.ckp'))
 
     
 
