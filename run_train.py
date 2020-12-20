@@ -10,5 +10,5 @@ def run_exp(batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.0,gpu=0):
 
     os.system(the_cammand)
 
-gpu=1
+gpu=2
 run_exp(gpu=gpu)
