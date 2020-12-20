@@ -18,4 +18,10 @@ def MSE_loss(output,target):
     target = torch.zeros(len(target), 10).cuda().scatter(1, target.view(-1,1), 1)
     return F.mse_loss(output,target)
 
-# def Taylor_ce_loss(output,target):
+def Taylor_ce_loss_1(output,target):
+    output = F.softmax(output,dim=1)
+    return (1-output[target])
+
+def Taylor_ce_loss_2(output,target):
+    output = F.softmax(output,dim=1)
+    return (1-output[target])+(1-output[target])^2/2
