@@ -2,6 +2,7 @@ import torch
 import torchvision
 import numpy as np
 import torch.nn.functional as F
+import os
 
 class BaseTrainer:
     def __init__(self,model,datasets,optimizer,train_criterion, val_criterion,logger,result_saved_path,args):
