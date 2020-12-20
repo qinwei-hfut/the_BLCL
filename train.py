@@ -27,6 +27,7 @@ import trainers.trainer as trainer
 # import model.resnet_for_cifar as resnet_for_cifar
 import model.model as model
 import loss_functions
+import json
 import pdb
 
 
@@ -61,19 +62,23 @@ parser.add_argument('--out', default='results',
                         help='Directory to output the result')
 
 args = parser.parse_args()
-args.lr_schedule = [80,120]
+args.lr_schedule = [40,80]
 
 state = {k: v for k, v in args._get_kwargs()}
 print(state)
 
 # TODO expid 需要更加详细的
-exp_id = args.noise_type+str(args.noise_rate)+'/'+str(time.time())+'/'
+exp_id = args.arch+args.noise_type+str(args.noise_rate)+args.train_loss+'/'+str(time.time())+'/'
 print(exp_id)
 
 result_output_path = './result/'+exp_id
 
 if not os.path.isdir(result_output_path):
     mkdir_p(result_output_path)
+
+with open(os.path.join(result_output_path,'augments.json'),'a') as f:
+    json.dump(state,f,ensure_ascii=False)
+    f.wirte('\n')
 
 # Use CUDA
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
