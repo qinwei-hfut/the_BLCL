@@ -11,7 +11,7 @@ def soft_ce_loss(output, soft_target):
 def MAE_loss(output, target):
     output = F.softmax(output,dim=1)
     target = torch.zeros(len(target), 10).cuda().scatter_(1, target.view(-1,1), 1)
-    return torch.nn.L1Loss(output,target)
+    return F.l1_loss(output,target)
 
 def MSE_loss(output,target):
     output = F.softmax(output,dim=1)
