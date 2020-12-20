@@ -26,6 +26,7 @@ import trainers.trainer as trainer
 # import model.PreResNet as models
 # import model.resnet_for_cifar as resnet_for_cifar
 import model.model as model
+import loss_functions
 import pdb
 
 
@@ -34,6 +35,7 @@ parser.add_argument('--label', default='result',
                         help='Directory to input the labels')
 # Optimization options
 parser.add_argument('--arch',default='PreActResNet18',type=str, choices=['PreActResNet18','resnet34'])
+parser.add_argument('--train-loss',default='ce_loss',type=str,choices=['ce_loss','soft_ce_loss'])
 parser.add_argument('--epochs', default=200, type=int, metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
@@ -112,25 +114,18 @@ datasets = train_dataset, val_dataset, train_Cval_dataset, train_Nval_dataset, t
 
  #Construct Model
 model = getattr(model,args.arch)()
-pdb.set_trace()
-
-# model = models.PreActResNet18()
-# model = resnet_for_cifar.resnet(depth=20)
 model = model.cuda()
 # model = torch.nn.DataParallel(model).cuda()
 cudnn.benchmark = True
 print('    Total params: %.2fM' % (sum(p.numel() for p in model.parameters())/1000000.0))
 
-ce_criterion = nn.CrossEntropyLoss()
+train_criterion = getattr(loss_functions,args.train_loss)
+pdb.set_trace()
 optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
 
 title = 'noisy label'
 logger = Logger(os.path.join(result_output_path, 'log.txt'), title=title)
 logger.set_names(['Learning Rate', 'Train Loss', 'Test Loss', 'Train N Acc.', 'Train C Acc', 'Test Acc'])
 
-trainer = trainer.Trainer(model,datasets,optimizer,ce_criterion,logger,result_output_path,args)
+trainer = trainer.Trainer(model,datasets,optimizer,train_criterion,logger,result_output_path,args)
 trainer.train()
-
-def soft_ce(outputs, soft_targets):
-    loss = -torch.mean(torch.sum(F.log_softmax(outputs, dim=1) * soft_targets, dim=1))
-    return loss
