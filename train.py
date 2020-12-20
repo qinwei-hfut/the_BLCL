@@ -24,6 +24,7 @@ from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 # from trainers.trainer import Trainer
 import trainers.trainer as trainer
 import model.PreResNet as models
+import model.resnet_for_cifar as resnet_for_cifar
 
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10/100 Training')
@@ -108,7 +109,8 @@ datasets = train_dataset, val_dataset, train_Cval_dataset, train_Nval_dataset, t
 
  # Model
 print("==> creating preact_resnet")
-model = models.PreActResNet18()
+# model = models.PreActResNet18()
+model = resnet_for_cifar.resnet(depth=20)
 model = model.cuda()
 # model = torch.nn.DataParallel(model).cuda()
 cudnn.benchmark = True
