@@ -44,6 +44,8 @@ class Trainer(BaseTrainer):
             Ntop5.update(Nprec5.item(), inputs.size(0))
             Ctop1.update(Cprec1.item(), inputs.size(0))
             Ctop5.update(Cprec5.item(), inputs.size(0))
+
+            print(loss.item())
         
         test_loss, test_acc1, test_acc5 = self._test_epoch(epoch)
 
