@@ -78,7 +78,7 @@ if not os.path.isdir(result_output_path):
 
 with open(os.path.join(result_output_path,'augments.json'),'a') as f:
     json.dump(state,f,ensure_ascii=False)
-    f.wirte('\n')
+    f.write('\n')
 
 # Use CUDA
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
