@@ -120,7 +120,6 @@ cudnn.benchmark = True
 print('    Total params: %.2fM' % (sum(p.numel() for p in model.parameters())/1000000.0))
 
 train_criterion = getattr(loss_functions,args.train_loss)
-pdb.set_trace()
 optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
 
 title = 'noisy label'
