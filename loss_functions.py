@@ -14,7 +14,7 @@ def MAE_loss(output, target):
 
 def MSE_loss(output,target):
     # pdb.set_trace()
-    target = torch.zeros(len(target), 10).cuda().scatter_(1, target.view(-1,1), 1)
+    target = torch.zeros(len(target), 10).cuda().scatter(1, target.view(-1,1), 1)
     # pdb.set_trace()
     return F.mse_loss(output,target)
 
