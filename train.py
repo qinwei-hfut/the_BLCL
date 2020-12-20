@@ -36,7 +36,7 @@ parser.add_argument('--label', default='result',
                         help='Directory to input the labels')
 # Optimization options
 parser.add_argument('--arch',default='PreActResNet18',type=str, choices=['PreActResNet18','resnet34'])
-parser.add_argument('--train-loss',default='ce_loss',type=str,choices=['ce_loss','soft_ce_loss'])
+parser.add_argument('--train-loss',default='ce_loss',type=str,choices=['ce_loss','soft_ce_loss','MAE_loss','MSE_loss'])
 parser.add_argument('--epochs', default=140, type=int, metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
