@@ -15,4 +15,4 @@ def run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_
 
 gpu=2
 run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.4,gpu=gpu,train_criterion='MSE_loss')
-run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.4,gpu=gpu,train_criterion='MSE_loss')
+# run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.4,gpu=gpu,train_criterion='MSE_loss')
