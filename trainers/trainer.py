@@ -9,8 +9,8 @@ from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 
 
 class Trainer(BaseTrainer):
-    def __init__(self,model,datasets,optimizer,criterion,logger,resuls_saved_path,args):
-        super().__init__(model,datasets,optimizer,criterion,logger,resuls_saved_path,args)
+    def __init__(self,model,datasets,optimizer,train_criterion,val_criterion,logger,resuls_saved_path,args):
+        super().__init__(model,datasets,optimizer,train_criterion, val_criterion,logger,resuls_saved_path,args)
         self.train_loader = data.DataLoader(self.train_Nval_dataset,batch_size=args.batch_size,shuffle=True,num_workers=4)
         self.test_loader = data.DataLoader(self.test_dataset,batch_size=args.batch_size,shuffle=False,num_workers=4)
 
@@ -31,7 +31,7 @@ class Trainer(BaseTrainer):
 
             outputs = self.model(inputs)
 
-            loss = self.criterion(outputs,noisy_labels)
+            loss = self.train_criterion(outputs,noisy_labels)
 
             self.optimizer.zero_grad()
             loss.backward()
@@ -67,7 +67,7 @@ class Trainer(BaseTrainer):
                 inputs,gt_labels = inputs.cuda(),gt_labels.cuda()
 
                 outputs = self.model(inputs)
-                loss = self.criterion(outputs,gt_labels)
+                loss = self.val_criterion(outputs,gt_labels)
 
                 prec1, prec5 = accuracy(outputs,gt_labels,topk=(1,5))
                 losses.update(loss.item(),inputs.size(0))

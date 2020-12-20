@@ -120,11 +120,12 @@ cudnn.benchmark = True
 print('    Total params: %.2fM' % (sum(p.numel() for p in model.parameters())/1000000.0))
 
 train_criterion = getattr(loss_functions,args.train_loss)
+val_criterion = getattr(loss_functions,'ce_loss')
 optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
 
 title = 'noisy label'
 logger = Logger(os.path.join(result_output_path, 'log.txt'), title=title)
 logger.set_names(['Learning Rate', 'Train Loss', 'Test Loss', 'Train N Acc.', 'Train C Acc', 'Test Acc'])
 
-trainer = trainer.Trainer(model,datasets,optimizer,train_criterion,logger,result_output_path,args)
+trainer = trainer.Trainer(model,datasets,optimizer,train_criterion,val_criterion,logger,result_output_path,args)
 trainer.train()
