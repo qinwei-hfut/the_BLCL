@@ -89,8 +89,7 @@ class Trainer(BaseTrainer):
             results = self._train_epoch(epoch)
             self.scheduler.step()
             print(results)
-            pdb.set_trace()
-            self.logger.append([self.optimizer.lr, results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
+            self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
 
             self._save_checkpoint(epoch,results)
         self.logger.close()
