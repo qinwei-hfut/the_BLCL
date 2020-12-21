@@ -14,6 +14,7 @@ def run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_
         +' --lr-schedule='+lr_schedule \
         +' --epochs='+str(epochs) \
 
+    print(the_cammand)
     os.system(the_cammand)
 
 
