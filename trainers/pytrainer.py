@@ -7,11 +7,12 @@ from tqdm import tqdm
 import os
 from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 import pdb
+import loss_functions
 
 
-class Trainer(BaseTrainer):
-    def __init__(self,model,datasets,optimizer,scheduler,train_criterion,val_criterion,logger,resuls_saved_path,args):
-        super().__init__(model,datasets,optimizer,scheduler,train_criterion, val_criterion,logger,resuls_saved_path,args)
+class PyTrainer(BaseTrainer):
+    def __init__(self,model,datasets,optimizer,scheduler,val_criterion,logger,resuls_saved_path,args):
+        super().__init__(model,datasets,optimizer,scheduler,val_criterion,logger,resuls_saved_path,args)
         self.train_loader = data.DataLoader(self.train_Nval_dataset,batch_size=args.batch_size,shuffle=True,num_workers=4)
         self.test_loader = data.DataLoader(self.test_dataset,batch_size=args.batch_size,shuffle=False,num_workers=4)
 
@@ -30,9 +31,12 @@ class Trainer(BaseTrainer):
             # progress.set_description_str(f'Train epoch {epoch}')
             inputs, noisy_labels, soft_labels, gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
-            outputs = self.model(inputs)
+            outputs,outputs_3,outputs_2,outputs_1, = self.model(inputs)
 
-            loss = self.train_criterion(outputs,noisy_labels)
+            loss_4 = self.train_criterions[0](outputs,noisy_labels)
+            loss_2 = self.train_criterions[1](outputs_2,noisy_labels)
+
+            loss = loss_4+loss_2
 
             self.optimizer.zero_grad()
             loss.backward()
