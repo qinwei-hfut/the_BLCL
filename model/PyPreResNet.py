@@ -136,6 +136,9 @@ class PyPreActResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
         self.linear = nn.Linear(512*block.expansion, num_classes)
+        self.linear_layer1 = nn.Linear(512*block.expansion, num_classes)
+        self.linear_layer2 = nn.Linear(512*block.expansion, num_classes)
+        self.linear_layer3 = nn.Linear(512*block.expansion, num_classes)
 
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1]*(num_blocks-1)
@@ -153,21 +156,31 @@ class PyPreActResNet(nn.Module):
             out = F.relu(out)
         if lin < 2 and lout > 0:
             out = self.layer1(out)
-            print(out.shape)
+            out_layer1 = F.adaptive_avg_pool2d(out,(4,2))
+            out_layer1 = out_layer1.view(out.size(0),-1)
+            print(out_layer1.shape)
+            out_layer1 = self.linear_layer1(out_layer1)
         if lin < 3 and lout > 1:
             out = self.layer2(out)
-            print(out.shape)
+            out_layer2 = F.adaptive_avg_pool2d(out,(2,2))
+            out_layer2 = out_layer2.view(out.size(0),-1)
+            print(out_layer2.shape)
+            out_layer2 = self.linear_layer2(out_layer2)
         if lin < 4 and lout > 2:
             out = self.layer3(out)
-            print(out.shape)
+            out_layer3 = F.adaptive_avg_pool2d(out,(2,1))
+            out_layer3 = out_layer3.view(out.size(0),-1)
+            print(out_layer3)
+            out_layer3 = self.linear_layer3(out_layer3)
         if lin < 5 and lout > 3:
             out = self.layer4(out)
             print(out.shape)
-            pdb.set_trace()
+            
         if lout > 4:
             out = F.avg_pool2d(out, 4)
             out = out.view(out.size(0), -1)
             out_final = self.linear(out)
+            pdb.set_trace()
         return out_final
 
 
