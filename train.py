@@ -23,6 +23,7 @@ from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 
 # from trainers.trainer import Trainer
 import trainers.trainer as trainer
+import trainers.pytrainer as pytrainer
 # import model.PreResNet as models
 # import model.resnet_for_cifar as resnet_for_cifar
 import model.model as model
@@ -35,6 +36,7 @@ parser = argparse.ArgumentParser(description='PyTorch CIFAR10/100 Training')
 parser.add_argument('--label', default='result',
                         help='Directory to input the labels')
 # Optimization options
+parser.add_argument('--trainer',type=str)
 parser.add_argument('--arch',default='PreActResNet18',type=str)
 parser.add_argument('--train-loss',default='ce_loss',type=str)
 parser.add_argument('--epochs', default=140, type=int, metavar='N',
@@ -134,5 +136,6 @@ title = 'noisy label'
 logger = Logger(os.path.join(result_output_path, 'log.txt'), title=title)
 logger.set_names(['Learning Rate', 'Train Loss', 'Test Loss', 'Train N Acc.', 'Train C Acc', 'Test Acc'])
 
-trainer = trainer.Trainer(model,datasets,optimizer,scheduler,val_criterion,logger,result_output_path,args)
+# trainer = trainer.Trainer(model,datasets,optimizer,scheduler,val_criterion,logger,result_output_path,args)
+trainer = pytrainer.PyTrainer(model,datasets,optimizer,scheduler,val_criterion,logger,result_output_path,args)
 trainer.train()
