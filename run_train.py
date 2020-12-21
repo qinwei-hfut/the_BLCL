@@ -1,7 +1,8 @@
 import os
 
 def run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.0,gpu=0,\
-        train_criterion='ce_loss',val_criterion='ce_loss',weight_decay=1e-4):
+        train_criterion='ce_loss',val_criterion='ce_loss',weight_decay=1e-4,lr_schedule='40_80',\
+        epochs=120):
     the_cammand = 'python train.py' \
         +' --batch-size='+str(batch_size) \
         +' --lr='+str(lr) \
@@ -10,6 +11,8 @@ def run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_
         +' --gpu='+str(gpu) \
         +' --train-loss='+train_criterion \
         +' --weight-decay='+str(weight_decay) \
+        +' --lr-schedule='+lr_schedule \
+        +' --epochs='+str(epochs) \
 
     os.system(the_cammand)
 
@@ -17,5 +20,5 @@ def run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_
 gpu=1
 # run_exp(arch='PreActResNet18',weight_decay=0,batch_size=256, lr=0.01,noise_type='sym',noise_rate=0.4,gpu=gpu,train_criterion='Taylor_ce_loss_1')
 # run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.4,gpu=gpu,train_criterion='MAE_loss')
-run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.8,gpu=gpu,train_criterion='ce_loss')
-run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.8,gpu=gpu,train_criterion='ce_loss')
+run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.8,gpu=gpu,lr_schedule='80_160',train_criterion='MAE',epochs=250)
+run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.8,gpu=gpu,lr_schedule='80_160',train_criterion='MAE',epochs=250)

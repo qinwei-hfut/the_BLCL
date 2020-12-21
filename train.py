@@ -39,6 +39,7 @@ parser.add_argument('--arch',default='PreActResNet18',type=str, choices=['PreAct
 parser.add_argument('--train-loss',default='ce_loss',type=str)
 parser.add_argument('--epochs', default=140, type=int, metavar='N',
                     help='number of total epochs to run')
+parser.add_argument('--lr-schedule',type=str)
 parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                     help='manual epoch number (useful on restarts)')
 parser.add_argument('--batch-size', default=128, type=int, metavar='N',
@@ -62,7 +63,7 @@ parser.add_argument('--out', default='results',
                         help='Directory to output the result')
 
 args = parser.parse_args()
-args.lr_schedule = [40,80]
+args.lr_schedule = [int(i) for i in args.lr_schedule.split('_')]
 
 state = {k: v for k, v in args._get_kwargs()}
 print(state)
