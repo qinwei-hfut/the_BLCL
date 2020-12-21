@@ -36,6 +36,13 @@ class Trainer(BaseTrainer):
 
             self.optimizer.zero_grad()
             loss.backward()
+
+            # ################ print log
+            for group in self.param_groups:
+                for p in group['params']:
+                    print(p.grad)
+
+
             self.optimizer.step()
 
             Nprec1, Nprec5 = accuracy(outputs,noisy_labels,topk=(1,5))
