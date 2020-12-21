@@ -32,7 +32,6 @@ class PyTrainer(BaseTrainer):
             inputs, noisy_labels, soft_labels, gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
             outputs,outputs_3,outputs_2,outputs_1, = self.model(inputs)
-            pdb.set_trace()
             loss_4 = self.train_criterions[0](outputs,noisy_labels)
             loss_2 = self.train_criterions[1](outputs_2,noisy_labels)
 
