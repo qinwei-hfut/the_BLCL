@@ -23,6 +23,13 @@ def Taylor_ce_loss_1(output,target):
     error = 1-torch.gather(output,1,target.view(-1,1))
     return torch.mean(error)
 
+def Taylor_ce_loss_1_iter(output,target):
+    output = F.softmax(output,dim=1)
+    error = 0.
+    for idx in range(target.size(0)):
+        error += 1.0 - output[idx][target[idx]] 
+    return error / target.size(0)
+
 def Taylor_ce_loss_2(output,target):
     output = F.softmax(output,dim=1)
     error = 1-torch.gather(output,1,target.view(-1,1))
