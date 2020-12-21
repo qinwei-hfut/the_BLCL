@@ -20,6 +20,7 @@ def MSE_loss(output,target):
 
 def Taylor_ce_loss_1(output,target):
     output = F.softmax(output,dim=1)
+    pdb.set_trace()
     return torch.mean(1-output[target])
 
 def Taylor_ce_loss_2(output,target):
