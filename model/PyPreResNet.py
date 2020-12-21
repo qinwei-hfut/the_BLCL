@@ -158,30 +158,25 @@ class PyPreActResNet(nn.Module):
             out = self.layer1(out)
             out_layer1 = F.adaptive_avg_pool2d(out,(4,2))
             out_layer1 = out_layer1.view(out.size(0),-1)
-            print(out_layer1.shape)
             out_layer1 = self.linear_layer1(out_layer1)
         if lin < 3 and lout > 1:
             out = self.layer2(out)
             out_layer2 = F.adaptive_avg_pool2d(out,(2,2))
             out_layer2 = out_layer2.view(out.size(0),-1)
-            print(out_layer2.shape)
             out_layer2 = self.linear_layer2(out_layer2)
         if lin < 4 and lout > 2:
             out = self.layer3(out)
             out_layer3 = F.adaptive_avg_pool2d(out,(2,1))
             out_layer3 = out_layer3.view(out.size(0),-1)
-            print(out_layer3)
             out_layer3 = self.linear_layer3(out_layer3)
         if lin < 5 and lout > 3:
             out = self.layer4(out)
-            print(out.shape)
             
         if lout > 4:
             out = F.avg_pool2d(out, 4)
             out = out.view(out.size(0), -1)
             out_final = self.linear(out)
-            pdb.set_trace()
-        return out_final
+        return out_final,out_layer3,out_layer2,out_layer1
 
 
 # def PreActResNet18(num_classes=10):
