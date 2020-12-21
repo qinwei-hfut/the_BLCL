@@ -20,5 +20,5 @@ def run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_
 gpu=1
 # run_exp(arch='PreActResNet18',weight_decay=0,batch_size=256, lr=0.01,noise_type='sym',noise_rate=0.4,gpu=gpu,train_criterion='Taylor_ce_loss_1')
 # run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.4,gpu=gpu,train_criterion='MAE_loss')
-run_exp(arch='PreActResNet18',batch_size=128, lr=0.5,noise_type='sym',noise_rate=0.8,gpu=gpu,lr_schedule='80_160',train_criterion='MAE_loss',epochs=250)
-run_exp(arch='PreActResNet18',batch_size=128, lr=0.5,noise_type='sym',noise_rate=0.8,gpu=gpu,lr_schedule='80_160',train_criterion='MAE_loss',epochs=250)
+run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.8,gpu=gpu,lr_schedule='120_200',train_criterion='MAE_loss',epochs=250)
+run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.8,gpu=gpu,lr_schedule='120_200',train_criterion='MAE_loss',epochs=250)
