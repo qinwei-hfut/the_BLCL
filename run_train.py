@@ -4,6 +4,7 @@ def run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_
         train_criterion='ce_loss',val_criterion='ce_loss',weight_decay=1e-4,lr_schedule='40_80',\
         epochs=120):
     the_cammand = 'python train.py' \
+        +' --arch='+arch \
         +' --batch-size='+str(batch_size) \
         +' --lr='+str(lr) \
         +' --noise-type='+noise_type \
