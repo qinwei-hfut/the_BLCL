@@ -79,7 +79,7 @@ class PyTrainer(BaseTrainer):
             for index, (inputs,gt_labels) in enumerate(self.test_loader):
                 inputs,gt_labels = inputs.cuda(),gt_labels.cuda()
 
-                outputs = self.model(inputs)
+                outputs = self.model(inputs)[0]
                 loss = self.val_criterion(outputs,gt_labels)
 
                 prec1, prec5 = accuracy(outputs,gt_labels,topk=(1,5))
