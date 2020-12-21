@@ -26,4 +26,5 @@ def Taylor_ce_loss_1(output,target):
 def Taylor_ce_loss_2(output,target):
     output = F.softmax(output,dim=1)
     error = 1-torch.gather(output,1,target.view(-1,1))
+    pdb.set_trace()
     return torch.mean(error+torch.mul(error,error)/2)
