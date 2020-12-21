@@ -9,8 +9,8 @@ from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 
 
 class Trainer(BaseTrainer):
-    def __init__(self,model,datasets,optimizer,train_criterion,val_criterion,logger,resuls_saved_path,args):
-        super().__init__(model,datasets,optimizer,train_criterion, val_criterion,logger,resuls_saved_path,args)
+    def __init__(self,model,datasets,optimizer,scheduler,train_criterion,val_criterion,logger,resuls_saved_path,args):
+        super().__init__(model,datasets,optimizer,scheduler,train_criterion, val_criterion,logger,resuls_saved_path,args)
         self.train_loader = data.DataLoader(self.train_Nval_dataset,batch_size=args.batch_size,shuffle=True,num_workers=4)
         self.test_loader = data.DataLoader(self.test_dataset,batch_size=args.batch_size,shuffle=False,num_workers=4)
 
@@ -84,10 +84,11 @@ class Trainer(BaseTrainer):
         # for epoch in tqdm(range(self.args.epochs),decs='Total progress: '):
         for epoch in range(self.args.epochs):
             print('epoch: '+str(epoch))
-            self.adjust_learning_rate(epoch)
+            # self.adjust_learning_rate(epoch)
             results = self._train_epoch(epoch)
+            self.scheduler.step()
             print(results)
-            self.logger.append([self.args.lr, results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
+            self.logger.append([self.optimizer.lr, results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
 
             self._save_checkpoint(epoch,results)
         self.logger.close()

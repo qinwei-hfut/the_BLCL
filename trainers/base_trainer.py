@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import os
 
 class BaseTrainer:
-    def __init__(self,model,datasets,optimizer,train_criterion, val_criterion,logger,result_saved_path,args):
+    def __init__(self,model,datasets,optimizer,scheduler,train_criterion, val_criterion,logger,result_saved_path,args):
         self.train_dataset, self.val_dataset, self.train_Cval_dataset, self.train_Nval_dataset,self.test_dataset = datasets
         self.model = model
         self.optimizer = optimizer
@@ -16,6 +16,7 @@ class BaseTrainer:
         self.result_saved_path = result_saved_path
         self.best_val = 0
         self.best_test = 0
+        self.scheduler = scheduler
 
     def adjust_learning_rate(self, epoch):
         if epoch in self.args.lr_schedule:
