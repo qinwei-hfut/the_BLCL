@@ -6,6 +6,7 @@ import torch.utils.data as data
 from tqdm import tqdm
 import os
 from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
+import pdb
 
 
 class Trainer(BaseTrainer):
@@ -88,6 +89,7 @@ class Trainer(BaseTrainer):
             results = self._train_epoch(epoch)
             self.scheduler.step()
             print(results)
+            pdb.set_trace()
             self.logger.append([self.optimizer.lr, results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
 
             self._save_checkpoint(epoch,results)
