@@ -3,13 +3,13 @@ import torchvision
 import numpy as np
 import torch.nn.functional as F
 import os
+import loss_functions
 
 class BaseTrainer:
-    def __init__(self,model,datasets,optimizer,scheduler,train_criterion, val_criterion,logger,result_saved_path,args):
+    def __init__(self,model,datasets,optimizer,scheduler, val_criterion,logger,result_saved_path,args):
         self.train_dataset, self.val_dataset, self.train_Cval_dataset, self.train_Nval_dataset,self.test_dataset = datasets
         self.model = model
         self.optimizer = optimizer
-        self.train_criterion = train_criterion
         self.val_criterion = val_criterion
         self.logger = logger
         self.args = args
@@ -17,6 +17,13 @@ class BaseTrainer:
         self.best_val = 0
         self.best_test = 0
         self.scheduler = scheduler
+
+        if len(args.train_loss.split('+')) == 1:
+            self.train_criterion = getattr(loss_functions,args.train_loss.split('+')[0])
+        elif len(args.train_loss.split('+')) > 1:
+            self.train_criterions = [getattr(loss_functions, i)  for i in args.train_loss.split('+')]
+        else:
+            print('XXXXXXXXXXXXXX len(args.train_loss) < 1 XXXXXXXXXXXXXXXXXX')
 
     def adjust_learning_rate(self, epoch):
         if epoch in self.args.lr_schedule:
