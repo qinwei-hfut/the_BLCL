@@ -38,9 +38,9 @@ class Trainer(BaseTrainer):
             loss.backward()
 
             # ################ print log
-            for group in self.optimizer.param_groups:
-                for p in group['params']:
-                    print(p.grad)
+            # for group in self.optimizer.param_groups:
+            #     for p in group['params']:
+            #         print(p.grad)
 
 
             self.optimizer.step()
