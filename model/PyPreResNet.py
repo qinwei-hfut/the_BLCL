@@ -9,6 +9,8 @@ import torch.nn.functional as F
 
 from torch.autograd import Variable
 
+import pdb
+
 
 def conv3x3(in_planes, out_planes, stride=1):
     return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False)
@@ -39,12 +41,12 @@ class BasicBlock(nn.Module):
         return out
 
 
-class PreActBlock(nn.Module):
+class PyPreActBlock(nn.Module):
     '''Pre-activation version of the BasicBlock.'''
     expansion = 1
 
     def __init__(self, in_planes, planes, stride=1):
-        super(PreActBlock, self).__init__()
+        super(PyPreActBlock, self).__init__()
         self.bn1 = nn.BatchNorm2d(in_planes)
         self.conv1 = conv3x3(in_planes, planes, stride)
         self.bn2 = nn.BatchNorm2d(planes)
@@ -93,12 +95,12 @@ class Bottleneck(nn.Module):
         return out
 
 
-class PreActBottleneck(nn.Module):
+class PyPreActBottleneck(nn.Module):
     '''Pre-activation version of the original Bottleneck module.'''
     expansion = 4
 
     def __init__(self, in_planes, planes, stride=1):
-        super(PreActBottleneck, self).__init__()
+        super(PyPreActBottleneck, self).__init__()
         self.bn1 = nn.BatchNorm2d(in_planes)
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=1, bias=False)
         self.bn2 = nn.BatchNorm2d(planes)
@@ -122,9 +124,9 @@ class PreActBottleneck(nn.Module):
         return out
 
 
-class PreActResNet(nn.Module):
+class PyPreActResNet(nn.Module):
     def __init__(self, block, num_blocks, num_classes=10):
-        super(PreActResNet, self).__init__()
+        super(PyPreActResNet, self).__init__()
         self.in_planes = 64
 
         self.conv1 = conv3x3(3,64)
@@ -151,12 +153,17 @@ class PreActResNet(nn.Module):
             out = F.relu(out)
         if lin < 2 and lout > 0:
             out = self.layer1(out)
+            print(out.shape)
         if lin < 3 and lout > 1:
             out = self.layer2(out)
+            print(out.shape)
         if lin < 4 and lout > 2:
             out = self.layer3(out)
+            print(out.shape)
         if lin < 5 and lout > 3:
             out = self.layer4(out)
+            print(out.shape)
+            pdb.set_trace()
         if lout > 4:
             out = F.avg_pool2d(out, 4)
             out = out.view(out.size(0), -1)
@@ -164,23 +171,20 @@ class PreActResNet(nn.Module):
         return out_final
 
 
-def PreActResNet18(num_classes=10):
-    return PreActResNet(PreActBlock, [2,2,2,2], num_classes=num_classes)
+# def PreActResNet18(num_classes=10):
+#     return PreActResNet(PreActBlock, [2,2,2,2], num_classes=num_classes)
 
-def PreActResNet34(num_classes=10):
-    return PreActResNet(BasicBlock, [3,4,6,3], num_classes=num_classes)
+# def PreActResNet34(num_classes=10):
+#     return PreActResNet(BasicBlock, [3,4,6,3], num_classes=num_classes)
 
-def PreActResNet50(num_classes=10):
-    return PreActResNet(Bottleneck, [3,4,6,3], num_classes=num_classes)
+# def PreActResNet50(num_classes=10):
+#     return PreActResNet(Bottleneck, [3,4,6,3], num_classes=num_classes)
 
-def PreActResNet101(num_classes=10):
-    return PreActResNet(Bottleneck, [3,4,23,3], num_classes=num_classes)
+# def PreActResNet101(num_classes=10):
+#     return PreActResNet(Bottleneck, [3,4,23,3], num_classes=num_classes)
 
-def PreActResNet152(num_classes=10):
-    return PreActResNet(Bottleneck, [3,8,36,3], num_classes=num_classes)
+# def PreActResNet152(num_classes=10):
+#     return PreActResNet(Bottleneck, [3,8,36,3], num_classes=num_classes)
 
 
-def test():
-    net = PreActResNet18()
-    y = net(Variable(torch.randn(1,3,32,32)))
-    print(y.size())
+
