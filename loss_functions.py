@@ -28,7 +28,7 @@ def Taylor_ce_loss_1_iter(output,target):
     error = 0.
     for idx in range(target.size(0)):
         error += 1.0 - output[idx][target[idx]] 
-    return error / target.size(0)
+    return error 
 
 def Taylor_ce_loss_2(output,target):
     output = F.softmax(output,dim=1)
