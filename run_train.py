@@ -26,21 +26,21 @@ gpu=1
 
 # run_exp(arch='PyPreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.8,gpu=gpu,lr_schedule='120_200',train_criterion='MAE_loss',epochs=250)
 
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,gpu=gpu,lr_schedule='120_200',train_criterion='MAE_loss',epochs=250)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,gpu=gpu,lr_schedule='120_200',train_criterion='MAE_loss',epochs=250)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,gpu=gpu,lr_schedule='120_200',train_criterion='MAE_loss',epochs=250)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='120_200',train_criterion='MAE_loss',epochs=250)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='120_200',train_criterion='MAE_loss',epochs=250)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='120_200',train_criterion='MAE_loss',epochs=250)
 
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,gpu=gpu,lr_schedule='120_200',train_criterion='MSE_loss',epochs=250)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,gpu=gpu,lr_schedule='120_200',train_criterion='MSE_loss',epochs=250)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,gpu=gpu,lr_schedule='120_200',train_criterion='MSE_loss',epochs=250)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='40_80',train_criterion='MSE_loss',epochs=140)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='40_80',train_criterion='MSE_loss',epochs=140)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='40_80',train_criterion='MSE_loss',epochs=140)
 
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,gpu=gpu,lr_schedule='120_200',train_criterion='ce_loss',epochs=250)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,gpu=gpu,lr_schedule='120_200',train_criterion='ce_loss',epochs=250)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,gpu=gpu,lr_schedule='120_200',train_criterion='ce_loss',epochs=250)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='40_80',train_criterion='ce_loss',epochs=140)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='40_80',train_criterion='ce_loss',epochs=140)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='40_80',train_criterion='ce_loss',epochs=140)
 
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,gpu=gpu,lr_schedule='120_200',train_criterion='Taylor_ce_loss_2',epochs=250)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,gpu=gpu,lr_schedule='120_200',train_criterion='Taylor_ce_loss_2',epochs=250)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,gpu=gpu,lr_schedule='120_200',train_criterion='Taylor_ce_loss_2',epochs=250)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='40_80',train_criterion='Taylor_ce_loss_2',epochs=140)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='40_80',train_criterion='Taylor_ce_loss_2',epochs=140)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='40_80',train_criterion='Taylor_ce_loss_2',epochs=140)
 
 
 '''
