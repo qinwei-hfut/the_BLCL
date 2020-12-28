@@ -138,6 +138,4 @@ logger = Logger(os.path.join(result_output_path, 'log.txt'), title=title)
 logger.set_names(['Learning Rate', 'Train Loss', 'Test Loss', 'Train N Acc.', 'Train C Acc', 'Test Acc'])
 
 trainer = getattr(trainers,args.trainer)(model,datasets,optimizer,scheduler,val_criterion,logger,result_output_path,args)
-# trainer = trainer.Trainer(model,datasets,optimizer,scheduler,val_criterion,logger,result_output_path,args)
-# trainer = pytrainer.PyTrainer(model,datasets,optimizer,scheduler,val_criterion,logger,result_output_path,args)
 trainer.train()
