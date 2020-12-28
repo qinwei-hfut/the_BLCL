@@ -27,6 +27,7 @@ import trainers.pytrainer as pytrainer
 # import model.PreResNet as models
 # import model.resnet_for_cifar as resnet_for_cifar
 import model.model as model
+import trainers.trainers as trainers
 import loss_functions
 import json
 import pdb
@@ -136,6 +137,7 @@ title = 'noisy label'
 logger = Logger(os.path.join(result_output_path, 'log.txt'), title=title)
 logger.set_names(['Learning Rate', 'Train Loss', 'Test Loss', 'Train N Acc.', 'Train C Acc', 'Test Acc'])
 
-trainer = trainer.Trainer(model,datasets,optimizer,scheduler,val_criterion,logger,result_output_path,args)
+trainer = getattr(trainers,args.trainer)(model,datasets,optimizer,scheduler,val_criterion,logger,result_output_path,args)
+# trainer = trainer.Trainer(model,datasets,optimizer,scheduler,val_criterion,logger,result_output_path,args)
 # trainer = pytrainer.PyTrainer(model,datasets,optimizer,scheduler,val_criterion,logger,result_output_path,args)
 trainer.train()
