@@ -1,8 +1,8 @@
 from .trainer import Trainer
 from .pytrainer import PyTrainer 
 
-def trainer(**kwargs):
-    return Trainer(**kwargs)
+def trainer(*args):
+    return Trainer(*args)
 
-def pytrainer(**kwargs):
-    return PyTrainer(**kwargs)
+def pytrainer(*args):
+    return PyTrainer(*args)
