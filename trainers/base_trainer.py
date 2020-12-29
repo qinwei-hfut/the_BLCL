@@ -22,7 +22,7 @@ class BaseTrainer:
         self.best_test = 0
         self.scheduler = scheduler
         self.writer = SummaryWriter(os.path.join(self.result_saved_path,'tensorboard_plot_'+str(time.time())))
-        self.tensorplot = TensorPlot(self.result_saved_path)
+        self.tensorplot = TensorPlot(os.path.join(self.result_saved_path,'plot'))
         self.epoch = 0
 
         if len(args.train_loss.split('+')) == 1:
@@ -64,12 +64,12 @@ class BaseTrainer:
             self.scheduler.step()
             print(results)
             self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
-            self._tensorboard(results)
+            self._plot(results)
             self._save_checkpoint(epoch,results)
         self.logger.close()
         self.writer.close()
 
-    def _tensorboard(self,logdcit):
+    def _plot(self,logdcit):
         loss_dict = {}
         acc_dict = {}
         for k,v in logdcit.items():
