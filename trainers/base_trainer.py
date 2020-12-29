@@ -7,6 +7,7 @@ import os
 import loss_functions
 import time
 from torch.utils.tensorboard import SummaryWriter
+from myUtils.tensor_plot import TensorPlot
 
 class BaseTrainer:
     def __init__(self,model,datasets,optimizer,scheduler, val_criterion,logger,result_saved_path,args):
@@ -21,6 +22,7 @@ class BaseTrainer:
         self.best_test = 0
         self.scheduler = scheduler
         self.writer = SummaryWriter(os.path.join(self.result_saved_path,'tensorboard_plot_'+time.time()))
+        self.tensorplot = TensorPlot(self.result_saved_path)
         self.epoch = 0
 
         if len(args.train_loss.split('+')) == 1:
@@ -78,6 +80,10 @@ class BaseTrainer:
         
         self.writer.add_scalars('loss',loss_dict,self.epoch)
         self.writer.add_scalars('acc',acc_dict,self.epoch)
+        self.writer.flush()
+
+        self.tensorplot.add_scalers('loss',loss_dict,self.epoch)
+        self.tensorplot.add_scalers('acc',acc_dict,self.epoch)
         self.writer.flush()
 
 
