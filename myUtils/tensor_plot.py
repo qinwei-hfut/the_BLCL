@@ -18,13 +18,11 @@ class TensorPlot():
         if epoch not in self.data.keys():
             self.data[epoch] = {}
         self.data[epoch][fig_key] = value
-        # self.epoch_list.append(epoch)
 
     def add_scalers(self,fig_key, value_dict, epoch):
         if epoch not in self.data.keys():
             self.data[epoch] = {}
         self.data[epoch][fig_key] = value_dict
-        # self.epoch = epoch
 
     def flush(self):
         for fig_key, fig_value in self.data[0].items():
@@ -44,9 +42,6 @@ class TensorPlot():
                     plt.plot(x_epoch, line_values, color=self.color_list[idx],linewidth=2.0,label=line_name)
 
                 # 添加figure的setting
-                plt.xlabel('epoch')
-                plt.legend()
-                # plt.ylabel('loss',fontdict=font)
             else:
                 line_value = []
                 line_name = fig_key
@@ -58,9 +53,9 @@ class TensorPlot():
                 
                 plt.plot(x_epoch, line_value, color=self.color_list[random.randint(0,7)], linewidth=2.0, label=line_name)
 
-                plt.xlabel('epoch')
-                plt.legend()
-
+            plt.xlabel('epoch')
+            plt.ylabel(fig_key)
+            plt.legend()
             plt.savefig(os.path.join(self.saved_path,fig_key+'.jpg'),format='jpg')
             plt.close()
                 
