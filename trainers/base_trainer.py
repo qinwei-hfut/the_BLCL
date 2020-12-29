@@ -84,6 +84,6 @@ class BaseTrainer:
 
         self.tensorplot.add_scalers('loss',loss_dict,self.epoch)
         self.tensorplot.add_scalers('acc',acc_dict,self.epoch)
-        self.writer.flush()
+        self.tensorplot.flush()
 
 
