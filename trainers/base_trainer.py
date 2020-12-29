@@ -61,9 +61,22 @@ class BaseTrainer:
             self.scheduler.step()
             print(results)
             self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
-
+            self._tensorboard(results)
             self._save_checkpoint(epoch,results)
         self.logger.close()
+        self.writer.close()
 
-    # def _tensorboard(self,logdcit):
+    def _tensorboard(self,logdcit):
+        loss_dict = {}
+        acc_dict = {}
+        for k,v in logdcit():
+            if 'loss' in k:
+                loss_dict[k] = v
+            elif 'acc' in k:
+                acc_dict[k] = v
+        
+        self.writer.add_scalars('loss',loss_dict,self.epoch)
+        self.writer.add_scalars('acc',acc_dict,self.epoch)
+        self.writer.flush()
+
 
