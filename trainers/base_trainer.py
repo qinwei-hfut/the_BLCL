@@ -19,7 +19,7 @@ class BaseTrainer:
         self.best_val = 0
         self.best_test = 0
         self.scheduler = scheduler
-        self.writer = SummaryWriter(self.result_saved_path)
+        self.writer = SummaryWriter(os.path.join(self.result_saved_path,'tensorboard_plot'))
         self.epoch = 0
 
         if len(args.train_loss.split('+')) == 1:
