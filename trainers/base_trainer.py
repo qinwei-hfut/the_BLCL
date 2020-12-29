@@ -5,6 +5,7 @@ import numpy as np
 import torch.nn.functional as F
 import os
 import loss_functions
+import time
 from torch.utils.tensorboard import SummaryWriter
 
 class BaseTrainer:
@@ -19,7 +20,7 @@ class BaseTrainer:
         self.best_val = 0
         self.best_test = 0
         self.scheduler = scheduler
-        self.writer = SummaryWriter(os.path.join(self.result_saved_path,'tensorboard_plot'))
+        self.writer = SummaryWriter(os.path.join(self.result_saved_path,'tensorboard_plot_'+time.time()))
         self.epoch = 0
 
         if len(args.train_loss.split('+')) == 1:
