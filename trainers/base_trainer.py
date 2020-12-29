@@ -21,7 +21,7 @@ class BaseTrainer:
         self.best_val = 0
         self.best_test = 0
         self.scheduler = scheduler
-        self.writer = SummaryWriter(os.path.join(self.result_saved_path,'tensorboard_plot_'+time.time()))
+        self.writer = SummaryWriter(os.path.join(self.result_saved_path,'tensorboard_plot_'+str(time.time())))
         self.tensorplot = TensorPlot(self.result_saved_path)
         self.epoch = 0
 
