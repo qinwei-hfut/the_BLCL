@@ -69,7 +69,7 @@ class BaseTrainer:
     def _tensorboard(self,logdcit):
         loss_dict = {}
         acc_dict = {}
-        for k,v in logdcit:
+        for k,v in logdcit.item():
             if 'loss' in k:
                 loss_dict[k] = v
             elif 'acc' in k:
