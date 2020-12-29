@@ -61,7 +61,7 @@ class TensorPlot():
                 plt.xlabel('epoch')
                 plt.legend()
 
-            plt.savefig(os.path.join(self.saved_path,fig_key+'.jpg'),format='jpg')
+            plt.savefig(os.path.join(self.saved_path,fig_key+'.pdf'),format='pdf')
             plt.close()
                 
 
