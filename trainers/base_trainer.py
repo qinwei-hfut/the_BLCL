@@ -4,6 +4,7 @@ import numpy as np
 import torch.nn.functional as F
 import os
 import loss_functions
+from torch.utils.tensorboard import SummaryWriter
 
 class BaseTrainer:
     def __init__(self,model,datasets,optimizer,scheduler, val_criterion,logger,result_saved_path,args):
@@ -17,6 +18,8 @@ class BaseTrainer:
         self.best_val = 0
         self.best_test = 0
         self.scheduler = scheduler
+        self.writer = SummaryWriter(self.result_saved_path)
+        self.epoch = 0
 
         if len(args.train_loss.split('+')) == 1:
             self.train_criterion = getattr(loss_functions,args.train_loss.split('+')[0])
@@ -41,6 +44,25 @@ class BaseTrainer:
         # torch.save(state,os.path.join(self.result_saved_path,'checkpoint_epoch_'+str(epoch)+'.ckp'))
         if self.best_test == results['test_acc_1']:
             torch.save(state,os.path.join(self.result_saved_path,'best_test_acc_'+str(results['test_acc_1'])+'_epoch'+str(epoch)+'.ckp'))
-
     
+    @abstractmethod
+    def _train_epoch(self, epoch):
+
+        raise NotImplementedError
+
+    def train(self):
+        # for epoch in tqdm(range(self.args.epochs),decs='Total progress: '):
+        for epoch in range(self.args.epochs):
+            self.epoch = epoch
+            print('epoch: '+str(epoch))
+            # self.adjust_learning_rate(epoch)
+            results = self._train_epoch(epoch)
+            self.scheduler.step()
+            print(results)
+            self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
+
+            self._save_checkpoint(epoch,results)
+        self.logger.close()
+
+    # def _tensorboard(self,logdcit):
 
