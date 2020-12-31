@@ -1,5 +1,6 @@
 import os
 import pdb
+import json
 
 def run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.0,gpu=0,\
         train_criterion='ce_loss',val_criterion='ce_loss',weight_decay=1e-4,lr_schedule='40_80',\
@@ -25,6 +26,7 @@ gpu=2
 
 
 train_criterion = '{"type":"MAE","args":{}}'
+pdb.set_trace()
 
 
 
