@@ -20,7 +20,7 @@ def run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise
     os.system(the_cammand)
 
 
-gpu=0
+gpu=1
 # run_exp(arch='PreActResNet18',weight_decay=0,batch_size=256, lr=0.01,noise_type='sym',noise_rate=0.4,gpu=gpu,train_criterion='Taylor_ce_loss_1')
 # run_exp(arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.4,gpu=gpu,train_criterion='MAE_loss')
 
@@ -28,13 +28,11 @@ gpu=0
 
 
 
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.5,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='120_200',train_criterion='MAE_loss',epochs=250)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.5,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='250_400',train_criterion='MAE_loss',epochs=500)
 
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='40_80',train_criterion='ce_loss',epochs=140)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='120_200',train_criterion='MAE_loss',epochs=250)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='250_400',train_criterion='MAE_loss',epochs=500)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='120_200',train_criterion='ce_loss',epochs=250)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='250_400',train_criterion='ce_loss',epochs=500)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='500_800',train_criterion='MAE_loss',epochs=1000)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=1.0,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='120_200',train_criterion='MAE_loss',epochs=250)
+run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=1.0,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='250_400',train_criterion='MAE_loss',epochs=500)
 # run_exp(trainer='pytrainer',arch='PyPreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,gpu=gpu,lr_schedule='250_400',train_criterion='MAE_loss+MSE_loss',epochs=500)
 # run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='800_1200',train_criterion='MAE_loss',epochs=1500)
 # run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,gpu=gpu,lr_schedule='1200_1600',train_criterion='MAE_loss',epochs=2000)
