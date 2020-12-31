@@ -27,9 +27,10 @@ class BaseTrainer:
         self.tensorplot = TensorPlot(os.path.join(self.result_saved_path,'plot'))
         self.epoch = 0
 
-        if len(args.train_loss.split('+')) == 1:
-            print(args.train_loss)
-            criterion_dict = json.loads(args.train_loss)
+        if len(self.args.train_loss.split('+')) == 1:
+            print(self.args.train_loss)
+            pdb.set_trace()
+            criterion_dict = json.loads(self.args.train_loss)
             pdb.set_trace()
             self.train_criterion = getattr(loss_functions,criterion_dict['type'])(criterion_dict['args'])
             # self.train_criterion = getattr(loss_functions,args.train_loss.split('+')[0])
