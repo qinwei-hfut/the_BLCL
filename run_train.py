@@ -26,6 +26,7 @@ gpu=2
 
 
 train_criterion = '{"type":"MAE_loss","args":{}}'
+# '{"a":1,"b":{"c":3,"d":4}}'
 
 
 
