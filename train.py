@@ -39,7 +39,7 @@ parser.add_argument('--label', default='result',
 # Optimization options
 parser.add_argument('--trainer',type=str)
 parser.add_argument('--arch',default='PreActResNet18',type=str)
-parser.add_argument('--train-loss',default='ce_loss',type=json.loads)
+parser.add_argument('--train-loss',type=dict)
 parser.add_argument('--epochs', default=140, type=int, metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('--lr-schedule',type=str)
