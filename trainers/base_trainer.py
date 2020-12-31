@@ -28,6 +28,7 @@ class BaseTrainer:
         self.epoch = 0
 
         if len(args.train_loss.split('+')) == 1:
+            print(args)
             pdb.set_trace()
             # criterion_dict = json.loads(args.train_loss)
             # pdb.set_trace()
