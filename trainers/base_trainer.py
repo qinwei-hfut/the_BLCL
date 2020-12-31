@@ -28,12 +28,11 @@ class BaseTrainer:
         self.epoch = 0
 
         if len(args.train_loss.split('+')) == 1:
-            print(args)
+            print(args.train_loss)
+            criterion_dict = json.loads(args.train_loss)
             pdb.set_trace()
-            # criterion_dict = json.loads(args.train_loss)
-            # pdb.set_trace()
-            # self.train_criterion = getattr(loss_functions,criterion_dict['type'])(criterion_dict['args'])
-            self.train_criterion = getattr(loss_functions,args.train_loss.split('+')[0])
+            self.train_criterion = getattr(loss_functions,criterion_dict['type'])(criterion_dict['args'])
+            # self.train_criterion = getattr(loss_functions,args.train_loss.split('+')[0])
         elif len(args.train_loss.split('+')) > 1:
             self.train_criterions = [getattr(loss_functions, i)  for i in args.train_loss.split('+')]
         else:
