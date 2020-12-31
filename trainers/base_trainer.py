@@ -8,6 +8,7 @@ import loss_functions
 import time
 from torch.utils.tensorboard import SummaryWriter
 from myUtils.tensor_plot import TensorPlot
+import json
 
 class BaseTrainer:
     def __init__(self,model,datasets,optimizer,scheduler, val_criterion,logger,result_saved_path,args):
@@ -26,7 +27,8 @@ class BaseTrainer:
         self.epoch = 0
 
         if len(args.train_loss.split('+')) == 1:
-            self.train_criterion = getattr(loss_functions,args.train_loss.split('+')[0])
+            criterion_dict = json.loads(args.train_loss)
+            self.train_criterion = getattr(loss_functions,criterion_dict['type'])(criterion_dict['args'])
         elif len(args.train_loss.split('+')) > 1:
             self.train_criterions = [getattr(loss_functions, i)  for i in args.train_loss.split('+')]
         else:
