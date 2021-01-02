@@ -34,6 +34,7 @@ class BaseTrainer:
             train_criterion_dict = json.loads(self.args.train_loss)
             self.train_criterion = getattr(loss_functions,train_criterion_dict['type'])(**train_criterion_dict['args'])
         elif len(args.train_loss.split('+')) > 1:
+            # TODO
             self.train_criterions = [getattr(loss_functions, i)  for i in args.train_loss.split('+')]
         else:
             print('XXXXXXXXXXXXXX len(args.train_loss) < 1 XXXXXXXXXXXXXXXXXX')
