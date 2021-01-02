@@ -15,7 +15,7 @@ def soft_ce_loss(output, soft_target):
 #     return F.l1_loss(output,target)
 
 class MAE_one_hot_loss(torch.nn.Module):
-    def __init__(self,*args):
+    def __init__(self,**kwargs):
         super(MAE_one_hot_loss,self).__init__()
         pdb.set_trace()
         # self.num_classes = num_classes
