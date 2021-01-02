@@ -31,7 +31,7 @@ class BaseTrainer:
             print(self.args.train_loss)
             # pdb.set_trace()
             criterion_dict = json.loads(self.args.train_loss.replace("^^",'"'))
-            # pdb.set_trace()
+            pdb.set_trace()
             self.train_criterion = getattr(loss_functions,criterion_dict['type'])(criterion_dict['args'])
             # self.train_criterion = getattr(loss_functions,args.train_loss.split('+')[0])
         elif len(args.train_loss.split('+')) > 1:
