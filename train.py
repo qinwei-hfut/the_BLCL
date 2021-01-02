@@ -129,7 +129,7 @@ model = model.cuda()
 cudnn.benchmark = True
 print('    Total params: %.2fM' % (sum(p.numel() for p in model.parameters())/1000000.0))
 
-val_criterion = getattr(loss_functions,'ce_loss')
+val_criterion = getattr(loss_functions,'CE_loss')
 optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
 # optimizer = optim.Adam(model.parameters(),lr=args.lr)
 scheduler = optim.lr_scheduler.MultiStepLR(optimizer,milestones=args.lr_schedule,gamma=0.1)
