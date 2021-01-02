@@ -6,7 +6,7 @@ import cifar10
 import argparse
 
 import pdb
-
+import json
 def test_cifar10():
     parser = argparse.ArgumentParser(description='test')
     args = parser.parse_args()

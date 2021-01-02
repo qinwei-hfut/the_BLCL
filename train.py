@@ -77,6 +77,8 @@ print(state)
 exp_id = args.arch+args.noise_type+str(args.noise_rate)+args.train_loss+'/'+str(time.time())+'/'
 print(exp_id)
 
+pdb.set_trace()
+
 result_output_path = './result/'+exp_id
 
 if not os.path.isdir(result_output_path):
