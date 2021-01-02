@@ -71,7 +71,6 @@ args.lr_schedule = [int(i) for i in args.lr_schedule.split('_')]
 state = {k: v for k, v in args._get_kwargs()}
 print(state)
 
-pdb.set_trace()
 
 # TODO expid 需要更加详细的
 exp_id = args.arch+args.noise_type+str(args.noise_rate)+args.train_loss+'/'+str(time.time())+'/'
