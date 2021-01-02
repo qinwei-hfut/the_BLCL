@@ -12,7 +12,7 @@ class CE_loss(torch.nn.Module):
     def __init__(self):
         super(CE_loss,self).__init__()
 
-    def forward(output, target):
+    def forward(self.output, target):
         return F.cross_entropy(output,target)
 
 class MAE_one_hot_loss(torch.nn.Module):
