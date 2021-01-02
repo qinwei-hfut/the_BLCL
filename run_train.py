@@ -26,8 +26,8 @@ gpu=2
 
 
 # train_criterion = '{\"type\":\"MAE_loss\",\"args\":{}}'
-# train_criterion = '{"type":"MAE_loss","args":{}}'
-train_criterion = '{^^type^^:^^MAE_one_hot_loss^^,^^args^^:{^^num_classes^^:100}}'
+train_criterion = '{"type":"MAE_loss","args":{}}'.replace('"','^^')
+# train_criterion = '{^^type^^:^^MAE_one_hot_loss^^,^^args^^:{^^num_classes^^:100}}'
 # train_criterion = str({"type":"MAE_loss","args":{}})
 # '{"a":1,"b":{"c":3,"d":4}}'
 # pdb.set_trace()
