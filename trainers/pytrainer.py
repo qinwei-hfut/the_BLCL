@@ -11,8 +11,8 @@ import loss_functions
 
 
 class PyTrainer(BaseTrainer):
-    def __init__(self,model,datasets,optimizer,scheduler,val_criterion,logger,resuls_saved_path,args):
-        super().__init__(model,datasets,optimizer,scheduler,val_criterion,logger,resuls_saved_path,args)
+    def __init__(self,model,datasets,optimizer,scheduler,logger,resuls_saved_path,args):
+        super().__init__(model,datasets,optimizer,scheduler,logger,resuls_saved_path,args)
         self.train_loader = data.DataLoader(self.train_Nval_dataset,batch_size=args.batch_size,shuffle=True,num_workers=4)
         self.test_loader = data.DataLoader(self.test_dataset,batch_size=args.batch_size,shuffle=False,num_workers=4)
 
