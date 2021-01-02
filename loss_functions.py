@@ -15,10 +15,11 @@ def soft_ce_loss(output, soft_target):
 #     return F.l1_loss(output,target)
 
 class MAE_one_hot_loss(torch.nn.Module):
-    def __init__(self,num_classes=10):
+    def __init__(self,*args):
         super(MAE_one_hot_loss,self).__init__()
-        self.num_classes = num_classes
         pdb.set_trace()
+        # self.num_classes = num_classes
+        # pdb.set_trace()
     
     def forward(self,output,target):
         output = F.softmax(output,dim=1)
