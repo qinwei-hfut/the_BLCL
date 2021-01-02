@@ -27,12 +27,12 @@ class BaseTrainer:
         self.epoch = 0
 
         # val_criterion_dict = json.loads(self.args.val_loss)
-        self.val_criterion = getattr(loss_functions,args.val_criterion['type'])(**(args.val_criterion['args']))
+        self.val_criterion = getattr(loss_functions,args.val_loss['type'])(**(args.val_loss['args']))
 
         if len(self.args.train_loss.split('+')) == 1:
             # print(self.args.train_loss)
             # train_criterion_dict = json.loads(self.args.train_loss)
-            self.train_criterion = getattr(loss_functions,args.train_criterion['type'])(**(args.train_criterion['args']))
+            self.train_criterion = getattr(loss_functions,args.train_loss['type'])(**(args.train_loss['args']))
         elif len(args.train_loss.split('+')) > 1:
             self.train_criterions = [getattr(loss_functions, i)  for i in args.train_loss.split('+')]
         else:
