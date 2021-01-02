@@ -2,11 +2,13 @@ import torch.nn.functional as F
 import torch
 import pdb
 
-# def ce_loss(output, target):
-#     return F.cross_entropy(output,target)
 
-def soft_ce_loss(output, soft_target):
-    return -torch.mean(torch.sum(F.log_softmax(output, dim=1) * soft_target, dim=1))
+class Soft_CE_loss(torch.nn.Module):
+    def __init__(self):
+        super(Soft_CE_loss,self).__init__()
+
+    def forward(self, output, soft_target):
+        return -torch.mean(torch.sum(F.log_softmax(output, dim=1) * soft_target, dim=1))
 
 class CE_loss(torch.nn.Module):
     def __init__(self):
@@ -16,7 +18,7 @@ class CE_loss(torch.nn.Module):
         return F.cross_entropy(output,target)
 
 class MAE_one_hot_loss(torch.nn.Module):
-    def __init__(self,num_classes=10):
+    def __init__(self):
         super(MAE_one_hot_loss,self).__init__()
         # self.num_classes = num_classes
     
@@ -26,11 +28,14 @@ class MAE_one_hot_loss(torch.nn.Module):
         return F.l1_loss(output,target_one_hot)
 
 
-def MSE_loss(output,target):
-    output = F.softmax(output,dim=1)
-    # TODO
-    target = torch.zeros(len(target), 10).cuda().scatter(1, target.view(-1,1), 1)
-    return F.mse_loss(output,target)
+class MSE_one_hot_loss(torch.nn.Module):
+    def __init__(self):
+        super(MSE_one_hot_loss,self).__init__()
+
+    def forward(self,output,target):
+        output = F.softmax(output,dim=1)
+        target_one_hot = F.one_hot(target,num_classes=output.size(1))
+        return F.mse_loss(output,target_one_hot)
 
 def Taylor_ce_loss_1(output,target):
     output = F.softmax(output,dim=1)
