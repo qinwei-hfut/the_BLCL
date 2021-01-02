@@ -12,11 +12,10 @@ import json
 import pdb
 
 class BaseTrainer:
-    def __init__(self,model,datasets,optimizer,scheduler, val_criterion,logger,result_saved_path,args):
+    def __init__(self,model,datasets,optimizer,scheduler,logger,result_saved_path,args):
         self.train_dataset, self.val_dataset, self.train_Cval_dataset, self.train_Nval_dataset,self.test_dataset = datasets
         self.model = model
         self.optimizer = optimizer
-        self.val_criterion = val_criterion
         self.logger = logger
         self.args = args
         self.result_saved_path = result_saved_path
@@ -27,10 +26,13 @@ class BaseTrainer:
         self.tensorplot = TensorPlot(os.path.join(self.result_saved_path,'plot'))
         self.epoch = 0
 
+        val_criterion_dict = json.loads(self.args.val_loss.replace('^^','"'))
+        self.val_criterion = getattr(loss_functions,val_criterion_dict['type'])(**val_criterion_dict['args'])
+
         if len(self.args.train_loss.split('+')) == 1:
             print(self.args.train_loss)
-            criterion_dict = json.loads(self.args.train_loss.replace("^^",'"'))
-            self.train_criterion = getattr(loss_functions,criterion_dict['type'])(**criterion_dict['args'])
+            train_criterion_dict = json.loads(self.args.train_loss.replace('^^','"'))
+            self.train_criterion = getattr(loss_functions,train_criterion_dict['type'])(**train_criterion_dict['args'])
         elif len(args.train_loss.split('+')) > 1:
             self.train_criterions = [getattr(loss_functions, i)  for i in args.train_loss.split('+')]
         else:

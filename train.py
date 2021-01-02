@@ -131,8 +131,7 @@ cudnn.benchmark = True
 print('    Total params: %.2fM' % (sum(p.numel() for p in model.parameters())/1000000.0))
 
 # val_criterion = getattr(loss_functions,'ce_loss')
-args.val_loss = args.val_loss.replace('^^','"')
-val_criterion = getattr(loss_functions,args.val_loss['type'])(**json.loads(args.val_loss['args']))
+
 optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
 # optimizer = optim.Adam(model.parameters(),lr=args.lr)
 scheduler = optim.lr_scheduler.MultiStepLR(optimizer,milestones=args.lr_schedule,gamma=0.1)
@@ -141,5 +140,5 @@ title = 'noisy label'
 logger = Logger(os.path.join(result_output_path, 'log.txt'), title=title)
 logger.set_names(['Learning Rate', 'Train Loss', 'Test Loss', 'Train N Acc.', 'Train C Acc', 'Test Acc'])
 
-trainer = getattr(trainers,args.trainer)(model,datasets,optimizer,scheduler,val_criterion,logger,result_output_path,args)
+trainer = getattr(trainers,args.trainer)(model,datasets,optimizer,scheduler,logger,result_output_path,args)
 trainer.train()
