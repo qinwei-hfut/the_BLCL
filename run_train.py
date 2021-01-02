@@ -26,9 +26,10 @@ def run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise
 gpu=2
 
 
-train_criterion = '{"type":"MAE_one_hot_loss","args":{}}'.replace('"','^^')
-val_criterion = '{"type":"CE_loss","args":{}}'.replace('"','^^')
+# train_criterion = '{"type":"MAE_one_hot_loss","args":{}}'.replace('"','^^')
+# val_criterion = '{"type":"CE_loss","args":{}}'.replace('"','^^')
 
+val_criterion = '\'{"type":"CE_loss","args":{}}\''
 train_criterion = '\'{"type":"MAE_one_hot_loss","args":{}}\''
 
 

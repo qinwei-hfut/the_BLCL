@@ -26,12 +26,12 @@ class BaseTrainer:
         self.tensorplot = TensorPlot(os.path.join(self.result_saved_path,'plot'))
         self.epoch = 0
 
-        val_criterion_dict = json.loads(self.args.val_loss.replace('^^','"'))
+        val_criterion_dict = json.loads(self.args.val_loss)
         self.val_criterion = getattr(loss_functions,val_criterion_dict['type'])(**val_criterion_dict['args'])
 
         if len(self.args.train_loss.split('+')) == 1:
             print(self.args.train_loss)
-            train_criterion_dict = json.loads(self.args.train_loss.replace('^^','"'))
+            train_criterion_dict = json.loads(self.args.train_loss)
             self.train_criterion = getattr(loss_functions,train_criterion_dict['type'])(**train_criterion_dict['args'])
         elif len(args.train_loss.split('+')) > 1:
             self.train_criterions = [getattr(loss_functions, i)  for i in args.train_loss.split('+')]
