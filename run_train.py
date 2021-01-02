@@ -29,7 +29,7 @@ gpu=2
 train_criterion = '{"type":"MAE_one_hot_loss","args":{}}'.replace('"','^^')
 val_criterion = '{"type":"CE_loss","args":{}}'.replace('"','^^')
 
-train_criterion = '\'{\"type\":\"MAE_one_hot_loss\",\"args\":{}}\''
+train_criterion = '\'{"type":"MAE_one_hot_loss","args":{}}\''
 
 
         
