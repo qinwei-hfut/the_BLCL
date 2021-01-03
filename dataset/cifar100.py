@@ -14,42 +14,49 @@ from numpy.testing import assert_array_almost_equal
 
 
 
-def get_cifar100(root, cfg_trainer, train=True,
+def get_cifar100(root, args, train=True,
                 transform_train=None, transform_val=None,
-                download=False, noise_file = ''):
+                download=False):
     base_dataset = torchvision.datasets.CIFAR100(root, train=train, download=download)
-    if train:
-        train_idxs, val_idxs = train_val_split(base_dataset.targets)
-        train_dataset = CIFAR100_train(root, cfg_trainer, train_idxs, train=True, transform=transform_train)
-        val_dataset = CIFAR100_val(root, cfg_trainer, val_idxs, train=train, transform=transform_val)
-        if cfg_trainer['asym']:
-            train_dataset.asymmetric_noise()
-            val_dataset.asymmetric_noise()
-        else:
-            train_dataset.symmetric_noise()
-            val_dataset.symmetric_noise()
+    train_idxs, val_idxs = train_val_split(base_dataset.targets)
+
+    train_Nval_dataset = CIFAR100_train(root, train_idxs+val_idxs, val_indices=None, args=args, train=train, transform=transform_train)
+    train_dataset = CIFAR100_train(root, train_idxs, val_indices=None, args=args, train=train, transform=transform_train)
+    val_dataset = CIFAR100_train(root, val_idxs, val_indices=None, args=args, train=train, transform=transform_val)
+    train_Cval_dataset = CIFAR100_train(root, train_idxs,val_idxs, args, train=train, transform=transform_train)
+
+    # if train:
+    #     train_idxs, val_idxs = train_val_split(base_dataset.targets)
+    #     train_dataset = CIFAR100_train(root, cfg_trainer, train_idxs, train=True, transform=transform_train)
+    #     val_dataset = CIFAR100_val(root, cfg_trainer, val_idxs, train=train, transform=transform_val)
+    #     if cfg_trainer['asym']:
+    #         train_dataset.asymmetric_noise()
+    #         val_dataset.asymmetric_noise()
+    #     else:
+    #         train_dataset.symmetric_noise()
+    #         val_dataset.symmetric_noise()
         
-        print(f"Train: {len(train_dataset)} Val: {len(val_dataset)}")  # Train: 45000 Val: 5000
-    else:
-        train_dataset = []
-        val_dataset = CIFAR100_val(root, cfg_trainer, None, train=train, transform=transform_val)
-        print(f"Test: {len(val_dataset)}")
+    #     print(f"Train: {len(train_dataset)} Val: {len(val_dataset)}")  # Train: 45000 Val: 5000
+    # else:
+    #     train_dataset = []
+    #     val_dataset = CIFAR100_val(root, cfg_trainer, None, train=train, transform=transform_val)
+    #     print(f"Test: {len(val_dataset)}")
 
     
     
     
-    return train_dataset, val_dataset
+    return train_dataset, val_dataset, train_Cval_dataset,train_Nval_dataset
 
 
-def train_val_split(base_dataset: torchvision.datasets.CIFAR100):
+def train_val_split(train_val):
     num_classes = 100
-    base_dataset = np.array(base_dataset)
-    train_n = int(len(base_dataset) * 0.9 / num_classes)
+    train_val = np.array(train_val)
+    train_n = int(len(train_val) * 0.9 / num_classes)
     train_idxs = []
     val_idxs = []
 
     for i in range(num_classes):
-        idxs = np.where(base_dataset == i)[0]
+        idxs = np.where(train_val == i)[0]
         np.random.shuffle(idxs)
         train_idxs.extend(idxs[:train_n])
         val_idxs.extend(idxs[train_n:])
@@ -60,159 +67,60 @@ def train_val_split(base_dataset: torchvision.datasets.CIFAR100):
 
 
 class CIFAR100_train(torchvision.datasets.CIFAR100):
-    def __init__(self, root, cfg_trainer, indexs, train=True,
+    def __init__(self, root, indexs=None, val_indices=None, args=None, train=True,
                  transform=None, target_transform=None,
                  download=False):
         super(CIFAR100_train, self).__init__(root, train=train,
                                             transform=transform, target_transform=target_transform,
                                             download=download)
         self.num_classes = 100
-        self.cfg_trainer = cfg_trainer
-        self.train_data = self.data[indexs]
-        self.train_labels = np.array(self.targets)[indexs]
-        self.indexs = indexs
-        self.prediction = np.zeros((len(self.train_data), self.num_classes, self.num_classes), dtype=np.float32)
-        self.noise_indx = []
-        #self.all_refs_encoded = torch.zeros(self.num_classes,self.num_ref,1024, dtype=np.float32)
+        self.args = args
+        if indexs is not None:
+            self.train_data = self.data[indexs]                            #image 本身
+            self.noisy_labels = np.array(self.targets)[indexs]             #noisy label
+            self.gt_labels = np.array(self.targets)[indexs]              #GT label
 
-        self.count = 0
-
-    def symmetric_noise(self):
-        self.train_labels_gt = self.train_labels.copy()
-        indices = np.random.permutation(len(self.train_data))
-        for i, idx in enumerate(indices):
-            if i < self.cfg_trainer['percent'] * len(self.train_data):
-                self.noise_indx.append(idx)
-                self.train_labels[idx] = np.random.randint(self.num_classes, dtype=np.int32)
-
-    def multiclass_noisify(self, y, P, random_state=0):
-        """ Flip classes according to transition probability matrix T.
-        It expects a number between 0 and the number of classes - 1.
-        """
-
-        assert P.shape[0] == P.shape[1]
-        assert np.max(y) < P.shape[0]
-
-        # row stochastic matrix
-        assert_array_almost_equal(P.sum(axis=1), np.ones(P.shape[1]))
-        assert (P >= 0.0).all()
-
-        m = y.shape[0]
-        new_y = y.copy()
-        flipper = np.random.RandomState(random_state)
-
-        for idx in np.arange(m):
-            i = y[idx]
-            # draw a vector with only an 1
-            flipped = flipper.multinomial(1, P[i, :], 1)[0]
-            new_y[idx] = np.where(flipped == 1)[0]
-
-        return new_y
-
-#     def build_for_cifar100(self, size, noise):
-#         """ random flip between two random classes.
-#         """
-#         assert(noise >= 0.) and (noise <= 1.)
-
-#         P = np.eye(size)
-#         cls1, cls2 = np.random.choice(range(size), size=2, replace=False)
-#         P[cls1, cls2] = noise
-#         P[cls2, cls1] = noise
-#         P[cls1, cls1] = 1.0 - noise
-#         P[cls2, cls2] = 1.0 - noise
-
-#         assert_array_almost_equal(P.sum(axis=1), 1, 1)
-#         return P
-    def build_for_cifar100(self, size, noise):
-        """ The noise matrix flips to the "next" class with probability 'noise'.
-        """
-
-        assert(noise >= 0.) and (noise <= 1.)
-
-        P = (1. - noise) * np.eye(size)
-        for i in np.arange(size - 1):
-            P[i, i + 1] = noise
-
-        # adjust last row
-        P[size - 1, 0] = noise
-
-        assert_array_almost_equal(P.sum(axis=1), 1, 1)
-        return P
-
-
-    def asymmetric_noise(self, asym=False, random_shuffle=False):
-        self.train_labels_gt = self.train_labels.copy()
-        P = np.eye(self.num_classes)
-        n = self.cfg_trainer['percent']
-        nb_superclasses = 20
-        nb_subclasses = 5
-
-        if n > 0.0:
-            for i in np.arange(nb_superclasses):
-                init, end = i * nb_subclasses, (i+1) * nb_subclasses
-                P[init:end, init:end] = self.build_for_cifar100(nb_subclasses, n)
-
-            y_train_noisy = self.multiclass_noisify(self.train_labels, P=P,
-                                               random_state=0)
-            actual_noise = (y_train_noisy != self.train_labels).mean()
-            assert actual_noise > 0.0
-            self.train_labels = y_train_noisy
-            
-            
-
-    def __getitem__(self, index):
-        """
-        Args:
-            index (int): Index
-
-        Returns:
-            tuple: (image, target) where target is index of the target class.
-        """
-        img, target, target_gt = self.train_data[index], self.train_labels[index],  self.train_labels_gt[index]
-
-
-        # doing this so that it is consistent with all other datasets
-        # to return a PIL Image
-        img = Image.fromarray(img)
-
-
-        if self.transform is not None:
-            img = self.transform(img)
-
-        if self.target_transform is not None:
-            target = self.target_transform(target)
-
-        return img, target, index, target_gt
-
-    def __len__(self):
-        return len(self.train_data)
-
-
-class CIFAR100_val(torchvision.datasets.CIFAR100):
-
-    def __init__(self, root, cfg_trainer, indexs, train=True,
-                 transform=None, target_transform=None,
-                 download=False):
-        super(CIFAR100_val, self).__init__(root, train=train,
-                                          transform=transform, target_transform=target_transform,
-                                          download=download)
-
-        # self.train_data = self.data[indexs]
-        # self.train_labels = np.array(self.targets)[indexs]
-        self.num_classes = 100
-        self.cfg_trainer = cfg_trainer
-        if train:
-            self.train_data = self.data[indexs]
-            self.train_labels = np.array(self.targets)[indexs]
+        if val_indices is not None:
+            self.soft_labels = np.zeros((len(indexs)+len(val_indices),self.num_classes),dtype=np.float32)
         else:
-            self.train_data = self.data
-            self.train_labels = np.array(self.targets)
-        self.train_labels_gt = self.train_labels.copy()
+            self.soft_labels = np.zeros((len(indexs),self.num_classes),dtype=np.float32)
+
+        self.noisy_idx = []
+        self.add_noise()
+
+        if val_indices is not None:
+            self.train_data = np.concatenate((self.train_data,self.data[val_indices]),axis=0)
+            self.noisy_labels = np.concatenate((self.noisy_labels,np.array(self.targets)[val_indices]),axis=0)
+            self.gt_labels = np.concatenate((self.gt_labels,np.array(self.targets)[val_indices]),axis=0)
+
+        self.init_soft_labels_from_constant_values()
+
+    def add_noise(self):
+        if self.args.noise_type == 'asym':
+            self.asymmetric_noise()
+        elif self.args.noise_type == 'sym':
+            self.symmetric_noise()
+
+    def get_soft_labels_acc(self):
+        return (np.argmax(self.soft_labels,axis=1)  == self.gt_labels).sum() / len(self.gt_labels)
+
+    def get_noisy_label_acc(self):
+        return sum(self.noisy_labels == self.gt_labels)/len(self.gt_labels)
+
+    def init_soft_labels_from_noisy_labels(self):
+        self.soft_labels = torch.tensor(self.soft_labels).scatter(1,torch.tensor(self.targets).view(-1,1),1).numpy()
+
+    def init_soft_labels_from_constant_values(self):
+        for i,train_label in enumerate(self.noisy_labels):
+            self.soft_labels[i] = -1.0
+            self.soft_labels[i][train_label] = 1.0
+
     def symmetric_noise(self):
         indices = np.random.permutation(len(self.train_data))
         for i, idx in enumerate(indices):
-            if i < self.cfg_trainer['percent'] * len(self.train_data):
-                self.train_labels[idx] = np.random.randint(self.num_classes, dtype=np.int32)
+            if i < self.args.noise_rate * len(self.train_data):
+                self.noisy_idx.append(idx)
+                self.noisy_labels[idx] = np.random.randint(self.num_classes, dtype=np.int32)
 
     def multiclass_noisify(self, y, P, random_state=0):
         """ Flip classes according to transition probability matrix T.
@@ -269,9 +177,9 @@ class CIFAR100_val(torchvision.datasets.CIFAR100):
         return P
 
 
-    def asymmetric_noise(self, asym=False, random_shuffle=False):
+    def asymmetric_noise(self):
         P = np.eye(self.num_classes)
-        n = self.cfg_trainer['percent']
+        n = self.args.noise_rate
         nb_superclasses = 20
         nb_subclasses = 5
 
@@ -280,14 +188,18 @@ class CIFAR100_val(torchvision.datasets.CIFAR100):
                 init, end = i * nb_subclasses, (i+1) * nb_subclasses
                 P[init:end, init:end] = self.build_for_cifar100(nb_subclasses, n)
 
-            y_train_noisy = self.multiclass_noisify(self.train_labels, P=P,
+            y_train_noisy = self.multiclass_noisify(self.noisy_labels, P=P,
                                                random_state=0)
-            actual_noise = (y_train_noisy != self.train_labels).mean()
+            actual_noise = (y_train_noisy != self.noisy_labels).mean()
             assert actual_noise > 0.0
-            self.train_labels = y_train_noisy
-    def __len__(self):
-        return len(self.train_data)
-
+            self.noisy_labels = y_train_noisy
+            
+            
+    def update_data(self, indices, updated_soft_targets):
+        indices = indices.cpu()
+        updated_soft_targets = updated_soft_targets.detach().cpu()
+        for i,idx in enumerate(indices):
+            self.soft_labels[idx] = updated_soft_targets[i]
 
     def __getitem__(self, index):
         """
@@ -297,7 +209,9 @@ class CIFAR100_val(torchvision.datasets.CIFAR100):
         Returns:
             tuple: (image, target) where target is index of the target class.
         """
-        img, target, target_gt = self.train_data[index], self.train_labels[index], self.train_labels_gt[index]
+        
+        img, noisy_targets = self.train_data[index], self.noisy_labels[index] 
+        soft_targets, gt_targets = self.soft_labels[index], self.gt_labels[index]
 
 
         # doing this so that it is consistent with all other datasets
@@ -308,10 +222,13 @@ class CIFAR100_val(torchvision.datasets.CIFAR100):
         if self.transform is not None:
             img = self.transform(img)
 
-        if self.target_transform is not None:
-            target = self.target_transform(target)
+        # if self.target_transform is not None:
+        #     target = self.target_transform(target)
 
-        return img, target, index, target_gt
+        return img, noisy_targets, soft_targets, gt_targets, index
+
+    def __len__(self):
+        return len(self.train_data)
 
 
     
