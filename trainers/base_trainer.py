@@ -54,7 +54,8 @@ class BaseTrainer:
                 'best_acc':self.best_test}
         # torch.save(state,os.path.join(self.result_saved_path,'checkpoint_epoch_'+str(epoch)+'.ckp'))
         if self.best_test == results['test_acc_1']:
-            torch.save(state,os.path.join(self.result_saved_path,'best_test_acc_'+str(results['test_acc_1'])+'_epoch'+str(epoch)+'.ckp'))
+            torch.save(state,os.path.join(self.result_saved_path,'best_test_acc'+'.ckp'))
+            torch.save(torch.zeros((1)),os.path.join(self.result_saved_path,'best_test_acc_'+str(results['test_acc_1'])+'_epoch'+str(epoch)))
     
     @abstractmethod
     def _train_epoch(self, epoch):
