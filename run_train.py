@@ -30,7 +30,8 @@ gpu=2
 
 
 val_criterion = '\'{"type":"CE_loss","args":{}}\''
-train_criterion = '\'{"type":"MAE_one_hot_loss","args":{}}\''
+# train_criterion = '\'{"type":"MAE_one_hot_loss","args":{}}\''
+train_criterion = '\'{"type":"CE_loss","args":{}}\''
 # train_criterion = '\'{"type":"SCE_loss","args":{"alpha":0.1,"beta":1.0}}\''
 
 arch = '\'{"type":"PreActResNet18","args":{"num_classes":100}}\''
