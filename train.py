@@ -131,7 +131,7 @@ datasets = train_dataset, val_dataset, train_Cval_dataset, train_Nval_dataset, t
 model_dict = json.loads(args.arch)
 model = getattr(model,model_dict['type'])(**model_dict['args'])
 model = model.cuda()
-pdb.set_trace()
+# pdb.set_trace()
 # model = torch.nn.DataParallel(model).cuda()
 cudnn.benchmark = True
 print('    Total params: %.2fM' % (sum(p.numel() for p in model.parameters())/1000000.0))
