@@ -39,6 +39,7 @@ parser.add_argument('--label', default='result',
                         help='Directory to input the labels')
 # Optimization options
 parser.add_argument('--trainer',type=str)
+parser.add_argument('--dataset',type=str)
 parser.add_argument('--arch',default='PreActResNet18',type=str)
 parser.add_argument('--train-loss',type=str)
 parser.add_argument('--val-loss',type=str)
