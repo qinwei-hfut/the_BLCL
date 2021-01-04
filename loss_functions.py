@@ -79,6 +79,20 @@ class CE_MAE_loss(torch.nn.Module):
         # loss = self.alpha * ce + self.beta * rce.mean()
         loss = self.alpha * ce + self.beta * MAE
         return loss
+
+
+class CE_LS_loss(torch.nn.Module):
+    def __init__(self,alpha=0.9):
+        super(CE_LS_loss,self).__init__()
+        self.alpha = alpha
+    
+    def forward(self,preds,labels):
+        num_classes = preds.size(1)
+        # one_hot_label = (torch.zeros(len(labels), num_classes)+(1-alpha)/num_classes).scatter_(1, target.view(-1,1), 1) 
+        LS_labels = (F.one_hot(labels, num_classes).float()*self.alpha+(1-self.alpha)/num_classes).to('cuda')
+        return -torch.mean(torch.sum(F.log_softmax(preds, dim=1) * LS_labels, dim=1))
+
+
 class SCE_loss(torch.nn.Module):
     def __init__(self, alpha, beta, num_classes=10):
         super(SCE_loss, self).__init__()
