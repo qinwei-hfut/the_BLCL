@@ -27,7 +27,7 @@ import trainers.pytrainer as pytrainer
 # import model.PreResNet as models
 # import model.resnet_for_cifar as resnet_for_cifar
 import model.model as model
-import dataset as dataset
+import dataset.dataset as dataset
 import trainers.trainers as trainers
 import loss_functions
 import json
