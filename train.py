@@ -126,8 +126,10 @@ testset = torchvision.datasets.CIFAR10('./data', train=False, transform=transfor
 datasets = train_dataset, val_dataset, train_Cval_dataset, train_Nval_dataset, testset
 
  #Construct Model
-model = getattr(model,args.arch)()
+model_dict = json.loads(args.arch)
+model = getattr(model,model_dict['type'])(**model_dict['args'])
 model = model.cuda()
+pdb.set_trace()
 # model = torch.nn.DataParallel(model).cuda()
 cudnn.benchmark = True
 print('    Total params: %.2fM' % (sum(p.numel() for p in model.parameters())/1000000.0))

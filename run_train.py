@@ -26,27 +26,26 @@ def run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise
 gpu=2
 
 
-# train_criterion = '{"type":"MAE_one_hot_loss","args":{}}'.replace('"','^^')
-# val_criterion = '{"type":"CE_loss","args":{}}'.replace('"','^^')
+
 
 val_criterion = '\'{"type":"CE_loss","args":{}}\''
-# train_criterion = '\'{"type":"MAE_one_hot_loss","args":{}}\''
-train_criterion = '\'{"type":"SCE_loss","args":{"alpha":0.1,"beta":1.0}}\''
+train_criterion = '\'{"type":"MAE_one_hot_loss","args":{}}\''
+# train_criterion = '\'{"type":"SCE_loss","args":{"alpha":0.1,"beta":1.0}}\''
 
-
+arch = '\'{"type":"PreActResNet18","args":{"num_classes":100}}\''
         
 
 
 
 
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.8,epochs=250,lr_schedule='120_200',train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.8,epochs=250,lr_schedule='120_200',train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
+run_exp(trainer='trainer',arch=arch,batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.9,epochs=250,lr_schedule='120_200',train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
+# run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.8,epochs=250,lr_schedule='120_200',train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
 
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,epochs=250,lr_schedule='120_200',train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,epochs=250,lr_schedule='120_200',train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
+# run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,epochs=250,lr_schedule='120_200',train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
+# run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.2,epochs=250,lr_schedule='120_200',train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
 
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,epochs=250,lr_schedule='120_200',train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
-run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,epochs=250,lr_schedule='120_200',train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
+# run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,epochs=250,lr_schedule='120_200',train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
+# run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,epochs=250,lr_schedule='120_200',train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
 
 
 
