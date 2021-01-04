@@ -47,6 +47,38 @@ def Taylor_ce_loss_2(output,target):
     error = 1-torch.gather(output,1,target.view(-1,1))
     return torch.mean(error+torch.mul(error,error)/2)
 
+
+class CE_MAE_loss(torch.nn.Module):
+    def __init__(self, alpha, beta, num_classes=10):
+        super(CE_MAE_loss, self).__init__()
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.alpha = alpha
+        self.beta = beta
+        self.num_classes = num_classes
+        self.cross_entropy = torch.nn.CrossEntropyLoss()
+
+    # def MAE_loss(self,,output,target):
+    #     output = F.softmax(output,dim=1)
+    #     target_one_hot = F.one_hot(target,num_classes=output.size(1))
+    #     target_one_hot = torch.clamp(target_one_hot,min=1e-4,max=1.0)
+    #     return F.l1_loss(output,target_one_hot)
+
+    def forward(self, pred, labels):
+        # CCE
+        ce = self.cross_entropy(pred, labels)
+
+        # MAE
+        pred = F.softmax(pred, dim=1)
+        pred = torch.clamp(pred, min=1e-7, max=1.0)
+        label_one_hot = torch.nn.functional.one_hot(labels, self.num_classes).float().to(self.device)
+        label_one_hot = torch.clamp(label_one_hot, min=1e-4, max=1.0)
+        # rce = (-1*torch.sum(pred * torch.log(label_one_hot), dim=1))
+        MAE = F.l1_loss(pred,label_one_hot)
+
+        # Loss
+        # loss = self.alpha * ce + self.beta * rce.mean()
+        loss = self.alpha * ce + self.beta * MAE
+        return loss
 class SCE_loss(torch.nn.Module):
     def __init__(self, alpha, beta, num_classes=10):
         super(SCE_loss, self).__init__()
