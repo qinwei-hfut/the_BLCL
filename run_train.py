@@ -24,7 +24,7 @@ def run_exp(trainer='trainer',arch='PreActResNet18',batch_size=128, lr=0.1, data
     os.system(the_cammand)
 
 
-gpu=2
+gpu=0
 
 
 
