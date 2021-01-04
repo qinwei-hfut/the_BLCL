@@ -25,27 +25,10 @@ def get_cifar100(root, args, train=True,
     val_dataset = CIFAR100_train(root, val_idxs, val_indices=None, args=args, train=train, transform=transform_val)
     train_Cval_dataset = CIFAR100_train(root, train_idxs,val_idxs, args, train=train, transform=transform_train)
 
-    # if train:
-    #     train_idxs, val_idxs = train_val_split(base_dataset.targets)
-    #     train_dataset = CIFAR100_train(root, cfg_trainer, train_idxs, train=True, transform=transform_train)
-    #     val_dataset = CIFAR100_val(root, cfg_trainer, val_idxs, train=train, transform=transform_val)
-    #     if cfg_trainer['asym']:
-    #         train_dataset.asymmetric_noise()
-    #         val_dataset.asymmetric_noise()
-    #     else:
-    #         train_dataset.symmetric_noise()
-    #         val_dataset.symmetric_noise()
-        
-    #     print(f"Train: {len(train_dataset)} Val: {len(val_dataset)}")  # Train: 45000 Val: 5000
-    # else:
-    #     train_dataset = []
-    #     val_dataset = CIFAR100_val(root, cfg_trainer, None, train=train, transform=transform_val)
-    #     print(f"Test: {len(val_dataset)}")
-
+    testset = torchvision.datasets.CIFAR100(root, train=False, transform=transform_val)
     
     
-    
-    return train_dataset, val_dataset, train_Cval_dataset,train_Nval_dataset
+    return train_dataset, val_dataset, train_Cval_dataset,train_Nval_dataset,testset
 
 
 def train_val_split(train_val):

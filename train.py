@@ -18,7 +18,7 @@ import torchvision
 import torchvision.transforms as transforms
 import torch.nn.functional as F
 
-import dataset.cifar10 as cifar10
+# import dataset.cifar10 as cifar10
 from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 
 # from trainers.trainer import Trainer
@@ -27,6 +27,7 @@ import trainers.pytrainer as pytrainer
 # import model.PreResNet as models
 # import model.resnet_for_cifar as resnet_for_cifar
 import model.model as model
+import dataset as dataset
 import trainers.trainers as trainers
 import loss_functions
 import json
@@ -116,13 +117,13 @@ transform_val = transforms.Compose([
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
 
-transform_test = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-])
+# transform_test = transforms.Compose([
+#     transforms.ToTensor(),
+#     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+# ])
 
-train_dataset, val_dataset, train_Cval_dataset, train_Nval_dataset = cifar10.get_cifar10_train(root = './data', args=args,train=True,transform_train=transform_train,transform_val=transform_val, download=True)
-testset = torchvision.datasets.CIFAR10('./data', train=False, transform=transform_test)
+train_dataset, val_dataset, train_Cval_dataset, train_Nval_dataset, testset = getattr(dataset,args.dataset)(root = './data', args=args,train=True,transform_train=transform_train,transform_val=transform_val, download=True)
+# train_dataset, val_dataset, train_Cval_dataset, train_Nval_dataset = cifar10.get_cifar10_train(root = './data', args=args,train=True,transform_train=transform_train,transform_val=transform_val, download=True)
 datasets = train_dataset, val_dataset, train_Cval_dataset, train_Nval_dataset, testset
 
  #Construct Model
