@@ -10,6 +10,7 @@ from torch.utils.tensorboard import SummaryWriter
 from myUtils.tensor_plot import TensorPlot
 import json
 import pdb
+from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 
 class BaseTrainer(torch.nn.Module):
     def __init__(self,model,datasets,optimizer,scheduler,logger,result_saved_path,args):
