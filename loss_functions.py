@@ -124,10 +124,10 @@ class Mixed_loss(torch.nn.Module):
         super(Mixed_loss, self).__init__()
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-        self.alpha_ce = nn.ParameterList(nn.Parameter(torch.tensor(alpha_ce), requires_grad=True).cuda())
-        self.alpha_rce = nn.ParameterList(nn.Parameter(torch.tensor(alpha_rce), requires_grad=True).cuda())
-        self.alpha_mse = nn.ParameterList(nn.Parameter(torch.tensor(alpha_mse), requires_grad=True).cuda())
-        self.alpha_mae = nn.ParameterList(torch.nn.Parameter(torch.tensor(alpha_mae), requires_grad=True).cuda())
+        self.alpha_ce = nn.ParameterList([nn.Parameter(torch.tensor(alpha_ce), requires_grad=True).cuda()])
+        self.alpha_rce = nn.ParameterList([nn.Parameter(torch.tensor(alpha_rce), requires_grad=True).cuda()])
+        self.alpha_mse = nn.ParameterList([nn.Parameter(torch.tensor(alpha_mse), requires_grad=True).cuda()])
+        self.alpha_mae = nn.ParameterList([torch.nn.Parameter(torch.tensor(alpha_mae), requires_grad=True).cuda()])
 
         self.cross_entropy = torch.nn.CrossEntropyLoss()
 
