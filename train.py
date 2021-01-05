@@ -153,7 +153,6 @@ trainer = getattr(trainers,args.trainer)(model,datasets,optimizer,scheduler,logg
 for key,param in trainer.named_parameters():
     # print(key)
     print(param)
-    pdb.set_trace()
 
 pdb.set_trace()
 trainer.train()

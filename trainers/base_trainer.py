@@ -40,9 +40,6 @@ class BaseTrainer(torch.nn.Module):
         else:
             print('XXXXXXXXXXXXXX len(args.train_loss) < 1 XXXXXXXXXXXXXXXXXX')
 
-        for param in self.train_criterion.parameters():
-            print(param)
-        pdb.set_trace()
 
     def adjust_learning_rate(self, epoch):
         if epoch in self.args.lr_schedule:
