@@ -116,3 +116,41 @@ class SCE_loss(torch.nn.Module):
         # Loss
         loss = self.alpha * ce + self.beta * rce.mean()
         return loss
+
+
+class Mixed_loss(torch.nn.Module):
+    def __init__(self, alpha_ce, alpha_rce, alpha_mae, alpha_mse):
+        super(Mixed_loss, self).__init__()
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+        self.alpha_ce = torch.nn.Parameter(torch.tensor(alpha_ce), requires_grad=True).cuda()
+        self.alpha_rce = torch.nn.Parameter(torch.tensor(alpha_rce), requires_grad=True).cuda()
+        self.alpha_mse = torch.nn.Parameter(torch.tensor(alpha_mse), requires_grad=True).cuda()
+        self.alpha_mae = torch.nn.Parameter(torch.tensor(alpha_mae), requires_grad=True).cuda()
+
+        self.cross_entropy = torch.nn.CrossEntropyLoss()
+
+    def forward(self, pred, labels):
+
+        num_classes = pred.size(1)
+
+        # CCE
+        ce = self.cross_entropy(pred, labels)
+
+        pred = F.softmax(pred, dim=1)
+        label_one_hot = torch.nn.functional.one_hot(labels, num_classes).float().to(self.device)
+
+        # MAE
+        mae = F.l1_loss(pred,label_one_hot)
+
+        # MSE
+        mse = F.mse_loss(pred,label_one_hot)
+
+        # RCE
+        pred = torch.clamp(pred, min=1e-7, max=1.0)
+        label_one_hot = torch.clamp(label_one_hot, min=1e-4, max=1.0)
+        rce = (-1*torch.sum(pred * torch.log(label_one_hot), dim=1)).mean()
+
+        # Loss
+        loss = self.alpha_ce * ce + self.alpha_rce * rce + self.alpha_mae * mae + self.alpha_mse * mse
+        return loss
