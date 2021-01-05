@@ -38,6 +38,17 @@ train_criterion = '\'{"type":"CE_LS_loss","args":{}}\''
 train_criterion = '\'{"type":"Mixed_loss","args":{"alpha_ce":0.1,"alpha_rce":1.0,"alpha_mae":0.0,"alpha_mse":0.0}}\''
 
 arch = '\'{"type":"PreActResNet18","args":{"num_classes":10}}\''
+
+optim = {"type":"SGD",
+            "args":{
+                "lr":0.1,
+                "momentum":0.9,
+                "weight_decay":1e-4
+            }
+        }
+pdb.set_trace()
+
+# lr_scheduler= {"type":""}
         
 
 
