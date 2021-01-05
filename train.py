@@ -149,5 +149,9 @@ logger = Logger(os.path.join(result_output_path, 'log.txt'), title=title)
 logger.set_names(['Learning Rate', 'Train Loss', 'Test Loss', 'Train N Acc.', 'Train C Acc', 'Test Acc'])
 
 trainer = getattr(trainers,args.trainer)(model,datasets,optimizer,scheduler,logger,result_output_path,args)
+
+for param in trainer.parameters():
+    print(param)
+
 pdb.set_trace()
 trainer.train()
