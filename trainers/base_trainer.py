@@ -97,3 +97,25 @@ class BaseTrainer(torch.nn.Module):
         self.tensorplot.flush()
 
 
+    def _test_epoch(self,epoch):
+        self.model.eval()
+
+        losses = AverageMeter()
+        top1 = AverageMeter()
+        top5 = AverageMeter()
+
+        with torch.no_grad():
+            # with tqdm(self.test_loader) as progress:
+            for index, (inputs,gt_labels) in enumerate(self.test_loader):
+                inputs,gt_labels = inputs.cuda(),gt_labels.cuda()
+
+                outputs = self.model(inputs)
+                loss = self.val_criterion(outputs,gt_labels)
+
+                prec1, prec5 = accuracy(outputs,gt_labels,topk=(1,5))
+                losses.update(loss.item(),inputs.size(0))
+                top1.update(prec1,inputs.size(0))
+                top5.update(prec5,inputs.size(0))
+
+        return losses.avg, top1.avg, top5.avg
+
