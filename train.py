@@ -151,9 +151,9 @@ logger.set_names(['Learning Rate', 'Train Loss', 'Test Loss', 'Train N Acc.', 'T
 trainer = getattr(trainers,args.trainer)(model,datasets,optimizer,scheduler,logger,result_output_path,args)
 
 for key,param in trainer.named_parameters():
-    print(key)
-    # print(param)
-    # pdb.set_trace()
+    # print(key)
+    print(param)
+    pdb.set_trace()
 
 pdb.set_trace()
 trainer.train()
