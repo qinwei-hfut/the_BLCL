@@ -46,7 +46,7 @@ optim = {"type":"SGD",
                 "weight_decay":1e-4
             }
         }
-optim = "'"+"\\"+json.dumps(optim)[0:-1]+"\\"+"'"+"'"
+optim = "'"+"\\"+json.dumps(optim)[0:-1]+'\\'+"'"+"'"
 pdb.set_trace()
 
 # lr_scheduler= {"type":""}
