@@ -11,8 +11,9 @@ from myUtils.tensor_plot import TensorPlot
 import json
 import pdb
 
-class BaseTrainer:
+class BaseTrainer(torch.nn.Module):
     def __init__(self,model,datasets,optimizer,scheduler,logger,result_saved_path,args):
+        super(BaseTrainer,self).__init__()
         self.train_dataset, self.val_dataset, self.train_Cval_dataset, self.train_Nval_dataset,self.test_dataset = datasets
         self.model = model
         self.optimizer = optimizer
