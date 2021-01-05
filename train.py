@@ -46,6 +46,8 @@ parser.add_argument('--val-loss',type=str)
 parser.add_argument('--epochs', default=140, type=int, metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('--lr-schedule',type=str)
+# parser.add_argument('--optim',type=str)
+# parser.add_argument('--meta-optim',type=str)
 parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                     help='manual epoch number (useful on restarts)')
 parser.add_argument('--batch-size', default=128, type=int, metavar='N',
@@ -147,4 +149,5 @@ logger = Logger(os.path.join(result_output_path, 'log.txt'), title=title)
 logger.set_names(['Learning Rate', 'Train Loss', 'Test Loss', 'Train N Acc.', 'Train C Acc', 'Test Acc'])
 
 trainer = getattr(trainers,args.trainer)(model,datasets,optimizer,scheduler,logger,result_output_path,args)
+pdb.set_trace()
 trainer.train()
