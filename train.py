@@ -72,7 +72,6 @@ parser.add_argument('--out', default='results',
                         help='Directory to output the result')
 
 args = parser.parse_args()
-args.lr_schedule = [int(i) for i in args.lr_schedule.split('_')]
 
 state = {k: v for k, v in args._get_kwargs()}
 print(state)
