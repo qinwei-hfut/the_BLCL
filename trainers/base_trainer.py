@@ -29,7 +29,7 @@ class BaseTrainer(torch.nn.Module):
 
         # optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
         self.optimizer = getattr(optim,args.optim['type'])(self.model.parameters(),**args.optim['args'])
-        self.scheduler = getattr(optim.lr_scheduler,args.lr_scheduler['type'])(self.optimizer,**args.scheduler['args'])
+        self.scheduler = getattr(optim.lr_scheduler,args.lr_scheduler['type'])(self.optimizer,**args.lr_scheduler['args'])
         # scheduler = optim.lr_scheduler.MultiStepLR(optimizer,milestones=args.lr_schedule,gamma=0.1)
 
         val_criterion_dict = json.loads(self.args.val_loss)
