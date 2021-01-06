@@ -30,6 +30,11 @@ class MetaTrainer(BaseTrainer):
         Ctop1 = AverageMeter()
         Ctop5 = AverageMeter()
 
+        print('ce_weight:'+str(self.train_criterion.alpha_ce.item())+' grad:'+str(self.train_criterion.alpha_ce.grad.item()))
+            print('rce_weight:'+str(self.train_criterion.alpha_rce.item())+' grad:'+str(self.train_criterion.alpha_rce.grad.item()))
+            print('mae_weight:'+str(self.train_criterion.alpha_mae.item())+' grad:'+str(self.train_criterion.alpha_mae.grad.item()))
+            print('mse_weight:'+str(self.train_criterion.alpha_mse.item())+' grad:'+str(self.train_criterion.alpha_mse.grad.item()))
+
         for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.train_loader):
             inner_inputs, inner_noisy_labels, inner_soft_labels, inner_gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
@@ -76,10 +81,10 @@ class MetaTrainer(BaseTrainer):
             #         print('---')
 
             # pdb.set_trace()
-            print('ce_weight:'+str(self.train_criterion.alpha_ce.item())+' grad:'+str(self.train_criterion.alpha_ce.grad.item()))
-            print('rce_weight:'+str(self.train_criterion.alpha_rce.item())+' grad:'+str(self.train_criterion.alpha_rce.grad.item()))
-            print('mae_weight:'+str(self.train_criterion.alpha_mae.item())+' grad:'+str(self.train_criterion.alpha_mae.grad.item()))
-            print('mse_weight:'+str(self.train_criterion.alpha_mse.item())+' grad:'+str(self.train_criterion.alpha_mse.grad.item()))
+            # print('ce_weight:'+str(self.train_criterion.alpha_ce.item())+' grad:'+str(self.train_criterion.alpha_ce.grad.item()))
+            # print('rce_weight:'+str(self.train_criterion.alpha_rce.item())+' grad:'+str(self.train_criterion.alpha_rce.grad.item()))
+            # print('mae_weight:'+str(self.train_criterion.alpha_mae.item())+' grad:'+str(self.train_criterion.alpha_mae.grad.item()))
+            # print('mse_weight:'+str(self.train_criterion.alpha_mse.item())+' grad:'+str(self.train_criterion.alpha_mse.grad.item()))
             # print(self.train_criterion.ce)
 
 
