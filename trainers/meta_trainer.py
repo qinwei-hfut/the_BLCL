@@ -68,6 +68,11 @@ class MetaTrainer(BaseTrainer):
             # for group in self.optimizer.param_groups:
             #     for p in group['params']:
             #         print(p.grad)
+            for group in self.meta_optimizer.param_groups:
+                for p in group['params']:
+                    print(p)
+                    print(p.grad)
+                    print('---')
 
 
             self.optimizer.step()
