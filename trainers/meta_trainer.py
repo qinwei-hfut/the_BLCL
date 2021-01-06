@@ -38,6 +38,7 @@ class MetaTrainer(BaseTrainer):
                 # inner loop
                 inner_outputs = fnet(inner_inputs)
                 inner_loss = self.train_criterion(inner_outputs,inner_noisy_labels)
+                pdb.set_trace()
                 diffopt.step(inner_loss)
 
 
