@@ -133,6 +133,8 @@ class Mixed_loss(torch.nn.Module):
 
     def forward(self, pred, labels):
 
+        self.cuda()
+
         num_classes = pred.size(1)
 
         # CCE

@@ -17,7 +17,7 @@ class BaseTrainer(torch.nn.Module):
     def __init__(self,model,datasets,logger,result_saved_path,args):
         super(BaseTrainer,self).__init__()
         self.train_dataset, self.val_dataset, self.train_Cval_dataset, self.train_Nval_dataset,self.test_dataset = datasets
-        self.model = model.cuda()
+        self.model = model
         self.logger = logger
         self.args = args
         self.result_saved_path = result_saved_path
