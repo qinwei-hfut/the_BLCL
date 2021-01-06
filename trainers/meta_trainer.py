@@ -38,7 +38,6 @@ class MetaTrainer(BaseTrainer):
                 # inner loop
                 inner_outputs = fnet(inner_inputs)
                 inner_loss = self.train_criterion(inner_outputs,inner_noisy_labels)
-                pdb.set_trace()
                 diffopt.step(inner_loss)
 
 
@@ -72,8 +71,8 @@ class MetaTrainer(BaseTrainer):
 
             self.optimizer.step()
 
-            Nprec1, Nprec5 = accuracy(outputs,noisy_labels,topk=(1,5))
-            Cprec1, Cprec5 = accuracy(outputs,gt_labels,topk=(1,5))
+            Nprec1, Nprec5 = accuracy(outputs,inner_noisy_labels,topk=(1,5))
+            Cprec1, Cprec5 = accuracy(outputs,inner_gt_labels,topk=(1,5))
             losses.update(loss.item(), inputs.size(0))
             Ntop1.update(Nprec1.item(), inputs.size(0))
             Ntop5.update(Nprec5.item(), inputs.size(0))
