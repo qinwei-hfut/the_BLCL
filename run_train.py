@@ -44,7 +44,7 @@ optim = '\'{"type":"SGD","args":{"lr":0.1,"momentum":0.9,"weight_decay":1e-4}}\'
 lr_scheduler = '\'{"type":"SGD","args":{"milestones":[40,80],"gamma":0.1}}\''
 
 meta_optim = '\'{"type":"SGD","args":{"lr":0.1,"momentum":0.9,"weight_decay":1e-4}}\''
-meta_lr_scheduler = '\'{"type":"SGD","args":{"milestones":[40,80],"gamma":0.1}}\''
+meta_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[40,80],"gamma":0.1}}\''
 # optim = "'"+"\\"+json.dumps(optim)[0:-1]+'\\'+"'"+"'"
 # pdb.set_trace()
 
