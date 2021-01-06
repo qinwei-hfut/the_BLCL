@@ -8,25 +8,29 @@ import loss_functions
 import time
 from torch.utils.tensorboard import SummaryWriter
 from myUtils.tensor_plot import TensorPlot
+import torch.optim as optim
 import json
 import pdb
 from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 
 class BaseTrainer(torch.nn.Module):
-    def __init__(self,model,datasets,optimizer,scheduler,logger,result_saved_path,args):
+    def __init__(self,model,datasets,logger,result_saved_path,args):
         super(BaseTrainer,self).__init__()
         self.train_dataset, self.val_dataset, self.train_Cval_dataset, self.train_Nval_dataset,self.test_dataset = datasets
         self.model = model
-        self.optimizer = optimizer
         self.logger = logger
         self.args = args
         self.result_saved_path = result_saved_path
         self.best_val = 0
         self.best_test = 0
-        self.scheduler = scheduler
         self.writer = SummaryWriter(os.path.join(self.result_saved_path,'tensorboard_plot_'+str(time.time())))
         self.tensorplot = TensorPlot(os.path.join(self.result_saved_path,'plot'))
         self.epoch = 0
+
+        # optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+        self.optimizer = getattr(optim,args.optim['type'])(self.model.parameters(),**args.optim['args'])
+        self.scheduler = getattr(optim.lr_scheduler,args.scheduler['type'])(self.optimizer,**args.scheduler['args'])
+        # scheduler = optim.lr_scheduler.MultiStepLR(optimizer,milestones=args.lr_schedule,gamma=0.1)
 
         val_criterion_dict = json.loads(self.args.val_loss)
         self.val_criterion = getattr(loss_functions,val_criterion_dict['type'])(**val_criterion_dict['args'])
@@ -42,11 +46,11 @@ class BaseTrainer(torch.nn.Module):
             print('XXXXXXXXXXXXXX len(args.train_loss) < 1 XXXXXXXXXXXXXXXXXX')
 
 
-    def adjust_learning_rate(self, epoch):
-        if epoch in self.args.lr_schedule:
-            self.args.lr *= 0.1
-            for param_group in self.optimizer.param_groups:
-                param_group['lr'] *= 0.1
+    # def adjust_learning_rate(self, epoch):
+    #     if epoch in self.args.lr_schedule:
+    #         self.args.lr *= 0.1
+    #         for param_group in self.optimizer.param_groups:
+    #             param_group['lr'] *= 0.1
 
 
     def _save_checkpoint(self,epoch,results):

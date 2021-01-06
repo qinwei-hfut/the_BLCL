@@ -45,9 +45,10 @@ parser.add_argument('--train-loss',type=str)
 parser.add_argument('--val-loss',type=str)
 parser.add_argument('--epochs', default=140, type=int, metavar='N',
                     help='number of total epochs to run')
-parser.add_argument('--lr-schedule',type=str)
-# parser.add_argument('--optim',type=str)
-# parser.add_argument('--meta-optim',type=str)
+parser.add_argument('--lr-scheduler',type=json.loads)
+parser.add_argument('--optim',type=json.loads)
+parser.add_argument('--meta-optim',type=json.loads)
+parser.add_argument('--meta-lr-scheduler',type=json.loads)
 parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                     help='manual epoch number (useful on restarts)')
 parser.add_argument('--batch-size', default=128, type=int, metavar='N',
@@ -140,19 +141,18 @@ print('    Total params: %.2fM' % (sum(p.numel() for p in model.parameters())/10
 
 # val_criterion = getattr(loss_functions,'ce_loss')
 
-optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
-# optimizer = optim.Adam(model.parameters(),lr=args.lr)
-scheduler = optim.lr_scheduler.MultiStepLR(optimizer,milestones=args.lr_schedule,gamma=0.1)
+# optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+# scheduler = optim.lr_scheduler.MultiStepLR(optimizer,milestones=args.lr_schedule,gamma=0.1)
 
 title = 'noisy label'
 logger = Logger(os.path.join(result_output_path, 'log.txt'), title=title)
 logger.set_names(['Learning Rate', 'Train Loss', 'Test Loss', 'Train N Acc.', 'Train C Acc', 'Test Acc'])
 
-trainer = getattr(trainers,args.trainer)(model,datasets,optimizer,scheduler,logger,result_output_path,args)
+trainer = getattr(trainers,args.trainer)(model,datasets,logger,result_output_path,args)
 
-for key,param in trainer.named_parameters():
-    # print(key)
-    print(param)
+# for key,param in trainer.named_parameters():
+#     # print(key)
+#     print(param)
 
-pdb.set_trace()
+# pdb.set_trace()
 trainer.train()
