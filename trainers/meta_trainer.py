@@ -4,16 +4,22 @@ import numpy as np
 from .base_trainer import BaseTrainer
 import torch.utils.data as data
 from tqdm import tqdm
+import torch.optim as optim
 import os
 from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 import pdb
+import higher
 
-
-class Trainer(BaseTrainer):
-    def __init__(self,model,datasets,optimizer,scheduler,logger,resuls_saved_path,args):
-        super().__init__(model,datasets,optimizer,scheduler,logger,resuls_saved_path,args)
-        self.train_loader = data.DataLoader(self.train_Nval_dataset,batch_size=args.batch_size,shuffle=True,num_workers=4)
+class MetaTrainer(BaseTrainer):
+    def __init__(self,model,datasets,logger,resuls_saved_path,args):
+        super().__init__(model,datasets,logger,resuls_saved_path,args)
+        self.train_loader = data.DataLoader(self.train_dataset,batch_size=args.batch_size,shuffle=True,num_workers=4)
+        self.val_loader = data.DataLoader(self.val_dataset,batch_size=args.batch_size,shuffle=True,num_workers=4)
         self.test_loader = data.DataLoader(self.test_dataset,batch_size=args.batch_size,shuffle=False,num_workers=4)
+
+        # self.meta_optimizer = getattr(optim,args.meta_optim['type'])(self.model.parameters(),**args.meta_optim['args'])
+        self.meta_optimizer = getattr(optim,args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
+        self.meta_scheduler = getattr(optim.lr_scheduler,args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
 
     def _train_epoch(self,epoch):
         self.model.train()
@@ -24,16 +30,36 @@ class Trainer(BaseTrainer):
         Ctop1 = AverageMeter()
         Ctop5 = AverageMeter()
 
-        # with tqdm(self.train_loader) as progress:
-        #     for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(progress):
         for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.train_loader):
-            # progress.set_description_str(f'Train epoch {epoch}')
-            inputs, noisy_labels, soft_labels, gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
+            inner_inputs, inner_noisy_labels, inner_soft_labels, inner_gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
-            outputs = self.model(inputs)
+            with higher.innerloop_ctx(self.model,self.optimizer,copy_initial_weights=False) as (fnet,diffopt):
+                
+                # inner loop
+                inner_outputs = fnet(inner_inputs)
+                inner_loss = self.train_criterion(inner_outputs,inner_noisy_labels)
+                diffopt.step(inner_loss)
 
-            loss = self.train_criterion(outputs,noisy_labels)
 
+
+                # outer loop
+                self.meta_optimizer.zero_grad()
+                for batch_idx, (out_inputs, out_noisy_labels, out_soft_labels,out_gt_labels,out_index) in enumerate(self.val_loader):
+                    out_inputs,out_noisy_labels,out_soft_labels,out_gt_labels = out_inputs.cuda(),out_noisy_labels.cuda(),out_soft_labels.cuda(),out_gt_labels.cuda()
+
+                    out_outputs = fnet(out_inputs)
+                    out_loss = self.val_criterion(out_outputs,out_gt_labels)
+                    out_loss.backward()
+                    if batch_idx == 0:
+                        break
+
+                self.meta_optimizer.step()
+                
+
+            # actual training
+            outputs = self.model(inner_inputs)
+
+            loss = self.train_criterion(outputs,inner_noisy_labels)
             self.optimizer.zero_grad()
             loss.backward()
 
@@ -63,41 +89,6 @@ class Trainer(BaseTrainer):
             'test_acc_1':test_acc1}
         return log
     
-    def _test_epoch(self,epoch):
-        self.model.eval()
-
-        losses = AverageMeter()
-        top1 = AverageMeter()
-        top5 = AverageMeter()
-
-        with torch.no_grad():
-            # with tqdm(self.test_loader) as progress:
-            for index, (inputs,gt_labels) in enumerate(self.test_loader):
-                inputs,gt_labels = inputs.cuda(),gt_labels.cuda()
-
-                outputs = self.model(inputs)
-                loss = self.val_criterion(outputs,gt_labels)
-
-                prec1, prec5 = accuracy(outputs,gt_labels,topk=(1,5))
-                losses.update(loss.item(),inputs.size(0))
-                top1.update(prec1,inputs.size(0))
-                top5.update(prec5,inputs.size(0))
-
-        return losses.avg, top1.avg, top5.avg
 
 
 
-
-    # def train(self):
-    #     # for epoch in tqdm(range(self.args.epochs),decs='Total progress: '):
-    #     for epoch in range(self.args.epochs):
-    #         self.epoch = epoch
-    #         print('epoch: '+str(epoch))
-    #         # self.adjust_learning_rate(epoch)
-    #         results = self._train_epoch(epoch)
-    #         self.scheduler.step()
-    #         print(results)
-    #         self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
-
-    #         self._save_checkpoint(epoch,results)
-    #     self.logger.close()
