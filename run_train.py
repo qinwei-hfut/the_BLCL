@@ -52,7 +52,16 @@ meta_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[40,80],"gamma
         
 
 
-run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='sym',noise_rate=0.9,epochs=250, dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
+run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='sym',noise_rate=0.4,epochs=250, dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
+run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='sym',noise_rate=0.4,epochs=250, dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
+
+run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='sym',noise_rate=0.8,epochs=250, dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
+
+run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='asym',noise_rate=0.4,epochs=250, dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
+
+run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='sym',noise_rate=0.8,epochs=250, dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
+
+run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='asym',noise_rate=0.4,epochs=250, dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
 # run_exp(trainer='trainer',arch=arch,batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.4,epochs=250,lr_schedule='120_200', dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
 
 # run_exp(trainer='trainer',arch=arch,batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.8,epochs=250,lr_schedule='120_200', dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
