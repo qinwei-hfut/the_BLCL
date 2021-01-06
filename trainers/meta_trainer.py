@@ -75,8 +75,12 @@ class MetaTrainer(BaseTrainer):
             #         print(p.grad)
             #         print('---')
 
-            pdb.set_trace()
-            print(self.train_criterion.ce)
+            # pdb.set_trace()
+            print('ce_weight:'+str(self.train_criterion.alpha_ce.item())+' grad:'+str(self.train_criterion.alpha_ce.grad.item()))
+            print('rce_weight:'+str(self.train_criterion.alpha_rce.item())+' grad:'+str(self.train_criterion.alpha_rce.grad.item()))
+            print('mae_weight:'+str(self.train_criterion.alpha_mae.item())+' grad:'+str(self.train_criterion.alpha_mae.grad.item()))
+            print('mse_weight:'+str(self.train_criterion.alpha_mse.item())+' grad:'+str(self.train_criterion.alpha_mse.grad.item()))
+            # print(self.train_criterion.ce)
 
 
             self.optimizer.step()
