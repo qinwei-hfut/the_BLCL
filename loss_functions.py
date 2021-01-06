@@ -155,5 +155,6 @@ class Mixed_loss(torch.nn.Module):
         rce = (-1*torch.sum(pred * torch.log(label_one_hot), dim=1)).mean()
 
         # Loss
-        loss = self.alpha_ce * ce + self.alpha_rce * rce + self.alpha_mae * mae + self.alpha_mse * mse
+        total = ce+rce+mae+mse
+        loss = (self.alpha_ce * ce + self.alpha_rce * rce + self.alpha_mae * mae + self.alpha_mse * mse)/total
         return loss
