@@ -3,8 +3,8 @@ import pdb
 import json
 
 def run_exp(trainer,arch,batch_size,dataset,noise_type,noise_rate,gpu,optim,meta_optim,\
-        train_criterion,val_criterion,lr_scheduler,meta_lr_scheduler,\
-        epochs):
+        warm_up_criterion,train_criterion,val_criterion,lr_scheduler,meta_lr_scheduler,\
+        epochs,warm_up_epochs):
     the_cammand = 'python train.py' \
         +' --trainer='+trainer \
         +' --arch='+arch \
@@ -17,6 +17,8 @@ def run_exp(trainer,arch,batch_size,dataset,noise_type,noise_rate,gpu,optim,meta
         +' --dataset='+dataset \
         +' --train-loss='+train_criterion \
         +' --val-loss='+val_criterion \
+        +' --warm-up-loss='+warm_up_criterion \
+        +' --warm-up-epochs='+str(warm_up_epochs) \
         +' --lr-scheduler='+lr_scheduler \
         +' --meta-lr-scheduler='+meta_lr_scheduler \
         +' --epochs='+str(epochs) \
@@ -31,6 +33,7 @@ gpu=1
 
 
 val_criterion = '\'{"type":"CE_loss","args":{}}\''
+warm_up_criterion = '\'{"type":"CE_loss","args":{}}\''
 # train_criterion = '\'{"type":"MAE_one_hot_loss","args":{}}\''
 # train_criterion = '\'{"type":"CE_loss","args":{}}\''
 # train_criterion = '\'{"type":"SCE_loss","args":{"alpha":0.1,"beta":1.0}}\''
@@ -52,16 +55,8 @@ meta_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[40,80],"gamma
         
 
 
-run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='sym',noise_rate=0.4,epochs=250, dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
-run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='sym',noise_rate=0.4,epochs=250, dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
+run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='sym',noise_rate=0.4,epochs=250,warm_up_epochs=5,dataset='cifar10',warm_up_criterion=warm_up_criterion,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
 
-run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='sym',noise_rate=0.8,epochs=250, dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
-
-run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='asym',noise_rate=0.4,epochs=250, dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
-
-run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='sym',noise_rate=0.8,epochs=250, dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
-
-run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='asym',noise_rate=0.4,epochs=250, dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
 # run_exp(trainer='trainer',arch=arch,batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.4,epochs=250,lr_schedule='120_200', dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
 
 # run_exp(trainer='trainer',arch=arch,batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.8,epochs=250,lr_schedule='120_200', dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)

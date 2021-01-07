@@ -21,7 +21,7 @@ class MetaTrainer(BaseTrainer):
         self.meta_optimizer = getattr(optim,args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
         self.meta_scheduler = getattr(optim.lr_scheduler,args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
 
-    def _train_epoch(self,epoch):
+    def _train_epoch(self):
         self.model.train()
         losses = AverageMeter()
         Ntop1 = AverageMeter()

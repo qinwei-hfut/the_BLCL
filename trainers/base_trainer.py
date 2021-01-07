@@ -26,14 +26,13 @@ class BaseTrainer(torch.nn.Module):
         self.writer = SummaryWriter(os.path.join(self.result_saved_path,'tensorboard_plot_'+str(time.time())))
         self.tensorplot = TensorPlot(os.path.join(self.result_saved_path,'plot'))
         self.epoch = 0
+        self.warm_up_epochs = self.args.warm_up_epochs
 
-        # optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
         self.optimizer = getattr(optim,args.optim['type'])(self.model.parameters(),**args.optim['args'])
         self.scheduler = getattr(optim.lr_scheduler,args.lr_scheduler['type'])(self.optimizer,**args.lr_scheduler['args'])
-        # scheduler = optim.lr_scheduler.MultiStepLR(optimizer,milestones=args.lr_schedule,gamma=0.1)
 
-        val_criterion_dict = json.loads(self.args.val_loss)
-        self.val_criterion = getattr(loss_functions,val_criterion_dict['type'])(**val_criterion_dict['args'])
+        self.val_criterion = getattr(loss_functions,self.args.val_loss['type'])(**self.args.val_loss['args'])
+        self.warm_up_criterion = getattr(loss_functions,self.args.warm_up_loss['type'])(**self.args.warm_up_loss['args'])
 
         if len(self.args.train_loss.split('+')) == 1:
             # print(self.args.train_loss)
@@ -44,13 +43,6 @@ class BaseTrainer(torch.nn.Module):
             self.train_criterions = [getattr(loss_functions, i)  for i in args.train_loss.split('+')]
         else:
             print('XXXXXXXXXXXXXX len(args.train_loss) < 1 XXXXXXXXXXXXXXXXXX')
-
-
-    # def adjust_learning_rate(self, epoch):
-    #     if epoch in self.args.lr_schedule:
-    #         self.args.lr *= 0.1
-    #         for param_group in self.optimizer.param_groups:
-    #             param_group['lr'] *= 0.1
 
 
     def _save_checkpoint(self,epoch,results):
@@ -65,7 +57,7 @@ class BaseTrainer(torch.nn.Module):
             torch.save(torch.zeros((1)),os.path.join(self.result_saved_path,'best_test_acc_'+str(results['test_acc_1'])+'_epoch'+str(epoch)))
     
     @abstractmethod
-    def _train_epoch(self, epoch):
+    def _train_epoch(self):
 
         raise NotImplementedError
 
@@ -74,8 +66,10 @@ class BaseTrainer(torch.nn.Module):
         for epoch in range(self.args.epochs):
             self.epoch = epoch
             print('epoch: '+str(epoch))
-            # self.adjust_learning_rate(epoch)
-            results = self._train_epoch(epoch)
+            if self.epoch < self.warm_up_epochs:
+                results = self._warm_up()
+            else:
+                results = self._train_epoch()
             self.scheduler.step()
             print(results)
             self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
@@ -139,9 +133,9 @@ class BaseTrainer(torch.nn.Module):
 
             outputs = self.model(inputs)
 
-            loss = self.warmup_criterion(outputs,noisy_labels)
+            loss = self.warm_up_criterion(outputs,noisy_labels)
 
-            self.warmup_optimizer.zero_grad()
+            self.optimizer.zero_grad()
             loss.backward()
 
             # ################ print log
@@ -150,7 +144,7 @@ class BaseTrainer(torch.nn.Module):
             #         print(p.grad)
 
 
-            self.warmup_optimizer.step()
+            self.optimizer.step()
 
             Nprec1, Nprec5 = accuracy(outputs,noisy_labels,topk=(1,5))
             Cprec1, Cprec5 = accuracy(outputs,gt_labels,topk=(1,5))
