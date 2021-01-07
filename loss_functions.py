@@ -130,6 +130,7 @@ class Mixed_loss(torch.nn.Module):
         self.alpha_mae = nn.Parameter(torch.tensor(alpha_mae), requires_grad=True)
 
         self.cross_entropy = torch.nn.CrossEntropyLoss()
+        self.tanh = torch.nn.Tanh()
 
     def forward(self, pred, labels):
 
@@ -138,6 +139,7 @@ class Mixed_loss(torch.nn.Module):
 
         # CCE
         ce = self.cross_entropy(pred, labels)
+
         pred = F.softmax(pred, dim=1)
         label_one_hot = torch.nn.functional.one_hot(labels, num_classes).float().to(self.device)
         # MAE
@@ -150,6 +152,6 @@ class Mixed_loss(torch.nn.Module):
         rce = (-1*torch.sum(pred * torch.log(label_one_hot), dim=1)).mean()
 
         # Loss
-        total = self.alpha_ce+self.alpha_rce+self.alpha_mae+self.alpha_mse
-        loss = (self.alpha_ce * ce + self.alpha_rce * rce + self.alpha_mae * mae + self.alpha_mse * mse)/total
+        ce_weight,rce_weight,mae_weight,mse_weight = self.tanh(self.alpha_ce),self.tanh(self.alpha_rce),self.tanh(self.alpha_mae),self.tanh(self.alpha_mse)
+        loss = ce_weight * ce + rce_weight * rce + mae_weight * mae + mse_weight * mse
         return loss
