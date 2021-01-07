@@ -102,7 +102,7 @@ class BaseTrainer(torch.nn.Module):
         self.tensorplot.flush()
 
 
-    def _test_epoch(self,epoch):
+    def _test_epoch(self):
         self.model.eval()
 
         losses = AverageMeter()
@@ -123,4 +123,50 @@ class BaseTrainer(torch.nn.Module):
                 top5.update(prec5,inputs.size(0))
 
         return losses.avg, top1.avg, top5.avg
+
+    def _warm_up(self):
+        self.model.train()
+        losses = AverageMeter()
+        Ntop1 = AverageMeter()
+        Ntop5 = AverageMeter()
+
+        Ctop1 = AverageMeter()
+        Ctop5 = AverageMeter()
+
+        for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.train_loader):
+
+            inputs, noisy_labels, soft_labels, gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
+
+            outputs = self.model(inputs)
+
+            loss = self.warmup_criterion(outputs,noisy_labels)
+
+            self.warmup_optimizer.zero_grad()
+            loss.backward()
+
+            # ################ print log
+            # for group in self.optimizer.param_groups:
+            #     for p in group['params']:
+            #         print(p.grad)
+
+
+            self.warmup_optimizer.step()
+
+            Nprec1, Nprec5 = accuracy(outputs,noisy_labels,topk=(1,5))
+            Cprec1, Cprec5 = accuracy(outputs,gt_labels,topk=(1,5))
+            losses.update(loss.item(), inputs.size(0))
+            Ntop1.update(Nprec1.item(), inputs.size(0))
+            Ntop5.update(Nprec5.item(), inputs.size(0))
+            Ctop1.update(Cprec1.item(), inputs.size(0))
+            Ctop5.update(Cprec5.item(), inputs.size(0))
+
+        
+        test_loss, test_acc1, test_acc5 = self._test_epoch()
+
+        log = {'train_loss':losses.avg,
+            'train_N_acc_1':Ntop1.avg,
+            'train_C_acc_1':Ctop1.avg,
+            'test_loss':test_loss,
+            'test_acc_1':test_acc1}
+        return log
 
