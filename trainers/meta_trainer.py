@@ -22,6 +22,15 @@ class MetaTrainer(BaseTrainer):
         self.meta_optimizer = getattr(optim,args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
         self.meta_scheduler = getattr(optim.lr_scheduler,args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
 
+    def _plot_loss_weight(self):
+        self.tensorplot.add_scalers('loss_weight',{
+                'ce_weight':torch.tanh(self.train_criterion.alpha_ce).item(),
+                'rce_weight':torch.tanh(self.train_criterion.alpha_rce).item(),
+                'mae_weight':torch.tanh(self.train_criterion.alpha_mae).item(),
+                'mse_weight':torch.tanh(self.train_criterion.alpha_mse).item()
+            },self.epoch)
+
+
     def _train_epoch(self):
         self.model.train()
         losses = AverageMeter()
@@ -36,13 +45,6 @@ class MetaTrainer(BaseTrainer):
         print('mae_weight:'+str(torch.tanh(self.train_criterion.alpha_mae).item()))
         print('mse_weight:'+str(torch.tanh(self.train_criterion.alpha_mse).item()))
 
-        self.tensorplot.add_scalers('loss_weight',{
-                'ce_weight':torch.tanh(self.train_criterion.alpha_ce).item(),
-                'rce_weight':torch.tanh(self.train_criterion.alpha_rce).item(),
-                'mae_weight':torch.tanh(self.train_criterion.alpha_mae).item(),
-                'mse_weight':torch.tanh(self.train_criterion.alpha_mse).item()
-            },self.epoch)
-        self.tensorplot.flush()
 
         for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.train_loader):
             inner_inputs, inner_noisy_labels, inner_soft_labels, inner_gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()

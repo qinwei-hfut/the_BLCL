@@ -61,10 +61,16 @@ class BaseTrainer(torch.nn.Module):
 
         raise NotImplementedError
 
+    @abstractmethod
+    def _plot_loss_weight(self):
+
+        raise NotImplementedError
+
     def train(self):
         # for epoch in tqdm(range(self.args.epochs),decs='Total progress: '):
         for epoch in range(self.args.epochs):
-            self.epoch = epoch            
+            self.epoch = epoch     
+            self._plot_loss_weight()       
             if self.epoch < self.warm_up_epochs:
                 print('warm_epoch: '+str(self.epoch))
                 results = self._warm_up()
