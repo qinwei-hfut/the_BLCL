@@ -18,8 +18,9 @@ class MetaTrainer(BaseTrainer):
         self.val_loader = data.DataLoader(self.val_dataset,batch_size=args.batch_size,shuffle=True,num_workers=4)
         self.test_loader = data.DataLoader(self.test_dataset,batch_size=args.batch_size,shuffle=False,num_workers=4)
 
-        # self.meta_optimizer = getattr(optim,args.meta_optim['type'])(self.model.parameters(),**args.meta_optim['args'])
-        self.meta_optimizer = getattr(optim,args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
+        
+        # self.meta_optimizer = getattr(optim,args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
+        self.meta_optimizer = getattr(optim,args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
         self.meta_scheduler = getattr(optim.lr_scheduler,args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
 
     def _plot_loss_weight(self):
@@ -79,9 +80,6 @@ class MetaTrainer(BaseTrainer):
             loss = self.train_criterion(outputs,inner_noisy_labels)
             self.optimizer.zero_grad()
             loss.backward()
-
-
-
             self.optimizer.step()
 
             Nprec1, Nprec5 = accuracy(outputs,inner_noisy_labels,topk=(1,5))
