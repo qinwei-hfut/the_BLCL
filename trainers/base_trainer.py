@@ -64,11 +64,12 @@ class BaseTrainer(torch.nn.Module):
     def train(self):
         # for epoch in tqdm(range(self.args.epochs),decs='Total progress: '):
         for epoch in range(self.args.epochs):
-            self.epoch = epoch
-            print('epoch: '+str(epoch))
+            self.epoch = epoch            
             if self.epoch < self.warm_up_epochs:
+                print('warm_epoch: '+str(self.epoch))
                 results = self._warm_up()
             else:
+                print('train_epoch: '+str(self.epoch))
                 results = self._train_epoch()
             self.scheduler.step()
             print(results)
