@@ -133,31 +133,21 @@ class Mixed_loss(torch.nn.Module):
 
     def forward(self, pred, labels):
 
-        self.cuda()
-
+        self.to(self.device)
         num_classes = pred.size(1)
 
         # CCE
         ce = self.cross_entropy(pred, labels)
-
         pred = F.softmax(pred, dim=1)
         label_one_hot = torch.nn.functional.one_hot(labels, num_classes).float().to(self.device)
-
         # MAE
         mae = F.l1_loss(pred,label_one_hot)
-
         # MSE
         mse = F.mse_loss(pred,label_one_hot)
-
         # RCE
         pred = torch.clamp(pred, min=1e-7, max=1.0)
         label_one_hot = torch.clamp(label_one_hot, min=1e-4, max=1.0)
         rce = (-1*torch.sum(pred * torch.log(label_one_hot), dim=1)).mean()
-
-        # print(ce)
-        # print(rce)
-        # print(mse)
-        # print(mae)
 
         # Loss
         total = self.alpha_ce+self.alpha_rce+self.alpha_mae+self.alpha_mse
