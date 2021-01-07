@@ -36,6 +36,14 @@ class MetaTrainer(BaseTrainer):
         print('mae_weight:'+str(torch.tanh(self.train_criterion.alpha_mae).item()))
         print('mse_weight:'+str(torch.tanh(self.train_criterion.alpha_mse).item()))
 
+        self.tensorplot.add_scalers('loss_weight',{
+                'ce_weight':torch.tanh(self.train_criterion.alpha_ce).item(),
+                'rce_weight':torch.tanh(self.train_criterion.alpha_rce).item(),
+                'mae_weight':torch.tanh(self.train_criterion.alpha_mae).item(),
+                'mse_weight':torch.tanh(self.train_criterion.alpha_mse).item()
+            },self.epoch)
+        self.tensorplot.flush()
+
         for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.train_loader):
             inner_inputs, inner_noisy_labels, inner_soft_labels, inner_gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
@@ -70,23 +78,6 @@ class MetaTrainer(BaseTrainer):
             self.optimizer.zero_grad()
             loss.backward()
 
-            # ################ print log
-            # for group in self.optimizer.param_groups:
-            #     for p in group['params']:
-            #         print(p.grad)
-
-            # for group in self.meta_optimizer.param_groups:
-            #     for p in group['params']:
-            #         print(p)
-            #         print(p.grad)
-            #         print('---')
-
-            # pdb.set_trace()
-            # print('ce_weight:'+str(self.train_criterion.alpha_ce.item())+' grad:'+str(self.train_criterion.alpha_ce.grad.item()))
-            # print('rce_weight:'+str(self.train_criterion.alpha_rce.item())+' grad:'+str(self.train_criterion.alpha_rce.grad.item()))
-            # print('mae_weight:'+str(self.train_criterion.alpha_mae.item())+' grad:'+str(self.train_criterion.alpha_mae.grad.item()))
-            # print('mse_weight:'+str(self.train_criterion.alpha_mse.item())+' grad:'+str(self.train_criterion.alpha_mse.grad.item()))
-            # print(self.train_criterion.ce)
 
 
             self.optimizer.step()
