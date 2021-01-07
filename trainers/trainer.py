@@ -54,7 +54,7 @@ class Trainer(BaseTrainer):
             Ctop5.update(Cprec5.item(), inputs.size(0))
 
         
-        test_loss, test_acc1, test_acc5 = self._test_epoch(epoch)
+        test_loss, test_acc1, test_acc5 = self._test_epoch()
 
         log = {'train_loss':losses.avg,
             'train_N_acc_1':Ntop1.avg,
@@ -63,41 +63,3 @@ class Trainer(BaseTrainer):
             'test_acc_1':test_acc1}
         return log
     
-    # def _test_epoch(self,epoch):
-    #     self.model.eval()
-
-    #     losses = AverageMeter()
-    #     top1 = AverageMeter()
-    #     top5 = AverageMeter()
-
-    #     with torch.no_grad():
-    #         # with tqdm(self.test_loader) as progress:
-    #         for index, (inputs,gt_labels) in enumerate(self.test_loader):
-    #             inputs,gt_labels = inputs.cuda(),gt_labels.cuda()
-
-    #             outputs = self.model(inputs)
-    #             loss = self.val_criterion(outputs,gt_labels)
-
-    #             prec1, prec5 = accuracy(outputs,gt_labels,topk=(1,5))
-    #             losses.update(loss.item(),inputs.size(0))
-    #             top1.update(prec1,inputs.size(0))
-    #             top5.update(prec5,inputs.size(0))
-
-    #     return losses.avg, top1.avg, top5.avg
-
-
-
-
-    # def train(self):
-    #     # for epoch in tqdm(range(self.args.epochs),decs='Total progress: '):
-    #     for epoch in range(self.args.epochs):
-    #         self.epoch = epoch
-    #         print('epoch: '+str(epoch))
-    #         # self.adjust_learning_rate(epoch)
-    #         results = self._train_epoch(epoch)
-    #         self.scheduler.step()
-    #         print(results)
-    #         self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
-
-    #         self._save_checkpoint(epoch,results)
-    #     self.logger.close()

@@ -99,7 +99,7 @@ class MetaTrainer(BaseTrainer):
             Ctop5.update(Cprec5.item(), inputs.size(0))
 
         
-        test_loss, test_acc1, test_acc5 = self._test_epoch(epoch)
+        test_loss, test_acc1, test_acc5 = self._test_epoch()
 
         log = {'train_loss':losses.avg,
             'train_N_acc_1':Ntop1.avg,
