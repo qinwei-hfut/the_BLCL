@@ -101,6 +101,8 @@ class MetaTrainer(BaseTrainer):
         
         test_loss, test_acc1, test_acc5 = self._test_epoch()
 
+        self.meta_scheduler.step()
+
         log = {'train_loss':losses.avg,
             'train_N_acc_1':Ntop1.avg,
             'train_C_acc_1':Ctop1.avg,
