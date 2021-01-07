@@ -3,6 +3,7 @@ import torch
 import numpy as np
 from .base_trainer import BaseTrainer
 import torch.utils.data as data
+import torch.nn.functional as F
 from tqdm import tqdm
 import torch.optim as optim
 import os
@@ -30,10 +31,10 @@ class MetaTrainer(BaseTrainer):
         Ctop1 = AverageMeter()
         Ctop5 = AverageMeter()
 
-        print('ce_weight:'+str(self.train_criterion.alpha_ce.item()))
-        print('rce_weight:'+str(self.train_criterion.alpha_rce.item()))
-        print('mae_weight:'+str(self.train_criterion.alpha_mae.item()))
-        print('mse_weight:'+str(self.train_criterion.alpha_mse.item()))
+        print('ce_weight:'+str(F.tanh(self.train_criterion.alpha_ce).item()))
+        print('rce_weight:'+str(F.tanh(self.train_criterion.alpha_rce).item()))
+        print('mae_weight:'+str(F.tanh(self.train_criterion.alpha_mae).item()))
+        print('mse_weight:'+str(F.tanh(self.train_criterion.alpha_mse).item()))
 
         for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.train_loader):
             inner_inputs, inner_noisy_labels, inner_soft_labels, inner_gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
