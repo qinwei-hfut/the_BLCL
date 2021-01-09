@@ -16,7 +16,7 @@ def get_cifar10(root, args, train=True,
 
     train_Nval_dataset = CIFAR10_train(root, train_idxs+val_idxs, val_indices=None, args=args, train=train, transform=transform_train)
     train_dataset = CIFAR10_train(root, train_idxs, val_indices=None, args=args, train=train, transform=transform_train)
-    val_dataset = CIFAR10_train(root, val_idxs, val_indices=None, args=args, train=train, transform=transform_val)
+    val_dataset = CIFAR10_train(root, val_idxs, val_indices=None, args=args, train=train, transform=transform_train)
     train_Cval_dataset = CIFAR10_train(root, train_idxs,val_idxs, args, train=train, transform=transform_train)
 
     testset = torchvision.datasets.CIFAR10(root, train=False, transform=transform_val)
