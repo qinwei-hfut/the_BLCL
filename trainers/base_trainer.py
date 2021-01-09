@@ -19,9 +19,9 @@ class BaseTrainer(torch.nn.Module):
         super(BaseTrainer,self).__init__()
         # self.train_dataset, self.val_dataset, self.train_Cval_dataset, self.train_Nval_dataset,self.test_dataset = datasets
         self.args = args
-        self.train_loader = data.DataLoader(self.args.split_dataset['trainset'],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
-        self.val_loader = data.DataLoader(self.args.split_dataset['valset'],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
-        self.test_loader = data.DataLoader(self.args.split_dataset['testset'],batch_size=self.args.batch_size,shuffle=False,num_workers=4)
+        self.train_loader = data.DataLoader(datasets[self.args.split_dataset['trainset']],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
+        self.val_loader = data.DataLoader(datasets[self.args.split_dataset['valset']],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
+        self.test_loader = data.DataLoader(datasets[self.args.split_dataset['testset']],batch_size=self.args.batch_size,shuffle=False,num_workers=4)
 
         pdb.set_trace()
         self.model = model
