@@ -18,14 +18,11 @@ import torchvision
 import torchvision.transforms as transforms
 import torch.nn.functional as F
 
-# import dataset.cifar10 as cifar10
 from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 
-# from trainers.trainer import Trainer
+
 import trainers.trainer as trainer
 import trainers.pytrainer as pytrainer
-# import model.PreResNet as models
-# import model.resnet_for_cifar as resnet_for_cifar
 import model.model as model
 import dataset.dataset as dataset
 import trainers.trainers as trainers
