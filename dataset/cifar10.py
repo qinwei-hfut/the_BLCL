@@ -27,7 +27,7 @@ def get_cifar10(root, args, train=True,
     # train_Cval_dataset: 50K张图片都输出，同样也输出noisy label，gt label，soft label；但是需要注意的是被包含的val的noisy label其实都是clean的
     # 注意：这些dataset的train和val的分割是一样的；但是，noisy label examples的选择肯定是不一样的；
     datasets = {
-        'train_dataset':datasets,
+        'train_dataset':train_dataset,
         'val_dataset':val_dataset,
         'train_Nval_dataset':train_Nval_dataset,
         'train_Cval_dataset':train_Cval_dataset,
