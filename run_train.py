@@ -27,7 +27,7 @@ def run_exp(trainer,arch,batch_size,dataset,noise_type,noise_rate,gpu,optim,meta
         +' --finetune-epochs='+str(finetune_epochs)\
         +' --split-dataset='+split_dataset \
         +' --finetune-optim='+finetune_optim\
-        +' --finetune-lr_scheduler='+finetune_lr_scheduler\
+        +' --finetune-lr-scheduler='+finetune_lr_scheduler\
 
     print(the_cammand)
     os.system(the_cammand)
