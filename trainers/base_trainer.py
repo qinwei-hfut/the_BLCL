@@ -99,7 +99,7 @@ class BaseTrainer(torch.nn.Module):
                     self.model.load_state_dict(state_dict)
                 print('finetune_epoch: '+str(self.epoch))
                 results = self._finetune()
-                self.finetune_scheduler().step()
+                self.finetune_scheduler.step()
                 self.logger.append([self.finetune_optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
 
             
