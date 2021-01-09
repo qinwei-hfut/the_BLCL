@@ -38,8 +38,12 @@ class BaseTrainer(torch.nn.Module):
         self.optimizer = getattr(optim,args.optim['type'])(self.model.parameters(),**args.optim['args'])
         self.scheduler = getattr(optim.lr_scheduler,args.lr_scheduler['type'])(self.optimizer,**args.lr_scheduler['args'])
 
+        self.finetune_optimizer = getattr(optim,args.finetune_optim['type'])(self.model.parameters(),**args.finetune_optim['args'])
+        self.finetune_scheduler = getattr(optim.lr_scheduler,self.args.finetune_lr_scheduler['type'])(self.finetune_optimizer,**self.args.finetune_lr_scheduler['args'])
+
         self.val_criterion = getattr(loss_functions,self.args.val_loss['type'])(**self.args.val_loss['args'])
         self.warm_up_criterion = getattr(loss_functions,self.args.warm_up_loss['type'])(**self.args.warm_up_loss['args'])
+        self.finetune_criterion = getattr(loss_functions,self.args.finetune_loss['type'])(**self.args.finetune_loss['args'])
 
         if len(self.args.train_loss.split('+')) == 1:
             # print(self.args.train_loss)
@@ -81,12 +85,24 @@ class BaseTrainer(torch.nn.Module):
             if self.epoch < self.warm_up_epochs:
                 print('warm_epoch: '+str(self.epoch))
                 results = self._warm_up()
-            else:
+                self.scheduler.step()
+                self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
+            elif self.epoch < (self.args.epochs - self.args.finetune_epochs):
                 print('train_epoch: '+str(self.epoch))
                 results = self._train_epoch()
-            self.scheduler.step()
+                self.scheduler.step()
+                self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
+            else:
+                if self.epoch == (self.args.epochs - self.args.finetune_epochs):
+                    state_dict = torch.load(os.path.join(self.result_saved_path,'best_test_acc'+'.ckp'))['state_dict']
+                    self.model.load_state_dict(state_dict)
+                print('finetune_epoch: '+str(self.epoch))
+                results = self._finetune()
+                self.finetune_scheduler().step()
+                self.logger.append([self.finetune_optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
+
+            
             print(results)
-            self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
             self._plot(results)
             self._save_checkpoint(epoch,results)
         self.logger.close()
@@ -159,6 +175,45 @@ class BaseTrainer(torch.nn.Module):
 
 
             self.optimizer.step()
+
+            Nprec1, Nprec5 = accuracy(outputs,noisy_labels,topk=(1,5))
+            Cprec1, Cprec5 = accuracy(outputs,gt_labels,topk=(1,5))
+            losses.update(loss.item(), inputs.size(0))
+            Ntop1.update(Nprec1.item(), inputs.size(0))
+            Ntop5.update(Nprec5.item(), inputs.size(0))
+            Ctop1.update(Cprec1.item(), inputs.size(0))
+            Ctop5.update(Cprec5.item(), inputs.size(0))
+
+        
+        test_loss, test_acc1, test_acc5 = self._test_epoch()
+
+        log = {'train_loss':losses.avg,
+            'train_N_acc_1':Ntop1.avg,
+            'train_C_acc_1':Ctop1.avg,
+            'test_loss':test_loss,
+            'test_acc_1':test_acc1}
+        return log
+    
+    def _finetune(self):
+        self.model.train()
+        losses = AverageMeter()
+        Ntop1 = AverageMeter()
+        Ntop5 = AverageMeter()
+
+        Ctop1 = AverageMeter()
+        Ctop5 = AverageMeter()
+
+        for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.val_loader):
+
+            inputs, noisy_labels, soft_labels, gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
+
+            outputs = self.model(inputs)
+
+            loss = self.finetune_criterion(outputs,gt_labels)
+
+            self.finetune_optimizer.zero_grad()
+            loss.backward()
+            self.finetune_optimizer.step()
 
             Nprec1, Nprec5 = accuracy(outputs,noisy_labels,topk=(1,5))
             Cprec1, Cprec5 = accuracy(outputs,gt_labels,topk=(1,5))
