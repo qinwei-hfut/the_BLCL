@@ -27,8 +27,14 @@ def get_cifar100(root, args, train=True,
 
     testset = torchvision.datasets.CIFAR100(root, train=False, transform=transform_val)
     
-    
-    return train_dataset, val_dataset, train_Cval_dataset,train_Nval_dataset,testset
+    datasets = {
+        'train_dataset':datasets,
+        'val_dataset':val_dataset,
+        'train_Nval_dataset':train_Nval_dataset,
+        'train_Cval_dataset':train_Cval_dataset,
+        'test_set':testset
+    }
+    return datasets
 
 
 def train_val_split(train_val):
