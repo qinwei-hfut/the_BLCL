@@ -33,7 +33,7 @@ def run_exp(trainer,arch,batch_size,dataset,noise_type,noise_rate,gpu,optim,meta
     os.system(the_cammand)
 
 
-gpu=0
+gpu=1
 
 
 
