@@ -51,6 +51,7 @@ parser.add_argument('--lr-scheduler',type=json.loads)
 parser.add_argument('--optim',type=json.loads)
 parser.add_argument('--meta-optim',type=json.loads)
 parser.add_argument('--meta-lr-scheduler',type=json.loads)
+parser.add_argument('--split-dataset',type=json.loads)
 parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                     help='manual epoch number (useful on restarts)')
 parser.add_argument('--batch-size', default=128, type=int, metavar='N',
@@ -116,14 +117,8 @@ transform_val = transforms.Compose([
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
 
-# transform_test = transforms.Compose([
-#     transforms.ToTensor(),
-#     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-# ])
+datasets = getattr(dataset,args.dataset)(root = './data', args=args,train=True,transform_train=transform_train,transform_val=transform_val, download=True)
 
-train_dataset, val_dataset, train_Cval_dataset, train_Nval_dataset, testset = getattr(dataset,args.dataset)(root = './data', args=args,train=True,transform_train=transform_train,transform_val=transform_val, download=True)
-# train_dataset, val_dataset, train_Cval_dataset, train_Nval_dataset = cifar10.get_cifar10_train(root = './data', args=args,train=True,transform_train=transform_train,transform_val=transform_val, download=True)
-datasets = train_dataset, val_dataset, train_Cval_dataset, train_Nval_dataset, testset
 
  #Construct Model
 model_dict = json.loads(args.arch)
