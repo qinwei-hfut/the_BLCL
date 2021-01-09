@@ -13,10 +13,10 @@ import higher
 
 class MetaTrainer(BaseTrainer):
     def __init__(self,model,datasets,logger,resuls_saved_path,args):
-
+        super().__init__(model,datasets,logger,resuls_saved_path,args)
         # self.meta_optimizer = getattr(optim,args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
-        self.meta_optimizer = getattr(optim,args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
-        self.meta_scheduler = getattr(optim.lr_scheduler,args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
+        self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
+        self.meta_scheduler = getattr(optim.lr_scheduler,self.args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
 
     def _plot_loss_weight(self):
         self.tensorplot.add_scalers('loss_weight',{
