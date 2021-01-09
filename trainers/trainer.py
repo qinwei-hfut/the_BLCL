@@ -14,7 +14,7 @@ class Trainer(BaseTrainer):
         super().__init__(model,datasets,logger,resuls_saved_path,args)
 
 
-    def _train_epoch(self,epoch):
+    def _train_epoch(self):
         self.model.train()
         losses = AverageMeter()
         Ntop1 = AverageMeter()
