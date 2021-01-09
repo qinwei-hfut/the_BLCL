@@ -42,11 +42,11 @@ val_criterion = '\'{"type":"CE_loss","args":{}}\''
 warm_up_criterion = '\'{"type":"CE_loss","args":{}}\''
 finetune_criterion = '\'{"type":"CE_loss","args":{}}\''
 # train_criterion = '\'{"type":"MAE_one_hot_loss","args":{}}\''
-# train_criterion = '\'{"type":"CE_loss","args":{}}\''
+train_criterion = '\'{"type":"CE_loss","args":{}}\''
 # train_criterion = '\'{"type":"SCE_loss","args":{"alpha":0.1,"beta":1.0}}\''
 # train_criterion = '\'{"type":"CE_MAE_loss","args":{"alpha":0.1,"beta":1.0}}\''
 # train_criterion = '\'{"type":"CE_LS_loss","args":{}}\''
-train_criterion = '\'{"type":"Mixed_loss","args":{"alpha_ce":0.1,"alpha_rce":1.0,"alpha_mae":0.0,"alpha_mse":0.0}}\''
+# train_criterion = '\'{"type":"Mixed_loss","args":{"alpha_ce":0.1,"alpha_rce":1.0,"alpha_mae":0.0,"alpha_mse":0.0}}\''
 
 arch = '\'{"type":"PreActResNet18","args":{"num_classes":10}}\''
 
@@ -65,14 +65,8 @@ extra= ''
         
 
 
-run_exp(trainer='meta_trainer',noise_type='sym',noise_rate=0.4,epochs=120,warm_up_epochs=5,finetune_epochs=10,dataset='cifar10',batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion)
+# run_exp(trainer='meta_trainer',noise_type='sym',noise_rate=0.4,epochs=120,warm_up_epochs=5,finetune_epochs=10,dataset='cifar10',batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion)
+run_exp(trainer='trainer',noise_type='sym',noise_rate=0.4,epochs=120,warm_up_epochs=5,finetune_epochs=10,dataset='cifar10',batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion)
 
-# run_exp(trainer='trainer',arch=arch,batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.4,epochs=250,lr_schedule='120_200', dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
-
-# run_exp(trainer='trainer',arch=arch,batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.8,epochs=250,lr_schedule='120_200', dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
-# run_exp(trainer='trainer',arch=arch,batch_size=128, lr=0.1,noise_type='sym',noise_rate=0.8,epochs=250,lr_schedule='120_200', dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
-
-# run_exp(trainer='trainer',arch=arch,batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,epochs=250,lr_schedule='120_200', dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
-# run_exp(trainer='trainer',arch=arch,batch_size=128, lr=0.1,noise_type='asym',noise_rate=0.4,epochs=250,lr_schedule='120_200', dataset='cifar10', train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
 
 
