@@ -51,15 +51,12 @@ meta_optim = '\'{"type":"SGD","args":{"lr":0.1,"momentum":0.9,"weight_decay":1e-
 meta_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[40,80],"gamma":0.1}}\''
 split_dataset = '\'{"trainset":train_Cval_dataset,"valset":val_dataset,"testset":testset}\''
 extra= ''
-# optim = "'"+"\\"+json.dumps(optim)[0:-1]+'\\'+"'"+"'"
-# pdb.set_trace()
 
-# lr_scheduler= {"type":""}
         
 
 
 run_exp(trainer='meta_trainer',arch=arch,batch_size=128,optim=optim,meta_optim=meta_optim,\
-    lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='sym',noise_rate=0.8,\ 
+    lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,noise_type='sym',noise_rate=0.4,\ 
     epochs=140,warm_up_epochs=5,dataset='cifar10',warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,\ 
     train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu)
 
