@@ -26,8 +26,8 @@ def run_exp(trainer,arch,batch_size,dataset,noise_type,noise_rate,gpu,optim,meta
         +' --epochs='+str(epochs) \
         +' --finetune-epochs='+str(finetune_epochs)\
         +' --split-dataset='+split_dataset \
-        +' --finetune_optim='+finetune_optim\
-        +' --finetune_lr_scheduler='+finetune_lr_scheduler\
+        +' --finetune-optim='+finetune_optim\
+        +' --finetune-lr_scheduler='+finetune_lr_scheduler\
 
     print(the_cammand)
     os.system(the_cammand)
@@ -66,7 +66,7 @@ extra= ''
 
 
 # run_exp(trainer='meta_trainer',noise_type='sym',noise_rate=0.4,epochs=120,warm_up_epochs=5,finetune_epochs=10,dataset='cifar10',batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion)
-run_exp(trainer='trainer',noise_type='sym',noise_rate=0.4,epochs=120,warm_up_epochs=5,finetune_epochs=10,dataset='cifar10',batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion)
+run_exp(trainer='trainer',noise_type='sym',noise_rate=0.4,epochs=20,warm_up_epochs=5,finetune_epochs=10,dataset='cifar10',batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion)
 
 
 
