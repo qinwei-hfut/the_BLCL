@@ -32,7 +32,7 @@ class Trainer(BaseTrainer):
             outputs = self.model(inputs)
 
             loss = self.train_criterion(outputs,noisy_labels)
-            pdb.set_trace()
+            # pdb.set_trace()
 
             self.optimizer.zero_grad()
             loss.backward()

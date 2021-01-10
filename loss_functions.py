@@ -25,7 +25,7 @@ class MAE_one_hot_loss(torch.nn.Module):
     
     def forward(self,output,target):
         output = F.softmax(output,dim=1)
-        target_one_hot = F.one_hot(target,num_classes=output.size(1))
+        target_one_hot = F.one_hot(target,num_classes=output.size(1)).float()
         return F.l1_loss(output,target_one_hot)
 
 
@@ -35,8 +35,7 @@ class MSE_one_hot_loss(torch.nn.Module):
 
     def forward(self,output,target):
         output = F.softmax(output,dim=1)
-        target_one_hot = F.one_hot(target,num_classes=output.size(1))
-        pdb.set_trace()
+        target_one_hot = F.one_hot(target,num_classes=output.size(1)).float()
         return F.mse_loss(output,target_one_hot)
 
 def Taylor_ce_loss_1(output,target):
