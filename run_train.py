@@ -63,7 +63,7 @@ finetune_optim = '\'{"type":"SGD","args":{"lr":0.01,"momentum":0.9,"weight_decay
 finetune_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[5],"gamma":0.1}}\''
 
 split_dataset = '\'{"trainset":"train_Cval_dataset","valset":"val_dataset","testset":"test_set"}\''
-extra= 'only function'
+extra= 'only_function'
 
         
 
