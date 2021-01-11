@@ -32,8 +32,7 @@ import pdb
 
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10/100 Training')
-parser.add_argument('--label', default='result',
-                        help='Directory to input the labels')
+
 # Optimization options
 parser.add_argument('--trainer',type=str)
 parser.add_argument('--dataset',type=str)
@@ -59,6 +58,8 @@ parser.add_argument('--batch-size', default=128, type=int, metavar='N',
                     help='train batchsize')
 parser.add_argument('--noise-type', '--nt',default='sym',type=str,choices=['sym','asym'])
 parser.add_argument('--noise-rate', '--nr',default=0.0, type=float)
+
+parser.add_argument('--extra',type=str,default='',help='extra information for the exp')
 
 # Miscs
 parser.add_argument('--manualSeed', type=int, default=1, help='manual seed')
