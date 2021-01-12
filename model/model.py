@@ -3,6 +3,7 @@ import torch.nn.functional as F
 from .PreResNet import PreActResNet, PreActBlock
 from .ResNet_Zoo import ResNet,BasicBlock
 from .PyPreResNet import PyPreActResNet, PyPreActBlock
+from .ToyModel import ToyModel
 
 def resnet34(num_classes=10):
     print('construct resnet34')
@@ -15,4 +16,7 @@ def PyPreActResNet18(num_classes=10) -> PreActResNet:
 def PreActResNet18(num_classes=10) -> PreActResNet:
     print("PreActResNet18")
     return PreActResNet(PreActBlock, [2, 2, 2, 2], num_classes=num_classes)
+
+def toymodel():
+    return ToyModel()
 
