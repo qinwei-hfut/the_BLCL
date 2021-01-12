@@ -59,7 +59,7 @@ class MetaTrainer(BaseTrainer):
                 self.meta_optimizer.zero_grad()
                 for out_batch_idx, (out_inputs, out_noisy_labels, out_soft_labels,out_gt_labels,out_index) in enumerate(self.val_loader):
                     out_inputs,out_noisy_labels,out_soft_labels,out_gt_labels = out_inputs.cuda(),out_noisy_labels.cuda(),out_soft_labels.cuda(),out_gt_labels.cuda()
-
+                    print(out_index)
                     out_outputs = fnet(out_inputs)
                     out_loss = self.val_criterion(out_outputs,out_gt_labels)
                     out_loss.backward()
