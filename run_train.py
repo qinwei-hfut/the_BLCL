@@ -45,14 +45,14 @@ finetune_criterion = '\'{"type":"CE_loss","args":{}}\''
 
 # train_criterion = '\'{"type":"MAE_one_hot_loss","args":{}}\''
 # train_criterion = '\'{"type":"MSE_one_hot_loss","args":{}}\''
-# train_criterion = '\'{"type":"CE_loss","args":{}}\''
+train_criterion = '\'{"type":"CE_loss","args":{}}\''
 # train_criterion = '\'{"type":"SCE_loss","args":{"alpha":0.1,"beta":1.0}}\''
 # train_criterion = '\'{"type":"CE_MAE_loss","args":{"alpha":0.1,"beta":1.0}}\''
 # train_criterion = '\'{"type":"CE_LS_loss","args":{}}\''
 # train_criterion = '\'{"type":"Mixed_loss","args":{"alpha_ce":0.1,"alpha_rce":1.0,÷"alpha_mae":0.0,"alpha_mse":0.0}}\''
 
 # train_criterion = '\'{"type":"NFLandRCE","args":{"alpha":1.0,"beta":1.0,"num_classes":10}}\''
-train_criterion = '\'{"type":"NCEandRCE","args":{"alpha":1.0,"beta":1.0,"num_classes":10}}\''
+# train_criterion = '\'{"type":"NCEandRCE","args":{"alpha":1.0,"beta":1.0,"num_classes":10}}\''
 
 arch = '\'{"type":"PreActResNet18","args":{"num_classes":10}}\''
 
