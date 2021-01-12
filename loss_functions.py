@@ -4,6 +4,15 @@ import torch.nn as nn
 import pdb
 
 
+if torch.cuda.is_available():
+    torch.backends.cudnn.benchmark = True
+    if torch.cuda.device_count() > 1:
+        device = torch.device('cuda:0')
+    else:
+        device = torch.device('cuda')
+else:
+    device = torch.device('cpu')
+
 class Soft_CE_loss(torch.nn.Module):
     def __init__(self):
         super(Soft_CE_loss,self).__init__()
@@ -155,3 +164,55 @@ class Mixed_loss(torch.nn.Module):
         ce_weight,rce_weight,mae_weight,mse_weight = self.tanh(self.alpha_ce),self.tanh(self.alpha_rce),self.tanh(self.alpha_mae),self.tanh(self.alpha_mse)
         loss = ce_weight * ce + rce_weight * rce + mae_weight * mae + mse_weight * mse
         return loss
+
+
+
+class NormalizedFocalLoss(torch.nn.Module):
+    def __init__(self, scale=1.0, gamma=0, num_classes=10, alpha=None, size_average=True):
+        super(NormalizedFocalLoss, self).__init__()
+        self.gamma = gamma
+        self.size_average = size_average
+        self.num_classes = num_classes
+        self.scale = scale
+
+    def forward(self, input, target):
+        target = target.view(-1, 1)
+        logpt = F.log_softmax(input, dim=1)
+        normalizor = torch.sum(-1 * (1 - logpt.data.exp()) ** self.gamma * logpt, dim=1)
+        logpt = logpt.gather(1, target)
+        logpt = logpt.view(-1)
+        pt = torch.autograd.Variable(logpt.data.exp())
+        loss = -1 * (1-pt)**self.gamma * logpt
+        loss = self.scale * loss / normalizor
+
+        if self.size_average:
+            return loss.mean()
+        else:
+            return loss.sum()
+
+
+class ReverseCrossEntropy(torch.nn.Module):
+    def __init__(self, num_classes, scale=1.0):
+        super(ReverseCrossEntropy, self).__init__()
+        self.device = device
+        self.num_classes = num_classes
+        self.scale = scale
+
+    def forward(self, pred, labels):
+        pred = F.softmax(pred, dim=1)
+        pred = torch.clamp(pred, min=1e-7, max=1.0)
+        label_one_hot = torch.nn.functional.one_hot(labels, self.num_classes).float().to(self.device)
+        label_one_hot = torch.clamp(label_one_hot, min=1e-4, max=1.0)
+        rce = (-1*torch.sum(pred * torch.log(label_one_hot), dim=1))
+        return self.scale * rce.mean()
+
+
+class NFLandRCE(torch.nn.Module):
+    def __init__(self, alpha, beta, num_classes, gamma=0.5):
+        super(NFLandRCE, self).__init__()
+        self.num_classes = num_classes
+        self.nfl = NormalizedFocalLoss(scale=alpha, gamma=gamma, num_classes=num_classes)
+        self.rce = ReverseCrossEntropy(scale=beta, num_classes=num_classes)
+
+    def forward(self, pred, labels):
+        return self.nfl(pred, labels) + self.rce(pred, labels)
