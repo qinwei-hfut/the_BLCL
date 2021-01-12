@@ -56,6 +56,8 @@ parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                     help='manual epoch number (useful on restarts)')
 parser.add_argument('--batch-size', default=128, type=int, metavar='N',
                     help='train batchsize')
+parser.add_argument('--meta-batch-size', default=128, type=int, metavar='N',
+                    help='meta train batchsize')
 parser.add_argument('--noise-type', '--nt',default='sym',type=str,choices=['sym','asym'])
 parser.add_argument('--noise-rate', '--nr',default=0.0, type=float)
 
