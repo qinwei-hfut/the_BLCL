@@ -18,20 +18,21 @@ class MetaTrainer(BaseTrainer):
         self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
         # self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
         self.meta_scheduler = getattr(optim.lr_scheduler,self.args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
+        self.activation = getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])()
 
     def _plot_loss_weight(self):
         pdb.set_trace()
         self.tensorplot.add_scalers('loss_weight',{
-                'ce_weight':getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_ce).item(),
-                'rce_weight':getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_rce).item(),
-                'mae_weight':getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_mae).item(),
-                'mse_weight':getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_mse).item()
+                'ce_weight':self.activation(self.train_criterion.alpha_ce).item(),
+                'rce_weight':self.activation(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_rce).item(),
+                'mae_weight':self.activation(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_mae).item(),
+                'mse_weight':self.activation(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_mse).item()
             },self.epoch)
         self.tensorboard.add_scalers('loss_weight',{
-                'ce_weight':getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_ce).item(),
-                'rce_weight':getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_rce).item(),
-                'mae_weight':getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_mae).item(),
-                'mse_weight':getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_mse).item()
+                'ce_weight':self.activation(self.train_criterion.alpha_ce).item(),
+                'rce_weight':self.activation(self.train_criterion.alpha_rce).item(),
+                'mae_weight':self.activation(self.train_criterion.alpha_mae).item(),
+                'mse_weight':self.activation(self.train_criterion.alpha_mse).item()
             },self.epoch)
 
 
@@ -46,10 +47,10 @@ class MetaTrainer(BaseTrainer):
 
         pdb.set_trace()
 
-        print('ce_weight:'+str(getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_ce).item()))
-        print('rce_weight:'+str(getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_rce).item()))
-        print('mae_weight:'+str(getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_mae).item()))
-        print('mse_weight:'+str(getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_mse).item()))
+        print('ce_weight:'+str(self.activation(self.train_criterion.alpha_ce).item()))
+        print('rce_weight:'+str(self.activation(self.train_criterion.alpha_rce).item()))
+        print('mae_weight:'+str(self.activation(self.train_criterion.alpha_mae).item()))
+        print('mse_weight:'+str(self.activation(self.train_criterion.alpha_mse).item()))
 
 
         for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.train_loader):
