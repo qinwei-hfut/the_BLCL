@@ -24,9 +24,9 @@ class MetaTrainer(BaseTrainer):
         pdb.set_trace()
         self.tensorplot.add_scalers('loss_weight',{
                 'ce_weight':self.activation(self.train_criterion.alpha_ce).item(),
-                'rce_weight':self.activation(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_rce).item(),
-                'mae_weight':self.activation(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_mae).item(),
-                'mse_weight':self.activation(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_mse).item()
+                'rce_weight':self.activation(self.train_criterion.alpha_rce).item(),
+                'mae_weight':self.activation(self.train_criterion.alpha_mae).item(),
+                'mse_weight':self.activation(self.train_criterion.alpha_mse).item()
             },self.epoch)
         self.tensorboard.add_scalers('loss_weight',{
                 'ce_weight':self.activation(self.train_criterion.alpha_ce).item(),
