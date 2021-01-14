@@ -28,7 +28,7 @@ class MetaTrainer(BaseTrainer):
                 'mae_weight':self.activation(self.train_criterion.alpha_mae).item(),
                 'mse_weight':self.activation(self.train_criterion.alpha_mse).item()
             },self.epoch)
-        self.writer.add_scalers('loss_weight',{
+        self.writer.add_scalars('loss_weight',{
                 'ce_weight':self.activation(self.train_criterion.alpha_ce).item(),
                 'rce_weight':self.activation(self.train_criterion.alpha_rce).item(),
                 'mae_weight':self.activation(self.train_criterion.alpha_mae).item(),
