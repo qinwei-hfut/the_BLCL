@@ -47,8 +47,8 @@ class BaseTrainer(torch.nn.Module):
 
         if len(self.args.train_loss.split('+')) == 1:
             # print(self.args.train_loss)
-            train_criterion_dict = json.loads(self.args.train_loss)
-            self.train_criterion = getattr(loss_functions,train_criterion_dict['type'])(**train_criterion_dict['args'])
+            self.train_criterion_dict = json.loads(self.args.train_loss)
+            self.train_criterion = getattr(loss_functions,self.train_criterion_dict['type'])(**self.train_criterion_dict['args'])
         elif len(args.train_loss.split('+')) > 1:
             # TODO
             self.train_criterions = [getattr(loss_functions, i)  for i in args.train_loss.split('+')]
