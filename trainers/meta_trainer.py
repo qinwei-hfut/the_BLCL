@@ -20,6 +20,7 @@ class MetaTrainer(BaseTrainer):
         self.meta_scheduler = getattr(optim.lr_scheduler,self.args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
 
     def _plot_loss_weight(self):
+        pdb.set_trace()
         self.tensorplot.add_scalers('loss_weight',{
                 'ce_weight':getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_ce).item(),
                 'rce_weight':getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_rce).item(),
