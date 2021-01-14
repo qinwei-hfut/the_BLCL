@@ -21,7 +21,7 @@ class MetaTrainer(BaseTrainer):
         self.activation = getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])()
 
     def _plot_loss_weight(self):
-        pdb.set_trace()
+        # pdb.set_trace()
         self.tensorplot.add_scalers('loss_weight',{
                 'ce_weight':self.activation(self.train_criterion.alpha_ce).item(),
                 'rce_weight':self.activation(self.train_criterion.alpha_rce).item(),
@@ -45,7 +45,7 @@ class MetaTrainer(BaseTrainer):
         Ctop1 = AverageMeter()
         Ctop5 = AverageMeter()
 
-        pdb.set_trace()
+        # pdb.set_trace()
 
         print('ce_weight:'+str(self.activation(self.train_criterion.alpha_ce).item()))
         print('rce_weight:'+str(self.activation(self.train_criterion.alpha_rce).item()))
