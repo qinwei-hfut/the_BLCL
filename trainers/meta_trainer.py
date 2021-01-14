@@ -43,6 +43,8 @@ class MetaTrainer(BaseTrainer):
         Ctop1 = AverageMeter()
         Ctop5 = AverageMeter()
 
+        pdb.set_trace()
+
         print('ce_weight:'+str(getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_ce).item()))
         print('rce_weight:'+str(getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_rce).item()))
         print('mae_weight:'+str(getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])(self.train_criterion.alpha_mae).item()))
