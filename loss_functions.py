@@ -6,10 +6,7 @@ import pdb
 
 if torch.cuda.is_available():
     torch.backends.cudnn.benchmark = True
-    if torch.cuda.device_count() > 1:
-        device = torch.device('cuda:0')
-    else:
-        device = torch.device('cuda')
+    device = torch.device('cuda')
 else:
     device = torch.device('cpu')
 
