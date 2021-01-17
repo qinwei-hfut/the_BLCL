@@ -35,7 +35,7 @@ def run_exp(trainer,arch,batch_size,dataset,noise_type,noise_rate,gpu,optim,meta
     os.system(the_cammand)
 
 
-gpu=2
+gpu=0
 
 
 
@@ -44,9 +44,9 @@ val_criterion = '\'{"type":"CE_loss","args":{}}\''
 warm_up_criterion = '\'{"type":"CE_loss","args":{}}\''
 finetune_criterion = '\'{"type":"CE_loss","args":{}}\''
 
-# train_criterion = '\'{"type":"MAE_one_hot_loss","args":{}}\''
+train_criterion = '\'{"type":"MAE_one_hot_loss","args":{}}\''
 # train_criterion = '\'{"type":"MSE_one_hot_loss","args":{}}\''
-train_criterion = '\'{"type":"CE_loss","args":{}}\''
+# train_criterion = '\'{"type":"CE_loss","args":{}}\''
 # train_criterion = '\'{"type":"SCE_loss","args":{"alpha":0.1,"beta":1.0}}\''
 # train_criterion = '\'{"type":"CE_MAE_loss","args":{"alpha":0.1,"beta":1.0}}\''
 # train_criterion = '\'{"type":"CE_LS_loss","args":{}}\''
