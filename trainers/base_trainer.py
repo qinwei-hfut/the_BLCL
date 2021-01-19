@@ -55,6 +55,9 @@ class BaseTrainer(torch.nn.Module):
         else:
             print('XXXXXXXXXXXXXX len(args.train_loss) < 1 XXXXXXXXXXXXXXXXXX')
 
+        if not os.path.exists(os.path.join(self.result_saved_path,'checkpoints')):
+            os.makedirs(os.path.join(self.result_saved_path,'checkpoints'))
+
 
     def _save_checkpoint(self,epoch,results):
         self.best_test = max(results['test_acc_1'],self.best_test)
@@ -62,7 +65,8 @@ class BaseTrainer(torch.nn.Module):
                 'state_dict':self.model.state_dict(),
                 'acc':results['test_acc_1'],
                 'best_acc':self.best_test}
-        # torch.save(state,os.path.join(self.result_saved_path,'checkpoint_epoch_'+str(epoch)+'.ckp'))
+        if self.epoch % 4 ==0:
+            torch.save(state,os.path.join(self.result_saved_path,'checkpoints/epoch_'+str(epoch)+'.ckp'))
         if self.best_test == results['test_acc_1']:
             torch.save(state,os.path.join(self.result_saved_path,'best_test_acc'+'.ckp'))
             torch.save(torch.zeros((1)),os.path.join(self.result_saved_path,'best_test_acc_'+str(results['test_acc_1'])+'_epoch'+str(epoch)))
