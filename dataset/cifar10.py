@@ -12,13 +12,14 @@ def get_cifar10(root, args, train=True,
 
     base_dataset = torchvision.datasets.CIFAR10(root, train=train, download=download)
     # pdb.set_trace()
-    train_idxs, val_idxs = train_val_split(base_dataset.targets)
+    train_idxs, val_idxs, meta_idxs = train_val_split(base_dataset.targets,args)
 
-    train_Nval_dataset = CIFAR10_train(root, train_idxs+val_idxs, val_indices=None, args=args, train=train, transform=transform_train)
+    train_Nval_dataset = CIFAR10_train(root, train_idxs+meta_idxs, val_indices=None, args=args, train=train, transform=transform_train)
     train_dataset = CIFAR10_train(root, train_idxs, val_indices=None, args=args, train=train, transform=transform_train)
-    val_dataset = CIFAR10_train(root, val_idxs, val_indices=None, args=args, train=train, transform=transform_train)
-    train_Cval_dataset = CIFAR10_train(root, train_idxs,val_idxs, args, train=train, transform=transform_train)
+    meta_dataset = CIFAR10_train(root, meta_idxs, val_indices=None, args=args, train=train, transform=transform_train)
+    train_Cval_dataset = CIFAR10_train(root, train_idxs,meta_idxs, args, train=train, transform=transform_train)
 
+    val_dataset = CIFAR10_train(root, val_idxs, val_indices=None, args=args, train=False, transform=transform_val)
     testset = torchvision.datasets.CIFAR10(root, train=False, transform=transform_val)
 
     # train_dataset:仅仅45K的noisy trainset(但是noisy label; gt label; soft label都输出)
@@ -31,26 +32,33 @@ def get_cifar10(root, args, train=True,
         'val_dataset':val_dataset,
         'train_Nval_dataset':train_Nval_dataset,
         'train_Cval_dataset':train_Cval_dataset,
-        'test_set':testset
+        'test_set':testset,
+        'meta_set':meta_set
     }
     return datasets
     
 
-def train_val_split(train_val):
+def train_val_split(train_val,args):
+    num_classes = 10
     train_val = np.array(train_val)
-    train_n = int(len(train_val) * 0.9 / 10)
+    meta_num = args.dataset['args']['meta']
+    val_num = args.dataset['args']['val']
+    train_n = len(train_val) - meta_num - val_num
     train_idxs = []
+    meta_idxs = []
     val_idxs = []
 
-    for i in range(10):
+    for i in range(num_classes):
         idxs = np.where(train_val == i)[0]
         np.random.shuffle(idxs)
         train_idxs.extend(idxs[:train_n])
-        val_idxs.extend(idxs[train_n:])
+        val_idxs.extend(idxs[train_n:train_n+val_num])
+        meta_idxs.extend(idxs[train_n+val_num:train_n+val_num+meta_num])
     np.random.shuffle(train_idxs)
     np.random.shuffle(val_idxs)
+    np.random.shuffle(meta_idxs)
 
-    return train_idxs, val_idxs
+    return train_idxs, val_idxs, meta_idxs
 
 class CIFAR10_train(torchvision.datasets.CIFAR10):
 
