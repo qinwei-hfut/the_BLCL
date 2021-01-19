@@ -35,7 +35,7 @@ parser = argparse.ArgumentParser(description='PyTorch CIFAR10/100 Training')
 
 # Optimization options
 parser.add_argument('--trainer',type=str)
-parser.add_argument('--dataset',type=str)
+parser.add_argument('--dataset',type=json.loads)
 parser.add_argument('--arch',default='PreActResNet18',type=str)
 parser.add_argument('--train-loss',type=str)
 parser.add_argument('--val-loss',type=json.loads)

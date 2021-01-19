@@ -69,11 +69,11 @@ meta_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[40,80],"gamma
 finetune_optim = '\'{"type":"SGD","args":{"lr":0.01,"momentum":0.9,"weight_decay":1e-4}}\''
 finetune_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[5],"gamma":0.1}}\''
 
-split_dataset = '\'{"trainset":"train_Cval_dataset","valset":"val_dataset","testset":"test_set"}\''
+split_dataset = '\'{"trainset":"train_Cval_dataset","valset":"val_dataset","metaset":"meta_dataset","testset":"test_set"}\''
 extra= ''
-dataset = 'cifar100'
+dataset = '\'{"type":"CIFAR10","args":{"meta":1000,"val":1000}}\''
 meta_batch_size = 128
-arch = '\'{"type":"PreActResNet18","args":{"num_classes":100}}\''
+arch = '\'{"type":"PreActResNet18","args":{"num_classes":10}}\''
 
         
 
