@@ -33,7 +33,7 @@ def get_cifar10(root, args, train=True,
         'train_Nval_dataset':train_Nval_dataset,
         'train_Cval_dataset':train_Cval_dataset,
         'test_set':testset,
-        'meta_set':meta_set
+        'meta_set':meta_dataset
     }
     return datasets
     
