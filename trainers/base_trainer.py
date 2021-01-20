@@ -20,9 +20,8 @@ class BaseTrainer(torch.nn.Module):
         # self.train_dataset, self.val_dataset, self.train_Cval_dataset, self.train_Nval_dataset,self.test_dataset = datasets
         self.args = args
         self.train_loader = data.DataLoader(datasets[self.args.split_dataset['trainset']],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
-        self.val_loader = data.DataLoader(datasets[self.args.split_dataset['valset']],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
+        self.val_loader = data.DataLoader(datasets[self.args.split_dataset['valset']],batch_size=self.args.batch_size,shuffle=False,num_workers=4)
         self.test_loader = data.DataLoader(datasets[self.args.split_dataset['testset']],batch_size=self.args.batch_size,shuffle=False,num_workers=4)
-
         # pdb.set_trace()
         self.model = model
         self.logger = logger
@@ -61,15 +60,21 @@ class BaseTrainer(torch.nn.Module):
 
     def _save_checkpoint(self,epoch,results):
         self.best_test = max(results['test_acc_1'],self.best_test)
+        self.best_val = max(results['val_acc_1'],self.best_val)
         state = {'epoch':epoch,
                 'state_dict':self.model.state_dict(),
-                'acc':results['test_acc_1'],
-                'best_acc':self.best_test}
+                'test_acc':results['test_acc_1'],
+                'val_acc':results['val_acc_1'],
+                'best_acc':self.best_test,}
         if self.epoch % 4 ==0:
             torch.save(state,os.path.join(self.result_saved_path,'checkpoints/epoch_'+str(epoch)+'.ckp'))
         if self.best_test == results['test_acc_1']:
             torch.save(state,os.path.join(self.result_saved_path,'best_test_acc'+'.ckp'))
-            torch.save(torch.zeros((1)),os.path.join(self.result_saved_path,'best_test_acc_'+str(results['test_acc_1'])+'_epoch'+str(epoch)))
+            torch.save(torch.zeros((1)),os.path.join(self.result_saved_path,'best_test_acc_'+str(results['val_acc_1'])+'_'+str(results['test_acc_1'])+'_epoch'+str(epoch)))
+
+        if self.best_val == results['val_acc_1']:
+            torch.save(state,os.path.join(self.result_saved_path,'best_val_acc'+'.ckp'))
+            torch.save(torch.zeros((1)),os.path.join(self.result_saved_path,'best_val_acc_'+str(results['val_acc_1'])+'_'+str(results['test_acc_1'])+'_epoch'+str(epoch)))
     
     @abstractmethod
     def _train_epoch(self):
@@ -91,12 +96,12 @@ class BaseTrainer(torch.nn.Module):
                 print('warm_epoch: '+str(self.epoch))
                 results = self._warm_up()
                 self.scheduler.step()
-                self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
+                self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["val_loss"],results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['val_acc_1'], results['test_acc_1']])
             elif self.epoch < (self.args.epochs - self.args.finetune_epochs):
                 print('train_epoch: '+str(self.epoch))
                 results = self._train_epoch()
                 self.scheduler.step()
-                self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
+                self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["val_loss"],results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['val_acc_1'], results['test_acc_1']])
             else:
                 if self.epoch == (self.args.epochs - self.args.finetune_epochs):
                     state_dict = torch.load(os.path.join(self.result_saved_path,'best_test_acc'+'.ckp'))['state_dict']
@@ -104,7 +109,7 @@ class BaseTrainer(torch.nn.Module):
                 print('finetune_epoch: '+str(self.epoch))
                 results = self._finetune()
                 self.finetune_scheduler.step()
-                self.logger.append([self.finetune_optimizer.param_groups[0]['lr'], results['train_loss'], results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['test_acc_1']])
+                self.logger.append([self.finetune_optimizer.param_groups[0]['lr'], results['train_loss'], results["val_loss"],results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['val_acc_1'], results['test_acc_1']])
 
             
             print(results)
@@ -130,6 +135,28 @@ class BaseTrainer(torch.nn.Module):
         self.tensorplot.add_scalers('acc',acc_dict,self.epoch)
         self.tensorplot.flush()
 
+    def _val_epoch(self):
+        self.model.eval()
+
+        losses = AverageMeter()
+        top1 = AverageMeter()
+        top5 = AverageMeter()
+
+        with torch.no_grad():
+            # with tqdm(self.test_loader) as progress:
+            for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.val_loader):
+                inputs,gt_labels = inputs.cuda(),gt_labels.cuda()
+
+                outputs = self.model(inputs)
+                loss = self.val_criterion(outputs,gt_labels)
+
+                prec1, prec5 = accuracy(outputs,gt_labels,topk=(1,5))
+                losses.update(loss.item(),inputs.size(0))
+                top1.update(prec1,inputs.size(0))
+                top5.update(prec5,inputs.size(0))
+
+        return losses.avg, top1.avg, top5.avg
+
 
     def _test_epoch(self):
         self.model.eval()
@@ -140,7 +167,7 @@ class BaseTrainer(torch.nn.Module):
 
         with torch.no_grad():
             # with tqdm(self.test_loader) as progress:
-            for index, (inputs,gt_labels) in enumerate(self.test_loader):
+            for batch_idx, (inputs,gt_labels) in enumerate(self.test_loader):
                 inputs,gt_labels = inputs.cuda(),gt_labels.cuda()
 
                 outputs = self.model(inputs)
@@ -189,12 +216,14 @@ class BaseTrainer(torch.nn.Module):
             Ctop1.update(Cprec1.item(), inputs.size(0))
             Ctop5.update(Cprec5.item(), inputs.size(0))
 
-        
+        val_loss, val_acc1, val_acc5 = self._val_epoch()
         test_loss, test_acc1, test_acc5 = self._test_epoch()
 
         log = {'train_loss':losses.avg,
             'train_N_acc_1':Ntop1.avg,
             'train_C_acc_1':Ctop1.avg,
+            'val_loss':val_loss,
+            'val_acc_1':val_acc1,
             'test_loss':test_loss,
             'test_acc_1':test_acc1}
         return log
@@ -228,12 +257,14 @@ class BaseTrainer(torch.nn.Module):
             Ctop1.update(Cprec1.item(), inputs.size(0))
             Ctop5.update(Cprec5.item(), inputs.size(0))
 
-        
+        val_loss, val_acc1, val_acc5 = self._val_epoch()
         test_loss, test_acc1, test_acc5 = self._test_epoch()
 
         log = {'train_loss':losses.avg,
             'train_N_acc_1':Ntop1.avg,
             'train_C_acc_1':Ctop1.avg,
+            'val_loss':val_loss,
+            'val_acc_1':val_acc1,
             'test_loss':test_loss,
             'test_acc_1':test_acc1}
         return log

@@ -14,7 +14,9 @@ import higher
 class MetaTrainer(BaseTrainer):
     def __init__(self,model,datasets,logger,resuls_saved_path,args):
         super().__init__(model,datasets,logger,resuls_saved_path,args)
-        self.meta_val_loader = data.DataLoader(datasets[self.args.split_dataset['valset']],batch_size=self.args.meta_batch_size,shuffle=True,num_workers=4)
+        # self.meta_val_loader = data.DataLoader(datasets[self.args.split_dataset['valset']],batch_size=self.args.meta_batch_size,shuffle=True,num_workers=4)
+        self.meta_loader = data.DataLoader(datasets[self.args.split_dataset['metaset']],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
+
         self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
         # self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
         self.meta_scheduler = getattr(optim.lr_scheduler,self.args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
@@ -68,7 +70,7 @@ class MetaTrainer(BaseTrainer):
 
                 # outer loop
                 self.meta_optimizer.zero_grad()
-                for out_batch_idx, (out_inputs, out_noisy_labels, out_soft_labels,out_gt_labels,out_index) in enumerate(self.meta_val_loader):
+                for out_batch_idx, (out_inputs, out_noisy_labels, out_soft_labels,out_gt_labels,out_index) in enumerate(self.meta_loader):
                     out_inputs,out_noisy_labels,out_soft_labels,out_gt_labels = out_inputs.cuda(),out_noisy_labels.cuda(),out_soft_labels.cuda(),out_gt_labels.cuda()
                     # print(out_index)
                     out_outputs = fnet(out_inputs)
@@ -96,7 +98,7 @@ class MetaTrainer(BaseTrainer):
             Ctop1.update(Cprec1.item(), inputs.size(0))
             Ctop5.update(Cprec5.item(), inputs.size(0))
 
-        
+        val_loss, val_acc1, val_acc5 = self._val_epoch()
         test_loss, test_acc1, test_acc5 = self._test_epoch()
 
         self.meta_scheduler.step()
@@ -104,6 +106,8 @@ class MetaTrainer(BaseTrainer):
         log = {'train_loss':losses.avg,
             'train_N_acc_1':Ntop1.avg,
             'train_C_acc_1':Ctop1.avg,
+            'val_loss':val_loss,
+            'val_acc_1':val_acc1,
             'test_loss':test_loss,
             'test_acc_1':test_acc1}
         return log

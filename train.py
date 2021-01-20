@@ -140,7 +140,7 @@ print('    Total params: %.2fM' % (sum(p.numel() for p in model.parameters())/10
 
 title = 'noisy label'
 logger = Logger(os.path.join(result_output_path, 'log.txt'), title=title)
-logger.set_names(['Learning Rate', 'Train Loss', 'Test Loss', 'Train N Acc.', 'Train C Acc', 'Test Acc'])
+logger.set_names(['Learning Rate', 'Train Loss', 'Val Loss', 'Test Loss', 'Train N Acc.', 'Train C Acc', 'Val Acc','Test Acc'])
 
 trainer = getattr(trainers,args.trainer)(model,datasets,logger,result_output_path,args)
 
