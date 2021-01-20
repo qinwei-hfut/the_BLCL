@@ -121,7 +121,7 @@ transform_val = transforms.Compose([
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
 
-datasets = getattr(dataset,args.dataset)(root = './data', args=args,train=True,transform_train=transform_train,transform_val=transform_val, download=True)
+datasets = getattr(dataset,args.dataset['type'])(root = './data', args=args,train=True,transform_train=transform_train,transform_val=transform_val, download=True)
 
 
  #Construct Model
