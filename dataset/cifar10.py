@@ -44,10 +44,10 @@ def get_cifar10(root, args, train=True,
 def train_val_split(train_val,args):
     num_classes = 10
     train_val = np.array(train_val)
-    meta_num = args.dataset['args']['meta'] / 10
-    val_num = args.dataset['args']['val'] / 10
-    train_n = len(train_val) / 10 - meta_num - val_num
-    pdb.set_trace()
+    meta_num = int(args.dataset['args']['meta'] / 10)
+    val_num = int(args.dataset['args']['val'] / 10)
+    train_n = int(len(train_val) / 10 - meta_num - val_num)
+    # pdb.set_trace()
     train_idxs = []
     meta_idxs = []
     val_idxs = []
