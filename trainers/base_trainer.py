@@ -71,11 +71,11 @@ class BaseTrainer(torch.nn.Module):
             torch.save(state,os.path.join(self.result_saved_path,'checkpoints/epoch_'+str(epoch)+'.ckp'))
         if self.best_test == results['test_acc_1']:
             torch.save(state,os.path.join(self.result_saved_path,'best_test_acc'+'.ckp'))
-            torch.save(torch.zeros((1)),os.path.join(self.result_saved_path,'best_test_acc_'+str(results['val_acc_1'])+'_'+str(results['test_acc_1'])+'_epoch'+str(epoch)))
+            torch.save(torch.zeros((1)),os.path.join(self.result_saved_path,'best_test_acc_epoch_'+str(epoch)+str('_')+str(results['val_acc_1'])+'_'+str(results['test_acc_1'])))
 
         if self.best_val == results['val_acc_1']:
             torch.save(state,os.path.join(self.result_saved_path,'best_val_acc'+'.ckp'))
-            torch.save(torch.zeros((1)),os.path.join(self.result_saved_path,'best_val_acc_'+str(results['val_acc_1'])+'_'+str(results['test_acc_1'])+'_epoch'+str(epoch)))
+            torch.save(torch.zeros((1)),os.path.join(self.result_saved_path,'best_val_acc_epoch_'+str(epoch)+str('_')+str(results['val_acc_1'])+'_'+str(results['test_acc_1'])))
     
     @abstractmethod
     def _train_epoch(self):
