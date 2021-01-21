@@ -15,7 +15,7 @@ class MetaTrainer(BaseTrainer):
     def __init__(self,model,datasets,logger,resuls_saved_path,args):
         super().__init__(model,datasets,logger,resuls_saved_path,args)
         # self.meta_val_loader = data.DataLoader(datasets[self.args.split_dataset['valset']],batch_size=self.args.meta_batch_size,shuffle=True,num_workers=4)
-        self.meta_loader = data.DataLoader(datasets[self.args.split_dataset['metaset']],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
+        # self.meta_loader = data.DataLoader(datasets[self.args.split_dataset['metaset']],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
 
         self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
         # self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
