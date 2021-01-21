@@ -13,6 +13,7 @@ def get_cifar10(root, args, train=True,
     base_dataset = torchvision.datasets.CIFAR10(root, train=train, download=download)
     # pdb.set_trace()
     train_idxs, val_idxs, meta_idxs = train_val_split(base_dataset.targets,args)
+    pdb.set_trace()
 
     train_Nval_dataset = CIFAR10_train(root, train_idxs+meta_idxs, val_indices=None, args=args, train=train, transform=transform_train)
     train_dataset = CIFAR10_train(root, train_idxs, val_indices=None, args=args, train=train, transform=transform_train)
