@@ -13,7 +13,7 @@ def get_cifar10(root, args, train=True,
     base_dataset = torchvision.datasets.CIFAR10(root, train=train, download=download)
     # pdb.set_trace()
     train_idxs, val_idxs, meta_idxs = train_val_split(base_dataset.targets,args)
-    pdb.set_trace()
+    # pdb.set_trace()
 
     train_Nval_dataset = CIFAR10_train(root, train_idxs+meta_idxs, val_indices=None, args=args, train=train, transform=transform_train)
     train_dataset = CIFAR10_train(root, train_idxs, val_indices=None, args=args, train=train, transform=transform_train)
@@ -22,6 +22,8 @@ def get_cifar10(root, args, train=True,
 
     val_dataset = CIFAR10_train(root, val_idxs, val_indices=None, args=args, train=False, transform=transform_val)
     testset = torchvision.datasets.CIFAR10(root, train=False, transform=transform_val)
+
+    pdb.set_trace()
 
     # train_dataset:仅仅45K的noisy trainset(但是noisy label; gt label; soft label都输出)
     # val_dataset: 5K的noisy val set，同样，由于同时输出noisy label，gt label，soft label，可以既满足clean val进行val，可以满足使用noisy val进行val
@@ -42,10 +44,9 @@ def get_cifar10(root, args, train=True,
 def train_val_split(train_val,args):
     num_classes = 10
     train_val = np.array(train_val)
-    meta_num = args.dataset['args']['meta']
-    val_num = args.dataset['args']['val']
-    pdb.set_trace()
-    train_n = len(train_val) - meta_num - val_num
+    meta_num = args.dataset['args']['meta'] / 10
+    val_num = args.dataset['args']['val'] / 10
+    train_n = len(train_val) / 10 - meta_num - val_num
     train_idxs = []
     meta_idxs = []
     val_idxs = []
