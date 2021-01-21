@@ -24,7 +24,7 @@ def get_cifar10(root, args, train=True,
     val_dataset = CIFAR10_train(root, val_idxs, val_indices=None, args=args, train=True, transform=transform_val)
     testset = torchvision.datasets.CIFAR10(root, train=False, transform=transform_val)
 
-    pdb.set_trace()
+    # pdb.set_trace()
 
     # train_dataset:仅仅45K的noisy trainset(但是noisy label; gt label; soft label都输出)
     # val_dataset: 5K的noisy val set，同样，由于同时输出noisy label，gt label，soft label，可以既满足clean val进行val，可以满足使用noisy val进行val
