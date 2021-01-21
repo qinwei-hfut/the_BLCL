@@ -95,6 +95,7 @@ with open(os.path.join(result_output_path,'augments.json'),'a') as f:
 
 # Use CUDA
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
+print(args.gpu)
 use_cuda = torch.cuda.is_available()
 
 # Random seed
