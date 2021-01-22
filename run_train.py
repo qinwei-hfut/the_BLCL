@@ -71,6 +71,7 @@ finetune_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[5],"gamma
 
 split_dataset = '\'{"trainset":"train_Cval_dataset","valset":"val_dataset","metaset":"meta_set","testset":"test_set"}\''
 extra= 'only_function'
+extra= ''
 dataset = '\'{"type":"cifar10","args":{"meta":4000,"val":1000}}\''
 meta_batch_size = 128
 arch = '\'{"type":"PreActResNet18","args":{"num_classes":10}}\''
