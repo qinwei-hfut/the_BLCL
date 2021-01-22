@@ -21,7 +21,7 @@ class MetaTrainer(BaseTrainer):
             self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
         else:
             self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
-        pdb.set_trace()
+        # pdb.set_trace()
         self.meta_scheduler = getattr(optim.lr_scheduler,self.args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
         self.activation = getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])()
 
