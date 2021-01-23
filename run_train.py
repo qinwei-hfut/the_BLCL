@@ -45,8 +45,8 @@ warm_up_criterion = '\'{"type":"CE_loss","args":{}}\''
 finetune_criterion = '\'{"type":"CE_loss","args":{}}\''
 
 # train_criterion = '\'{"type":"MAE_one_hot_loss","args":{}}\''
-train_criterion = '\'{"type":"MSE_one_hot_loss","args":{}}\''
-# train_criterion = '\'{"type":"CE_loss","args":{}}\''
+# train_criterion = '\'{"type":"MSE_one_hot_loss","args":{}}\''
+train_criterion = '\'{"type":"CE_loss","args":{}}\''
 # train_criterion = '\'{"type":"SCE_loss","args":{"alpha":0.1,"beta":1.0}}\''
 # train_criterion = '\'{"type":"CE_MAE_loss","args":{"alpha":0.1,"beta":1.0}}\''
 # train_criterion = '\'{"type":"CE_LS_loss","args":{}}\''
@@ -55,10 +55,10 @@ train_criterion = '\'{"type":"MSE_one_hot_loss","args":{}}\''
 # train_criterion = '\'{"type":"Mixed_loss","args":{"alpha_ce":0.0,"alpha_rce":0.0,"alpha_mae":0.0,"alpha_mse":0.0,"activation_type":"Sigmoid"}}\''
 
 # train_criterion = '\'{"type":"NFLandRCE","args":{"alpha":1.0,"beta":1.0,"num_classes":10}}\''
-train_criterion = '\'{"type":"NCEandRCE","args":{"alpha":1.0,"beta":1.0,"num_classes":10}}\''
+# train_criterion = '\'{"type":"NCEandRCE","args":{"alpha":1.0,"beta":1.0,"num_classes":10}}\''
 
-# arch = '\'{"type":"PreActResNet18","args":{"num_classes":10}}\''
-arch = '\'{"type":"toymodel","args":{}}\''
+arch = '\'{"type":"PreActResNet18","args":{"num_classes":10}}\''
+# arch = '\'{"type":"toymodel","args":{}}\''
 
 optim = '\'{"type":"SGD","args":{"lr":0.1,"momentum":0.9,"weight_decay":1e-4}}\''
 lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[40,80],"gamma":0.1}}\''
@@ -72,7 +72,7 @@ finetune_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[5],"gamma
 split_dataset = '\'{"trainset":"train_Cval_dataset","valset":"val_dataset","metaset":"meta_set","testset":"test_set"}\''
 extra= 'only_function'
 # extra= ''
-dataset = '\'{"type":"cifar10","args":{"meta":4000,"val":1000}}\''
+dataset = '\'{"type":"cifar10","args":{"meta":1000,"val":1000}}\''
 meta_batch_size = 128
 
         
