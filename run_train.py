@@ -74,7 +74,6 @@ extra= 'only_function'
 # extra= ''
 dataset = '\'{"type":"cifar10","args":{"meta":4000,"val":1000}}\''
 meta_batch_size = 128
-arch = '\'{"type":"PreActResNet18","args":{"num_classes":10}}\''
 
         
 
