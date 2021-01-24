@@ -18,13 +18,14 @@ def get_cifar100(root, args, train=True,
                 transform_train=None, transform_val=None,
                 download=False):
     base_dataset = torchvision.datasets.CIFAR100(root, train=train, download=download)
-    train_idxs, val_idxs = train_val_split(base_dataset.targets)
+    train_idxs, val_idxs, meta_idxs = train_val_split(base_dataset.targets,args)
 
-    train_Nval_dataset = CIFAR100_train(root, train_idxs+val_idxs, val_indices=None, args=args, train=train, transform=transform_train)
+    train_Nval_dataset = CIFAR100_train(root, train_idxs+meta_idxs, val_indices=None, args=args, train=train, transform=transform_train)
     train_dataset = CIFAR100_train(root, train_idxs, val_indices=None, args=args, train=train, transform=transform_train)
-    val_dataset = CIFAR100_train(root, val_idxs, val_indices=None, args=args, train=train, transform=transform_train)
-    train_Cval_dataset = CIFAR100_train(root, train_idxs,val_idxs, args, train=train, transform=transform_train)
+    meta_dataset = CIFAR100_train(root, meta_idxs, val_indices=None, args=args, train=train, transform=transform_train)
+    train_Cval_dataset = CIFAR100_train(root, train_idxs,meta_idxs, args, train=train, transform=transform_train)
 
+    val_dataset = CIFAR100_train(root, val_idxs, val_indices=None, args=args, train=train, transform=transform_val)
     testset = torchvision.datasets.CIFAR100(root, train=False, transform=transform_val)
     
     datasets = {
@@ -32,27 +33,33 @@ def get_cifar100(root, args, train=True,
         'val_dataset':val_dataset,
         'train_Nval_dataset':train_Nval_dataset,
         'train_Cval_dataset':train_Cval_dataset,
-        'test_set':testset
+        'test_set':testset,
+        'meta_set':meta_dataset
     }
     return datasets
 
 
-def train_val_split(train_val):
+def train_val_split(train_val,args):
     num_classes = 100
     train_val = np.array(train_val)
-    train_n = int(len(train_val) * 0.9 / num_classes)
+    meta_num = int(args.dataset['args']['meta'] / num_classes)
+    val_num = int(args.dataset['args']['meta'] / num_classes)
+    train_n = int(len(train_val) / num_classes - meta_num - val_num)
     train_idxs = []
+    meta_idxs = []
     val_idxs = []
 
     for i in range(num_classes):
         idxs = np.where(train_val == i)[0]
         np.random.shuffle(idxs)
         train_idxs.extend(idxs[:train_n])
-        val_idxs.extend(idxs[train_n:])
+        val_idxs.extend(idxs[train_n:train_n+val_num])
+        meta_idxs.extend(idxs[train_n+val_num:train_n+val_num+meta_num])
     np.random.shuffle(train_idxs)
     np.random.shuffle(val_idxs)
+    np.random.shuffle(meta_idxs)
 
-    return train_idxs, val_idxs
+    return train_idxs, val_idxs, meta_idxs
 
 
 class CIFAR100_train(torchvision.datasets.CIFAR100):
