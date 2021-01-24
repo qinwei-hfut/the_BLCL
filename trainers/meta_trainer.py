@@ -9,6 +9,7 @@ import torch.optim as optim
 import os
 from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 import pdb
+import Activations
 import higher
 
 class MetaTrainer(BaseTrainer):
@@ -23,7 +24,7 @@ class MetaTrainer(BaseTrainer):
             self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
         # pdb.set_trace()
         self.meta_scheduler = getattr(optim.lr_scheduler,self.args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
-        self.activation = getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])()
+        self.activation = getattr(Activations,self.train_criterion_dict['args']['activation_type'])()
 
     def _plot_loss_weight(self):
         # pdb.set_trace()

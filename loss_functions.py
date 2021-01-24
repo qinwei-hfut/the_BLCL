@@ -2,6 +2,7 @@ import torch.nn.functional as F
 import torch
 import torch.nn as nn
 import pdb
+import Activations
 
 
 if torch.cuda.is_available():
@@ -136,11 +137,7 @@ class Mixed_loss(torch.nn.Module):
         self.alpha_mae = nn.Parameter(torch.tensor(alpha_mae), requires_grad=True)
 
         self.cross_entropy = torch.nn.CrossEntropyLoss()
-        if activation_type == "Tanh":
-            self.activation = torch.tensor(1.0).cuda()+getattr(torch.nn,activation_type)()
-        else:
-            self.activation = getattr(torch.nn,activation_type)()
-        pdb.set_trace()
+        self.activation = getattr(Activations,activation_type)()
 
     def forward(self, pred, labels):
 
