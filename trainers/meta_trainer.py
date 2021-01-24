@@ -62,27 +62,27 @@ class MetaTrainer(BaseTrainer):
             inner_inputs, inner_noisy_labels, inner_soft_labels, inner_gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
             # print(batch_idx)
-            # with higher.innerloop_ctx(self.model,self.optimizer,copy_initial_weights=False) as (fnet,diffopt):
+            with higher.innerloop_ctx(self.model,self.optimizer,copy_initial_weights=False) as (fnet,diffopt):
                 
-            #     # inner loop
-            #     inner_outputs = fnet(inner_inputs)
-            #     inner_loss = self.train_criterion(inner_outputs,inner_noisy_labels)
-            #     diffopt.step(inner_loss)
+                # inner loop
+                inner_outputs = fnet(inner_inputs)
+                inner_loss = self.train_criterion(inner_outputs,inner_noisy_labels)
+                diffopt.step(inner_loss)
 
 
 
-            #     # outer loop
-            #     self.meta_optimizer.zero_grad()
-            #     for out_batch_idx, (out_inputs, out_noisy_labels, out_soft_labels,out_gt_labels,out_index) in enumerate(self.meta_loader):
-            #         out_inputs,out_noisy_labels,out_soft_labels,out_gt_labels = out_inputs.cuda(),out_noisy_labels.cuda(),out_soft_labels.cuda(),out_gt_labels.cuda()
-            #         # print(out_index)
-            #         out_outputs = fnet(out_inputs)
-            #         out_loss = self.val_criterion(out_outputs,out_gt_labels)
-            #         out_loss.backward()
-            #         if out_batch_idx == 0:
-            #             break
+                # outer loop
+                self.meta_optimizer.zero_grad()
+                for out_batch_idx, (out_inputs, out_noisy_labels, out_soft_labels,out_gt_labels,out_index) in enumerate(self.meta_loader):
+                    out_inputs,out_noisy_labels,out_soft_labels,out_gt_labels = out_inputs.cuda(),out_noisy_labels.cuda(),out_soft_labels.cuda(),out_gt_labels.cuda()
+                    # print(out_index)
+                    out_outputs = fnet(out_inputs)
+                    out_loss = self.val_criterion(out_outputs,out_gt_labels)
+                    out_loss.backward()
+                    if out_batch_idx == 0:
+                        break
 
-            #     self.meta_optimizer.step()
+                self.meta_optimizer.step()
                 
 
             # actual training
