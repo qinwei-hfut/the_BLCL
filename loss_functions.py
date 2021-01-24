@@ -137,7 +137,7 @@ class Mixed_loss(torch.nn.Module):
 
         self.cross_entropy = torch.nn.CrossEntropyLoss()
         if activation_type == "Tanh":
-            self.activation = 1+getattr(torch.nn,activation_type)()
+            self.activation = torch.tensor(1.0).cuda()+getattr(torch.nn,activation_type)()
         else:
             self.activation = getattr(torch.nn,activation_type)()
         pdb.set_trace()
