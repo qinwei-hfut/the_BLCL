@@ -136,7 +136,11 @@ class Mixed_loss(torch.nn.Module):
         self.alpha_mae = nn.Parameter(torch.tensor(alpha_mae), requires_grad=True)
 
         self.cross_entropy = torch.nn.CrossEntropyLoss()
-        self.activation = getattr(torch.nn,activation_type)()
+        if activation_type == "Tanh":
+            self.activation = 1+getattr(torch.nn,activation_type)()
+        else:
+            self.activation = getattr(torch.nn,activation_type)()
+        pdb.set_trace()
 
     def forward(self, pred, labels):
 
