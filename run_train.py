@@ -60,8 +60,7 @@ extra= ''
 # train_criterion = '\'{"type":"NFLandRCE","args":{"alpha":1.0,"beta":1.0,"num_classes":10}}\''
 # train_criterion = '\'{"type":"NCEandRCE","args":{"alpha":1.0,"beta":1.0,"num_classes":10}}\''
 
-arch = '\'{"type":"PreActResNet18","args":{"num_classes":10}}\''
-# arch = '\'{"type":"toymodel","args":{}}\''
+
 
 optim = '\'{"type":"SGD","args":{"lr":0.1,"momentum":0.9,"weight_decay":1e-4}}\''
 lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[40,80],"gamma":0.1}}\''
@@ -75,6 +74,9 @@ finetune_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[5],"gamma
 split_dataset = '\'{"trainset":"train_Cval_dataset","valset":"val_dataset","metaset":"meta_set","testset":"test_set"}\''
 
 dataset = '\'{"type":"cifar100","args":{"meta":1000,"val":1000}}\''
+arch = '\'{"type":"PreActResNet18","args":{"num_classes":100}}\''
+# arch = '\'{"type":"toymodel","args":{}}\''
+
 meta_batch_size = 128
 
         
