@@ -79,7 +79,7 @@ print(state)
 
 
 # TODO expid 需要更加详细的
-exp_id = args.arch+args.noise_type+str(args.noise_rate)+args.train_loss+'/'+str(time.time())+'/'
+exp_id = args.arch+args.noise_type+str(args.noise_rate)+args.train_loss+args.trainer+'/'+str(time.time())+'/'
 print(exp_id)
 
 # pdb.set_trace()
