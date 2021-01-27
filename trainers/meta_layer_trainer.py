@@ -28,7 +28,7 @@ class MetaLayerTrainer(BaseTrainer):
         self.scheduler_34 = getattr(optim.lr_scheduler,args.lr_scheduler['type'])(self.optimizer_34,**args.lr_scheduler['args'])
         self.train_criterion_34 = getattr(loss_functions,self.train_criterion_dict['type'])(**self.train_criterion_dict['args'])
 
-        param_12 = self.add_generator(self.model.layer1.parameters(),self.model.layer2.parameters())
+        param_12 = self.add_generator_4(self.model.conv1.parameters(),self.model.bn1.parameters(),self.model.layer1.parameters(),self.model.layer2.parameters())
         self.optimizer_12 = getattr(optim,args.optim['type'])(param_12,**args.optim['args'])
         self.scheduler_12 = getattr(optim.lr_scheduler,args.lr_scheduler['type'])(self.optimizer_12,**args.lr_scheduler['args'])
         self.train_criterion_12 = getattr(loss_functions,self.train_criterion_dict['type'])(**self.train_criterion_dict['args'])
@@ -50,6 +50,12 @@ class MetaLayerTrainer(BaseTrainer):
         yield from g1
         yield from g2
         yield from g3
+    
+    def add_generator_4(self,g1,g2,g3,g4):
+        yield from g1
+        yield from g2
+        yield from g3
+        yield from g4
 
     def _plot_loss_weight(self):
         # pdb.set_trace()
