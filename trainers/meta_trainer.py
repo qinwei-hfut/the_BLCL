@@ -106,6 +106,8 @@ class MetaTrainer(BaseTrainer):
 
         self.meta_scheduler.step()
 
+        print("meta lr: "+self.meta_optimizer.param_groups[0]['lr'])
+
         log = {'train_loss':losses.avg,
             'train_N_acc_1':Ntop1.avg,
             'train_C_acc_1':Ctop1.avg,
