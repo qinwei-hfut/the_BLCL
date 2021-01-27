@@ -58,6 +58,8 @@ class BaseTrainer(torch.nn.Module):
         if not os.path.exists(os.path.join(self.result_saved_path,'checkpoints')):
             os.makedirs(os.path.join(self.result_saved_path,'checkpoints'))
 
+        self.optimizer_fc = None
+
 
     def _save_checkpoint(self,epoch,results):
         self.best_test = max(results['test_acc_1'],self.best_test)
@@ -102,6 +104,8 @@ class BaseTrainer(torch.nn.Module):
                 print('train_epoch: '+str(self.epoch))
                 results = self._train_epoch()
                 self.scheduler.step()
+                if 'meta' in self.args.trainer:
+                    self.logger.append([self.optimizer_fc.param_groups[0]['lr'], results['train_loss'], results["val_loss"],results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['val_acc_1'], results['test_acc_1']])
                 self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["val_loss"],results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['val_acc_1'], results['test_acc_1']])
             else:
                 if self.epoch == (self.args.epochs - self.args.finetune_epochs):
