@@ -39,6 +39,10 @@ class MetaLayerTrainer(BaseTrainer):
         self.meta_scheduler = getattr(optim.lr_scheduler,self.args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
         self.activation = getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])()
 
+    def add_generator(self,g1,g2):
+        yield from g1
+        yield from g2
+
     def _plot_loss_weight(self):
         # pdb.set_trace()
         self.tensorplot.add_scalers('fc_loss_weight',{
