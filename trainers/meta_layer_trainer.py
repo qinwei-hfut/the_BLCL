@@ -34,7 +34,8 @@ class MetaLayerTrainer(BaseTrainer):
         self.train_criterion_12 = getattr(loss_functions,self.train_criterion_dict['type'])(**self.train_criterion_dict['args'])
 
         if self.args.extra == 'only_function':
-            self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
+            weight_loss_functions = self.add_generator_3(self.train_criterion_12.parameters(),self.train_criterion_34.parameters(),self.train_criterion_fc.parameters())
+            self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(weight_loss_functions,**args.meta_optim['args'])
         else:
             self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
         pdb.set_trace()
