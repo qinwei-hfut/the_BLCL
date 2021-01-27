@@ -18,16 +18,18 @@ class MetaLayerTrainer(BaseTrainer):
         # self.meta_val_loader = data.DataLoader(datasets[self.args.split_dataset['valset']],batch_size=self.args.meta_batch_size,shuffle=True,num_workers=4)
         # self.meta_loader = data.DataLoader(datasets[self.args.split_dataset['metaset']],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
 
-        pdb.set_trace()
-        self.optimizer_fc = getattr(optim,args.optim['type'])(self.model.linear.parameters(),**args.optim['args'])
+        params_fc = self.model.linear.parameters()
+        self.optimizer_fc = getattr(optim,args.optim['type'])(params_fc,**args.optim['args'])
         self.scheduler_fc = getattr(optim.lr_scheduler,args.lr_scheduler['type'])(self.optimizer_fc,**args.lr_scheduler['args'])
         self.train_criterion_fc = getattr(loss_functions,self.train_criterion_dict['type'])(**self.train_criterion_dict['args'])
 
-        self.optimizer_34 = getattr(optim,args.optim['type'])(self.model.layer34.parameters(),**args.optim['args'])
+        param_34 = self.add_generator(self.model.layer3.parameters(),self.model.layer4.parameters()) 
+        self.optimizer_34 = getattr(optim,args.optim['type'])(param_34,**args.optim['args'])
         self.scheduler_34 = getattr(optim.lr_scheduler,args.lr_scheduler['type'])(self.optimizer_34,**args.lr_scheduler['args'])
         self.train_criterion_34 = getattr(loss_functions,self.train_criterion_dict['type'])(**self.train_criterion_dict['args'])
 
-        self.optimizer_12 = getattr(optim,args.optim['type'])(self.model.layer12.parameters(),**args.optim['args'])
+        param_12 = self.add_generator(self.model.layer1.parameters(),self.model.layer2.parameters())
+        self.optimizer_12 = getattr(optim,args.optim['type'])(param_12,**args.optim['args'])
         self.scheduler_12 = getattr(optim.lr_scheduler,args.lr_scheduler['type'])(self.optimizer_12,**args.lr_scheduler['args'])
         self.train_criterion_12 = getattr(loss_functions,self.train_criterion_dict['type'])(**self.train_criterion_dict['args'])
 
@@ -35,13 +37,18 @@ class MetaLayerTrainer(BaseTrainer):
             self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
         else:
             self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
-        # pdb.set_trace()
+        pdb.set_trace()
         self.meta_scheduler = getattr(optim.lr_scheduler,self.args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
         self.activation = getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])()
 
     def add_generator(self,g1,g2):
         yield from g1
         yield from g2
+    
+    def add_generator_3(self,g1,g2,g3):
+        yield from g1
+        yield from g2
+        yield from g3
 
     def _plot_loss_weight(self):
         # pdb.set_trace()
