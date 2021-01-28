@@ -104,7 +104,7 @@ class BaseTrainer(torch.nn.Module):
                 print('train_epoch: '+str(self.epoch))
                 results = self._train_epoch()
                 self.scheduler.step()
-                if 'meta' in self.args.trainer:
+                if 'meta_layer' in self.args.trainer:
                     self.logger.append([self.optimizer_fc.param_groups[0]['lr'], results['train_loss'], results["val_loss"],results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['val_acc_1'], results['test_acc_1']])
                 self.logger.append([self.optimizer.param_groups[0]['lr'], results['train_loss'], results["val_loss"],results["test_loss"], results['train_N_acc_1'], results['train_C_acc_1'], results['val_acc_1'], results['test_acc_1']])
             else:
