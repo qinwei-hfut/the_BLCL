@@ -93,7 +93,8 @@ class BaseTrainer(torch.nn.Module):
         # for epoch in tqdm(range(self.args.epochs),decs='Total progress: '):
         for epoch in range(self.args.epochs):
             self.epoch = epoch
-            if 'meta' in self.args.trainer:     
+            # if 'meta' in self.args.trainer:  
+            if self.train_criterion_dict['type'] == 'Mixed_loss':   
                 self._plot_loss_weight()       
             if self.epoch < self.warm_up_epochs:
                 print('warm_epoch: '+str(self.epoch))
