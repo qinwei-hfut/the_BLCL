@@ -257,6 +257,8 @@ class ML_3Layer_Loss(torch.nn.Module):
         self.reset()
 
     def forward(self,y_in,y_target):
+        self.num_classes = y_in.size(1)
+        y_target = torch.nn.functional.one_hot(y_target, self.num_classes).float().to('cuda')
         y = torch.cat((y_in, y_target),dim=1)
         yp = self.layers(y)
         return self.loss(yp).mean()
