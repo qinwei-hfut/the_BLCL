@@ -237,3 +237,30 @@ class NCEandRCE(torch.nn.Module):
 
     def forward(self, pred, labels):
         return self.nce(pred, labels) + self.rce(pred, labels)
+
+def weight_init(module):
+    if isinstance(module, nn.Linear):
+        nn.init.xavier_uniform_(module.weight, gain=1.0)
+        if module.bias is not None:
+            module.bias.data.zero_()
+
+class ML_3Layer_Loss(torch.nn.Module):
+    def __init__(self,in_dim,hidden_dim):
+        super(ML_3Layer_Loss,self).__init__()
+        self.layers = nn.Sequential(
+            nn.Linear(in_dim,hidden_dim[0], bias=False),
+            nn.ReLU(),
+            nn.Linear(hidden_dim[0],hidden_dim[1],bias=False),
+            nn.ReLU(),
+        )
+        self.loss = nn.Sequential(nn.Linear(hidden_dim[1],1,bias=False), nn.Softplus())
+        self.reset()
+
+    def forward(self,y_in,y_target):
+        y = torch.cat((y_in, y_target),dim=1)
+        yp = self.layers(y)
+        return self.loss(yp).mean()
+
+    def reset(self):
+        self.layers.apply(weight_init)
+        self.loss.apply(weight_init)
