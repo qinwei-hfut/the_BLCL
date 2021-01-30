@@ -255,6 +255,7 @@ class ML_3Layer_Loss(torch.nn.Module):
         )
         self.loss = nn.Sequential(nn.Linear(hidden_dim[1],1,bias=False), nn.Softplus())
         self.reset()
+        self.to('cuda')
 
     def forward(self,y_in,y_target):
         self.num_classes = y_in.size(1)
