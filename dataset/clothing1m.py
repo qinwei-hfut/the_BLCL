@@ -1,4 +1,3 @@
-import torchvision.datasets.ImageFolder as ImageFolder
 from torchvision import datasets, transforms
 import torchvision
 import os
