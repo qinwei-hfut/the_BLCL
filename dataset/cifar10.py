@@ -4,21 +4,32 @@ import pdb
 import torch
 
 import torchvision
+import torchvision.transforms as transforms
 
-def get_cifar10(root, args, train=True,
-                 transform_train=None,
-                 transform_val=None,
-                 download=False):
+def get_cifar10(root, args):
 
-    base_dataset = torchvision.datasets.CIFAR10(root, train=train, download=download)
+
+    transform_train = transforms.Compose([
+        transforms.RandomCrop(32, padding=4),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    ])
+
+    transform_val = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    ])
+
+    base_dataset = torchvision.datasets.CIFAR10(root, train=True, download=True)
     # pdb.set_trace()
     train_idxs, val_idxs, meta_idxs = train_val_split(base_dataset.targets,args)
     # pdb.set_trace()
 
-    train_Nval_dataset = CIFAR10_train(root, train_idxs+meta_idxs, val_indices=None, args=args, train=train, transform=transform_train)
-    train_dataset = CIFAR10_train(root, train_idxs, val_indices=None, args=args, train=train, transform=transform_train)
-    meta_dataset = CIFAR10_train(root, meta_idxs, val_indices=None, args=args, train=train, transform=transform_train)
-    train_Cval_dataset = CIFAR10_train(root, train_idxs,meta_idxs, args, train=train, transform=transform_train)
+    train_Nval_dataset = CIFAR10_train(root, train_idxs+meta_idxs, val_indices=None, args=args, train=True, transform=transform_train)
+    train_dataset = CIFAR10_train(root, train_idxs, val_indices=None, args=args, train=True, transform=transform_train)
+    meta_dataset = CIFAR10_train(root, meta_idxs, val_indices=None, args=args, train=True, transform=transform_train)
+    train_Cval_dataset = CIFAR10_train(root, train_idxs,meta_idxs, args, train=True, transform=transform_train)
 
     # 这个train是选择trainset还是testset
     val_dataset = CIFAR10_train(root, val_idxs, val_indices=None, args=args, train=True, transform=transform_val)
