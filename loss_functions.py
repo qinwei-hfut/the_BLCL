@@ -111,6 +111,7 @@ class SCE_loss(torch.nn.Module):
 
     def forward(self, pred, labels):
         # CCE
+        self.num_classes = pred.size(1)
         ce = self.cross_entropy(pred, labels)
 
         # RCE
