@@ -27,6 +27,7 @@ class Trainer(BaseTrainer):
         #     for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(progress):
         for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.train_loader):
             # progress.set_description_str(f'Train epoch {epoch}')
+            print(batch_idx)
             inputs, noisy_labels, soft_labels, gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
             outputs = self.model(inputs)
