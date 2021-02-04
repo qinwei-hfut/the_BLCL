@@ -1,15 +1,13 @@
 from .cifar10 import get_cifar10
 from .cifar100 import get_cifar100
+from .clothing1m import get_clothing1m
 
-def cifar10(root, args, train=True,
-                 transform_train=None,
-                 transform_val=None,
-                 download=False):
-    return get_cifar10(root, args, train,transform_train,transform_val,download)
+def cifar10(root, args):
+    return get_cifar10(root, args)
 
 
-def cifar100(root, args, train=True,
-                 transform_train=None,
-                 transform_val=None,
-                 download=False):
-    return get_cifar100(root, args, train,transform_train,transform_val,download)
+def cifar100(root, args):
+    return get_cifar100(root, args)
+
+def clothing1m(root, args):
+    return get_clothing1m(root, args)
