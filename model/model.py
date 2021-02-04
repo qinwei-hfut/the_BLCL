@@ -1,13 +1,14 @@
 import torch.nn as nn
 import torch.nn.functional as F
 from .PreResNet import PreActResNet, PreActBlock
-from .ResNet_Zoo import ResNet,BasicBlock
+from .ResNet_Zoo import resnet50,resnet34()
 from .PyPreResNet import PyPreActResNet, PyPreActBlock
 from .ToyModel import ToyModel
 
-def resnet34(num_classes=10):
-    print('construct resnet34')
-    return ResNet(BasicBlock, [3,4,6,3], num_classes=num_classes)
+def ResNet50(num_classes=14):
+    model = resnet50(pretrained=True)
+    model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
+    return model
 
 def PyPreActResNet18(num_classes=10) -> PreActResNet:
     print('PyPreActResNet18')
