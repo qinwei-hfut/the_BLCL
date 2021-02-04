@@ -30,7 +30,7 @@ def get_clothing1m(root,args):
     clean_val_set = Clothing1M(clean_val_root,val_transform, True)
     
     clean_test_root = os.path.join(root, 'clean_test')
-    clean_test_set = Clothing1M(clean_test_root,val_transform, True)
+    clean_test_set = Clothing1M(clean_test_root,val_transform, False)
 
 
     datasets = {
