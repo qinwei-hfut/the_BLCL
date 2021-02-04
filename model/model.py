@@ -7,7 +7,7 @@ from .ToyModel import ToyModel
 
 def ResNet50(num_classes=14):
     model = resnet50(pretrained=True)
-    model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
+    model.fc = nn.Linear(model.fc.in_features, num_classes)
     return model
 
 def PyPreActResNet18(num_classes=10) -> PreActResNet:
