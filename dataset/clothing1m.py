@@ -1,6 +1,7 @@
 from torchvision import datasets, transforms
 import torchvision
 import os
+import torch
 
 
 def get_clothing1m(root,args):
@@ -17,19 +18,19 @@ def get_clothing1m(root,args):
                                     ])
 
     noisy_train_root = os.path.join(root,'noisy_train')
-    noisy_train_set = torchvision.datasets.ImageFolder(noisy_train_root,train_transform)
+    noisy_train_set = Clothing1M(noisy_train_root,train_transform,True)
 
     clean_noisy_train_root = os.path.join(root, 'clean_noisy_train')
-    clean_noisy_train_set = torchvision.datasets.ImageFolder(clean_noisy_train_root,train_transform)
+    clean_noisy_train_set = Clothing1M(clean_noisy_train_root,train_transform, True)
     
     clean_train_root = os.path.join(root, 'clean_train')
-    clean_train_set = torchvision.datasets.ImageFolder(clean_train_root,train_transform)
+    clean_train_set = Clothing1M(clean_train_root,train_transform, True)
     
     clean_val_root = os.path.join(root, 'clean_val')
-    clean_val_set = torchvision.datasets.ImageFolder(clean_val_root,val_transform)
+    clean_val_set = Clothing1M(clean_val_root,val_transform, True)
     
     clean_test_root = os.path.join(root, 'clean_test')
-    clean_test_set = torchvision.datasets.ImageFolder(clean_test_root,val_transform)
+    clean_test_set = Clothing1M(clean_test_root,val_transform, True)
 
 
     datasets = {
@@ -41,6 +42,19 @@ def get_clothing1m(root,args):
     }
 
     return datasets
+
+class Clothing1M(torchvision.datasets.ImageFolder):
+    def __init__(self, root, transform, train):
+        super(Clothing1M,self).__init__(root,transform)
+        self.train = train
+
+    def __getitem__(self,index):
+        img, target = super.__getitem(index)
+        if self.train:
+            return img, target, torch.tensor(-1), target, index
+        else:
+            return img, target
+
 
 # class Clothing1M(VisionDataset):
 #     def __init__(self, root, mode='train', transform=None, target_transform=None, num_per_class=-1):
