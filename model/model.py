@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 from .PreResNet import PreActResNet, PreActBlock
-from .ResNet_Zoo import resnet50,resnet34()
+from .ResNet_Zoo import resnet50,resnet34
 from .PyPreResNet import PyPreActResNet, PyPreActBlock
 from .ToyModel import ToyModel
 
