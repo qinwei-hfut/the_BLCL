@@ -49,7 +49,7 @@ class Clothing1M(torchvision.datasets.ImageFolder):
         self.train = train
 
     def __getitem__(self,index):
-        img, target = super.__getitem__(index)
+        img, target = super().__getitem__(index)
         if self.train:
             return img, target, torch.tensor(-1), target, index
         else:
