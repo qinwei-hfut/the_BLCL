@@ -40,6 +40,7 @@ gpu=3
 
 
 
+
 val_criterion = '\'{"type":"CE_loss","args":{}}\''
 warm_up_criterion = '\'{"type":"CE_loss","args":{}}\''
 finetune_criterion = '\'{"type":"CE_loss","args":{}}\''
