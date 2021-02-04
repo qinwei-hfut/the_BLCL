@@ -23,7 +23,7 @@ class BaseTrainer(torch.nn.Module):
         self.val_loader = data.DataLoader(datasets[self.args.split_dataset['valset']],batch_size=self.args.batch_size,shuffle=False,num_workers=4)
         self.test_loader = data.DataLoader(datasets[self.args.split_dataset['testset']],batch_size=self.args.batch_size,shuffle=False,num_workers=4)
         self.meta_loader = data.DataLoader(datasets[self.args.split_dataset['metaset']],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
-        pdb.set_trace()
+        # pdb.set_trace()
         self.model = model
         self.logger = logger
         
@@ -244,6 +244,11 @@ class BaseTrainer(torch.nn.Module):
         Ctop5 = AverageMeter()
 
         for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.meta_loader):
+
+            if batch_idx % 100 == 0:
+                print(batch_idx)
+            if batch_idx == 500:
+                break
 
             inputs, noisy_labels, soft_labels, gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
