@@ -109,7 +109,7 @@ if use_cuda:
 
 
 # Data
-print(f'==> Preparing relabeled nosiy cifar10')
+print(f'==> Preparing data')
 datasets = getattr(dataset,args.dataset['type'])(root = args.dataset['args']['root'], args=args)
 
 
