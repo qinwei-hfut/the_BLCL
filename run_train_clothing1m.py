@@ -70,7 +70,7 @@ optim = '\'{"type":"SGD","args":{"lr":0.001,"momentum":0.9,"weight_decay":1e-3}}
 lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[5],"gamma":0.1}}\''
 
 # TODO
-meta_optim = '\'{"type":"SGD","args":{"lr":1.,"momentum":0.9,"weight_decay":1e-3}}\''
+meta_optim = '\'{"type":"SGD","args":{"lr":0.1,"momentum":0.9,"weight_decay":1e-3}}\''
 # meta scheduler的gamma是否需要调整？
 # meta_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[35,75],"gamma":0.1}}\''    
 meta_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[300],"gamma":0.1}}\'' 
@@ -102,6 +102,7 @@ total_epochs = 12
 
 
 
+run_exp(trainer='meta_trainer',noise_type='sym',noise_rate=0.0,epochs=total_epochs,warm_up_epochs=warm_up_epochs,finetune_epochs=finetune_epochs,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=batch_size,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra)
 run_exp(trainer='meta_trainer',noise_type='sym',noise_rate=0.0,epochs=total_epochs,warm_up_epochs=warm_up_epochs,finetune_epochs=finetune_epochs,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=batch_size,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra)
 
 
