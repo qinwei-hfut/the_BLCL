@@ -48,8 +48,8 @@ def generate_small_clean_valset(sample_per_class_clean_val):
 
 
 
-# generate_small_clean_trainset(sample_per_class_clean_train=10)
-generate_small_clean_valset(sample_per_class_clean_val=10)
+generate_small_clean_trainset(sample_per_class_clean_train=100)
+generate_small_clean_valset(sample_per_class_clean_val=100)
 
         
 
