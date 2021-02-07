@@ -8,8 +8,9 @@ import random
 def generate_small_clean_trainset(sample_per_class_clean_train):
 
     # small clean trainset
-    big_clean_trainset_path = os.path.join(args.dataset['args']['root'], "clean_train")
-    small_clean_trainset_path = os.path.join(args.dataset['args']['root'],str(sample_per_class_clean_train)+'_small_clean_train')
+    root = "/sharedir/dataset"
+    big_clean_trainset_path = os.path.join(root, "clean_train")
+    small_clean_trainset_path = os.path.join(root,str(sample_per_class_clean_train)+'_small_clean_train')
     # 不能够删除，因为多个代码并行运行，删除一个可能会导致另外一个无法加载数据
     # if os.path.exists(small_clean_trainset_path):
     #     shutil.rmtree(small_clean_trainset_path)
