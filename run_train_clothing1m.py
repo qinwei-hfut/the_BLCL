@@ -55,8 +55,8 @@ finetune_criterion = '\'{"type":"CE_loss","args":{}}\''
 # train_criterion = '\'{"type":"Mixed_loss","args":{"alpha_ce":-2.0,"alpha_rce":3.0,"alpha_mae":-2.0,"alpha_mse":-2.0,"activation_type":"Sigmoid"}}\''
 train_criterion = '\'{"type":"Mixed_loss","args":{"alpha_ce":0.0,"alpha_rce":0.0,"alpha_mae":0.0,"alpha_mse":0.0,"activation_type":"Sigmoid"}}\''
 # train_criterion = '\'{"type":"ML_3Layer_Loss","args":{"in_dim":20,"hidden_dim":[50,50]}}\''
-# extra= 'only_function'
-extra= ''
+extra= 'only_function'
+# extra= ''
 
 
 # train_criterion = '\'{"type":"NFLandRCE","args":{"alpha":1.0,"beta":1.0,"num_classes":10}}\''
