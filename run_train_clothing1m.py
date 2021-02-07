@@ -64,10 +64,10 @@ extra= ''
 
 
 
-optim = '\'{"type":"SGD","args":{"lr":0.001,"momentum":0.9,"weight_decay":1e-3}}\''
+optim = '\'{"type":"SGD","args":{"lr":0.01,"momentum":0.9,"weight_decay":1e-3}}\''
 # 
 # lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[40,80],"gamma":0.1}}\''
-lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[5],"gamma":0.1}}\''
+lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[30,60,90],"gamma":0.1}}\''
 
 # TODO
 meta_optim = '\'{"type":"SGD","args":{"lr":0.1,"momentum":0.9,"weight_decay":1e-3}}\''
@@ -76,21 +76,21 @@ meta_optim = '\'{"type":"SGD","args":{"lr":0.1,"momentum":0.9,"weight_decay":1e-
 meta_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[300],"gamma":0.1}}\'' 
 # meta_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[35,75],"gamma":10.0}}\''  
 
-finetune_optim = '\'{"type":"SGD","args":{"lr":0.0001,"momentum":0.9,"weight_decay":1e-3}}\''
-finetune_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[9999],"gamma":0.1}}\''
+finetune_optim = '\'{"type":"SGD","args":{"lr":0.01,"momentum":0.9,"weight_decay":1e-3}}\''
+finetune_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[5],"gamma":0.1}}\''
 
-split_dataset = '\'{"trainset":"clean_noisy_train_set","valset":"clean_val_set","metaset":"clean_train_set","testset":"clean_test_set"}\''
+split_dataset = '\'{"trainset":"noisy_train_set","valset":"clean_val_set","metaset":"clean_train_set","testset":"clean_test_set"}\''
 
-dataset = '\'{"type":"clothing1m","args":{"root":"/sharedir/dataset"}}\''
+dataset = '\'{"type":"clothing1m","args":{"root":"/sharedir/dataset","clean_train":100,"clean_val":100}}\''
 arch = '\'{"type":"ResNet50","args":{"num_classes":14}}\''
 # arch = '\'{"type":"toymodel","args":{}}\''
 
-meta_batch_size = 64
+meta_batch_size = 32
 batch_size = 32
 
 warm_up_epochs = 0
-finetune_epochs = 2
-total_epochs = 12
+finetune_epochs = 10
+total_epochs = 120
 
 
 
