@@ -70,7 +70,7 @@ optim = '\'{"type":"SGD","args":{"lr":0.01,"momentum":0.9,"weight_decay":1e-3}}\
 lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[30,60,90],"gamma":0.1}}\''
 
 # TODO
-meta_optim = '\'{"type":"SGD","args":{"lr":0.1,"momentum":0.9,"weight_decay":1e-3}}\''
+meta_optim = '\'{"type":"SGD","args":{"lr":1.0,"momentum":0.9,"weight_decay":1e-3}}\''
 # meta scheduler的gamma是否需要调整？
 # meta_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[35,75],"gamma":0.1}}\''    
 meta_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[300],"gamma":0.1}}\'' 
