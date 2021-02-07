@@ -63,6 +63,7 @@ class MetaTrainer(BaseTrainer):
         for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.train_loader):
             inner_inputs, inner_noisy_labels, inner_soft_labels, inner_gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
+            print(batch_idx)
             if batch_idx % 400 == 0:
                 print(batch_idx)
             # print(batch_idx)
