@@ -21,7 +21,7 @@ def generate_small_clean_trainset(sample_per_class_clean_train):
 
         class_root_big = os.path.join(big_clean_trainset_path,str(i))
         for root, _, fnames in sorted(os.walk(class_root_big, followlinks=True)):
-            fnames = random.shuffle(fnames)
+            random.shuffle(fnames)
             for j in range(sample_per_class_clean_train):
                 shutil.copy(os.path.join(class_root_big,fnames[j]),os.path.join(class_root_small,fnames[j]))
 
