@@ -64,6 +64,7 @@ extra= 'only_function'
 
 
 
+
 optim = '\'{"type":"SGD","args":{"lr":0.01,"momentum":0.9,"weight_decay":1e-3}}\''
 # 
 # lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[40,80],"gamma":0.1}}\''
