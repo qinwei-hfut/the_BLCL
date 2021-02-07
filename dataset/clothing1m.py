@@ -36,10 +36,10 @@ def get_clothing1m(root,args):
     clean_noisy_train_root = os.path.join(root, 'clean_noisy_train')
     clean_noisy_train_set = Clothing1M(clean_noisy_train_root,train_transform, True)
     
-    clean_train_root = os.path.join(root, '100_clean_train')
+    clean_train_root = os.path.join(root, '100_small_clean_train')
     clean_train_set = Clothing1M(clean_train_root,train_transform, True)
     
-    clean_val_root = os.path.join(root, '100_clean_val')
+    clean_val_root = os.path.join(root, '100_small_clean_val')
     clean_val_set = Clothing1M(clean_val_root,val_transform, True)
     
     clean_test_root = os.path.join(root, 'clean_test')
