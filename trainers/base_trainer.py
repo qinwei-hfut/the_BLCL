@@ -197,6 +197,11 @@ class BaseTrainer(torch.nn.Module):
 
         for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.train_loader):
 
+            if batch_idx % 400 == 0:
+                print(batch_idx)
+            if batch_idx == 1000:
+                break
+
             inputs, noisy_labels, soft_labels, gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
             outputs = self.model(inputs)
