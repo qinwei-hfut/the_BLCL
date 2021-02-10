@@ -23,7 +23,7 @@ from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 
 import trainers.trainer as trainer
 import trainers.pytrainer as pytrainer
-import model.model as model
+import model.model as model_zoo
 import dataset.dataset as dataset
 import trainers.trainers as trainers
 import loss_functions
@@ -116,7 +116,7 @@ datasets = getattr(dataset,args.dataset['type'])(root = args.dataset['args']['ro
 
  #Construct Model
 args.model_dict = json.loads(args.arch)
-model = getattr(model,args.model_dict['type'])(**args.model_dict['args'])
+model = getattr(model_zoo,args.model_dict['type'])(**args.model_dict['args'])
 model = model.cuda()
 # pdb.set_trace()
 # model = torch.nn.DataParallel(model).cuda()
