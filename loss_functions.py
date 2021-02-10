@@ -18,9 +18,9 @@ class Soft_CE_loss(torch.nn.Module):
         return -torch.mean(torch.sum(F.log_softmax(output, dim=1) * soft_target, dim=1))
 
 class CE_loss(torch.nn.Module):
-    def __init__(self,*args):
+    def __init__(self,reudction="mean"):
         super(CE_loss,self).__init__()
-        self.ce = torch.nn.CrossEntropyLoss(*args)
+        self.ce = torch.nn.CrossEntropyLoss(reudction=reudction)
 
     def forward(self, output, target):
         return self.ce(output,target)
