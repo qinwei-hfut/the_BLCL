@@ -86,7 +86,8 @@ dataset = '\'{"type":"cifar10","args":{"root":"./data","meta":1000,"val":1000}}\
 arch = '\'{"type":"PreActResNet18","args":{"num_classes":10}}\''
 # arch = '\'{"type":"toymodel","args":{}}\''
 
-minuend_path = "/sharedir/project/the_BLCL/cifar10_8693"
+# minuend_path = "/sharedir/project/the_BLCL/cifar10_8693"
+minuend_path = "/sharedir/project/the_BLCL/cifar10_asym4_9200"
 
 meta_batch_size = 128
 
