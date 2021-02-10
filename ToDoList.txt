@@ -1,0 +1,4 @@
+本project的todo list
+
+1. 修改log文档的API，格式，以及在函数中的打印位置；
+2. neg model的cnn部分可以复用原始的cnn 参数，只修改fc层？
