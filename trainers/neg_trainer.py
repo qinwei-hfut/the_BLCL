@@ -9,7 +9,7 @@ from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 import pdb
 
 
-class Trainer(BaseTrainer):
+class Neg_Trainer(BaseTrainer):
     def __init__(self,model,datasets,logger,resuls_saved_path,args):
         super().__init__(model,datasets,logger,resuls_saved_path,args)
 
