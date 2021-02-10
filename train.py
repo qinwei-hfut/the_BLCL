@@ -62,6 +62,7 @@ parser.add_argument('--noise-type', '--nt',default='sym',type=str,choices=['sym'
 parser.add_argument('--noise-rate', '--nr',default=0.0, type=float)
 
 parser.add_argument('--extra',type=str,default='',help='extra information for the exp')
+parser.add_argument('--minuend_path',type=str)
 
 # Miscs
 parser.add_argument('--manualSeed', type=int, default=1, help='manual seed')
@@ -114,8 +115,8 @@ datasets = getattr(dataset,args.dataset['type'])(root = args.dataset['args']['ro
 
 
  #Construct Model
-model_dict = json.loads(args.arch)
-model = getattr(model,model_dict['type'])(**model_dict['args'])
+args.model_dict = json.loads(args.arch)
+model = getattr(model,args.model_dict['type'])(**args.model_dict['args'])
 model = model.cuda()
 # pdb.set_trace()
 # model = torch.nn.DataParallel(model).cuda()
