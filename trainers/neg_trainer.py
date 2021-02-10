@@ -15,7 +15,7 @@ class Neg_Trainer(BaseTrainer):
         super().__init__(model,datasets,logger,resuls_saved_path,args)
         self.minuend_model = getattr(model_zoo,args.model_dict['type'])(**args.model_dict['args'])
         self.minuend_model = self.minuend_model.cuda()
-        self.minuend_model = self.minuend_model.load_state_dict(torch.load(args.minuend_path))
+        self.minuend_model = self.minuend_model.load_state_dict(torch.load(args.minuend_path)['state_dict'])
         self.softmax = torch.nn.Softmax(dim=1)
 
 
