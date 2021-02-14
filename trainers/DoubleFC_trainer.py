@@ -20,6 +20,7 @@ class DoubleFC_Trainer(BaseTrainer):
         self.softmax = torch.nn.Softmax(dim=1)
 
 
+
     def _train_epoch(self):
         self.model.train()
         losses = AverageMeter()
