@@ -10,13 +10,13 @@ import pdb
 import model.model as model_zoo
 
 
-class Neg_Trainer(BaseTrainer):
+class DoubleFC_Trainer(BaseTrainer):
     def __init__(self,model,datasets,logger,resuls_saved_path,args):
         super().__init__(model,datasets,logger,resuls_saved_path,args)
-        self.minuend_model = getattr(model_zoo,args.model_dict['type'])(**args.model_dict['args'])
-        self.minuend_model = self.minuend_model.cuda()
-        # pdb.set_trace()
-        self.minuend_model.load_state_dict(torch.load(args.minuend_path)['state_dict'])
+        # self.minuend_model = getattr(model_zoo,args.model_dict['type'])(**args.model_dict['args'])
+        # self.minuend_model = self.minuend_model.cuda()
+        # # pdb.set_trace()
+        # self.minuend_model.load_state_dict(torch.load(args.minuend_path)['state_dict'])
         self.softmax = torch.nn.Softmax(dim=1)
 
 
@@ -37,14 +37,19 @@ class Neg_Trainer(BaseTrainer):
             inputs, noisy_labels, soft_labels, gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
             corrupted_flag = ~ noisy_labels.eq(gt_labels)
+            clean_flag = noisy_labels.eq(gt_labels)
 
             outputs = self.model(inputs)
 
-            loss = (self.train_criterion(outputs,noisy_labels) * corrupted_flag).mean()
+            # 这样操作是否batch大小，或者说是梯度大小？需要检查一下 TODO
+            loss_clean = (self.train_criterion(outputs[0],noisy_labels) * clean_flag).mean()
+            loss_corrupted = (self.train_criterion(outputs[1],noisy_labels) * corrupted_flag).mean()
+            
             # pdb.set_trace()
 
             self.optimizer.zero_grad()
-            loss.backward()
+            loss_corrupted.backward()
+            loss_clean.backward()
 
             # ################ print log
             # for group in self.optimizer.param_groups:
@@ -56,17 +61,16 @@ class Neg_Trainer(BaseTrainer):
 
             Nprec1, Nprec5 = accuracy(outputs,noisy_labels,topk=(1,5))
             Cprec1, Cprec5 = accuracy(outputs,gt_labels,topk=(1,5))
-            losses.update(loss.item(), inputs.size(0))
+            losses.update(loss_clean.item(), inputs.size(0))
             Ntop1.update(Nprec1.item(), inputs.size(0))
             Ntop5.update(Nprec5.item(), inputs.size(0))
             Ctop1.update(Cprec1.item(), inputs.size(0))
             Ctop5.update(Cprec5.item(), inputs.size(0))
 
-        val_loss, val_acc1, val_acc1_minuend = self._val_epoch()
-        test_loss, test_acc1, test_acc1_minuend = self._test_epoch()
+        val_loss, val_acc1, _ = self._val_epoch()
+        test_loss, test_acc1, _ = self._test_epoch()
 
-        print('val_minuend_acc1:'+str(val_acc1_minuend))
-        print('test_minuend_acc1:'+str(test_acc1_minuend))
+
         log = {'train_loss':losses.avg,
             'train_N_acc_1':Ntop1.avg,
             'train_C_acc_1':Ctop1.avg,
@@ -102,58 +106,55 @@ class Neg_Trainer(BaseTrainer):
 
     def _val_epoch(self):
         self.model.eval()
-        self.minuend_model.eval()
+
         losses = AverageMeter()
-        top1_final = AverageMeter()
-        top1_minuend = AverageMeter()
-        top5_final = AverageMeter()
+        top1 = AverageMeter()
+        top5 = AverageMeter()
 
         with torch.no_grad():
             # with tqdm(self.test_loader) as progress:
             for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.val_loader):
                 inputs,gt_labels = inputs.cuda(),gt_labels.cuda()
 
-                outputs_minuend = self.minuend_model(inputs)
+                # 在处理两个fc之间的输出时，需要normalize一下，把每一个样本都变成单位长度？sample方向的normalize
                 outputs = self.model(inputs)
-                final_outputs = self.softmax(outputs_minuend) - self.softmax(outputs)
-                loss = self.val_criterion(outputs,gt_labels)
+                output_clean, output_corrupted = self.normalize_logit(outputs)
 
-                minuend_prec1, _ = accuracy(outputs_minuend,gt_labels,topk=(1,5))
-                final_prec1, final_prec5 = accuracy(final_outputs,gt_labels,topk=(1,5))
+                output_final = output_clean - output_corrupted
+
+                loss = self.val_criterion(output_final,gt_labels)
+
+                prec1, prec5 = accuracy(output_final,gt_labels,topk=(1,5))
                 losses.update(loss.item(),inputs.size(0))
-                top1_final.update(final_prec1,inputs.size(0))
-                top5_final.update(final_prec5,inputs.size(0))
-                top1_minuend.update(minuend_prec1,inputs.size(0))
+                top1.update(prec1,inputs.size(0))
+                top5.update(prec5,inputs.size(0))
 
-        return losses.avg, top1_final.avg, top1_minuend.avg
+        return losses.avg, top1.avg, top5.avg
 
 
     def _test_epoch(self):
         self.model.eval()
-        self.minuend_model.eval()
-
 
         losses = AverageMeter()
-        top1_final = AverageMeter()
-        top1_minuend = AverageMeter()
-        top5_final = AverageMeter()
+        top1 = AverageMeter()
+        top5 = AverageMeter()
 
         with torch.no_grad():
             # with tqdm(self.test_loader) as progress:
             for batch_idx, (inputs,gt_labels) in enumerate(self.test_loader):
                 inputs,gt_labels = inputs.cuda(),gt_labels.cuda()
 
-                outputs_minuend = self.minuend_model(inputs)
+                # 在处理两个fc之间的输出时，需要normalize一下，把每一个样本都变成单位长度？sample方向的normalize
                 outputs = self.model(inputs)
-                final_outputs = self.softmax(outputs_minuend) - self.softmax(outputs)
-                loss = self.val_criterion(outputs,gt_labels)
+                output_clean, output_corrupted = self.normalize_logit(outputs)
 
-                minuend_prec1, _ = accuracy(outputs_minuend,gt_labels,topk=(1,5))
-                final_prec1, final_prec5 = accuracy(final_outputs,gt_labels,topk=(1,5))
+                output_final = output_clean - output_corrupted
+
+                loss = self.val_criterion(output_final,gt_labels)
+
+                prec1, prec5 = accuracy(output_final,gt_labels,topk=(1,5))
                 losses.update(loss.item(),inputs.size(0))
-                top1_final.update(final_prec1,inputs.size(0))
-                top5_final.update(final_prec5,inputs.size(0))
-                top1_minuend.update(minuend_prec1,inputs.size(0))
+                top1.update(prec1,inputs.size(0))
+                top5.update(prec5,inputs.size(0))
 
-        return losses.avg, top1_final.avg, top1_minuend.avg
-    
+        return losses.avg, top1.avg, top5.avg
