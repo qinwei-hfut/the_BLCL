@@ -13,15 +13,17 @@ class Multi_FC_Model(nn.Module):
         self.num_fc = num_fc
         self.CNN = nn.Sequential(*list(model.children())[:-1])
         self.fc_list = nn.ModuleList()
-        pdb.set_trace()
+        # pdb.set_trace()
         for i in range(self.num_fc):
             self.fc_list.append(nn.Linear(512*block_expansion,num_classes))
         # self.train_FLAG = True
     
     def forward(self,x):
         x = self.CNN(x)
+        x = self.avgpool(x)
+        x = x.view(x.size(0), -1)
         outputs = []
-        pdb.set_trace()
+        # pdb.set_trace()
         for fc in self.fc_list:
             outputs.append(fc(x))
         return outputs
