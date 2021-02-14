@@ -2,6 +2,7 @@
 # 然后在model.py中添加这个不同头的模型；
 import torch
 import torch.nn as nn
+import pdb
 
 class Multi_FC_Model(nn.Module):
     def __init__(self,model,num_classes,block_expansion=1,num_fc=2):
@@ -19,6 +20,7 @@ class Multi_FC_Model(nn.Module):
     def forward(self,x):
         x = self.CNN(x)
         outputs = []
+        pdb.set_trace()
         for fc in self.fc_list:
             outputs.append(fc(x))
         return outputs
