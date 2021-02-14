@@ -124,7 +124,7 @@ class DoubleFC_Trainer(BaseTrainer):
                 outputs = self.model(inputs)
                 output_clean, output_corrupted = self.normalize_logit(outputs)
 
-                pdb.set_trace()
+                # pdb.set_trace()
 
                 output_final = output_clean - output_corrupted
 
