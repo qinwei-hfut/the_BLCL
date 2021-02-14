@@ -21,8 +21,8 @@ class Multi_FC_Model(nn.Module):
     def forward(self,x):
         x = self.CNN(x)
 
-        x = F.avg_pool2d(x, 4)
-        x = out.view(x.size(0), -1)
+        x = torch.nn.functional.avg_pool2d(x, 4)
+        x = x.view(x.size(0), -1)
 
         outputs = []
         # pdb.set_trace()
