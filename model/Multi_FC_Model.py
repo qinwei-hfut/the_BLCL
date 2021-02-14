@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 
 class Multi_FC_Model(nn.Module):
-    def __init__(self,model,block_expansion=1,num_fc=2):
+    def __init__(self,model,num_classes,block_expansion=1,num_fc=2):
         '''
         model就是我们传入的cnn+fc模型，可以剔除其fc，然后根据我们的需要添加单个或者多个fc
         '''
@@ -12,9 +12,8 @@ class Multi_FC_Model(nn.Module):
         self.num_fc = num_fc
         self.CNN = nn.Sequential(*list(model.children())[:-1])
         self.fc_list = nn.ModuleList()
-        self.num_classes = model.num_classes
         for i in range(self.num_fc):
-            self.fc_list.append(nn.Linear(512*block_expansion,self.num_classes))
+            self.fc_list.append(nn.Linear(512*block_expansion,num_classes))
         # self.train_FLAG = True
     
     def forward(self,x):

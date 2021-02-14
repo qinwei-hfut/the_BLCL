@@ -25,6 +25,6 @@ def toymodel():
 def Multi_FC_PreActResNet18(num_classes=10) -> PreActResNet:
     print('Multi_FC_PreActResNet18')
     model = PreActResNet18(num_classes=num_classes)
-    return Multi_FC_Model(model=model)
+    return Multi_FC_Model(model=model,num_classes=num_classes)
 
 
