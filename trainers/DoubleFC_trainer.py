@@ -49,7 +49,7 @@ class DoubleFC_Trainer(BaseTrainer):
             # pdb.set_trace()
 
             self.optimizer.zero_grad()
-            loss_corrupted.backward()
+            loss_corrupted.backward(retain_graph=True)
             loss_clean.backward()
 
             # ################ print log
