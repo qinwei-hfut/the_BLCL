@@ -60,8 +60,8 @@ class DoubleFC_Trainer(BaseTrainer):
 
             self.optimizer.step()
 
-            Nprec1, Nprec5 = accuracy(outputs,noisy_labels,topk=(1,5))
-            Cprec1, Cprec5 = accuracy(outputs,gt_labels,topk=(1,5))
+            Nprec1, Nprec5 = accuracy(outputs[0],noisy_labels,topk=(1,5))
+            Cprec1, Cprec5 = accuracy(outputs[0],gt_labels,topk=(1,5))
             losses.update(loss_clean.item(), inputs.size(0))
             Ntop1.update(Nprec1.item(), inputs.size(0))
             Ntop5.update(Nprec5.item(), inputs.size(0))
