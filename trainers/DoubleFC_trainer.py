@@ -8,6 +8,7 @@ import os
 from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 import pdb
 import model.model as model_zoo
+import torch.nn.functional as F
 
 
 class DoubleFC_Trainer(BaseTrainer):
@@ -104,6 +105,8 @@ class DoubleFC_Trainer(BaseTrainer):
 
     #     return losses.avg, top1.avg, top5.avg
 
+    def normalize_logit(self, logits):
+        return F.normalize(logits[0],p=2,dim=1),F.normalize(logits[1],p=2,dim=1),
 
     def _val_epoch(self):
         self.model.eval()
@@ -120,6 +123,8 @@ class DoubleFC_Trainer(BaseTrainer):
                 # 在处理两个fc之间的输出时，需要normalize一下，把每一个样本都变成单位长度？sample方向的normalize
                 outputs = self.model(inputs)
                 output_clean, output_corrupted = self.normalize_logit(outputs)
+
+                pdb.set_trace()
 
                 output_final = output_clean - output_corrupted
 
