@@ -56,7 +56,7 @@ train_criterion = '\'{"type":"CE_loss","args":{"reduction":"none"}}\''
 # train_criterion = '\'{"type":"Mixed_loss","args":{"alpha_ce":0.0,"alpha_rce":0.0,"alpha_mae":0.0,"alpha_mse":0.0,"activation_type":"Sigmoid"}}\''
 # train_criterion = '\'{"type":"ML_3Layer_Loss","args":{"in_dim":20,"hidden_dim":[50,50]}}\''
 # extra= 'only_function'
-extra = 'all samples'
+extra = 'all_samples'
 # extra= ''
 
 
