@@ -122,11 +122,11 @@ class DoubleFC_Trainer(BaseTrainer):
 
                 # 在处理两个fc之间的输出时，需要normalize一下，把每一个样本都变成单位长度？sample方向的normalize
                 outputs = self.model(inputs)
-                output_clean, output_corrupted = self.normalize_logit(outputs)
 
-                # pdb.set_trace()
+                # output_clean, output_corrupted = self.normalize_logit(outputs)
+                # output_final = output_clean - output_corrupted
 
-                output_final = output_clean - output_corrupted
+                output_final = outputs[0]
 
                 loss = self.val_criterion(output_final,gt_labels)
 
@@ -152,9 +152,10 @@ class DoubleFC_Trainer(BaseTrainer):
 
                 # 在处理两个fc之间的输出时，需要normalize一下，把每一个样本都变成单位长度？sample方向的normalize
                 outputs = self.model(inputs)
-                output_clean, output_corrupted = self.normalize_logit(outputs)
+                # output_clean, output_corrupted = self.normalize_logit(outputs)
 
-                output_final = output_clean - output_corrupted
+                # output_final = output_clean - output_corrupted
+                output_final = outputs[0]
 
                 loss = self.val_criterion(output_final,gt_labels)
 
