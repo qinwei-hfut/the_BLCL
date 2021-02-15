@@ -4,6 +4,7 @@ from .meta_trainer import MetaTrainer
 from .meta_layer_trainer import MetaLayerTrainer
 from .neg_trainer import Neg_Trainer
 from .DoubleFC_trainer import DoubleFC_Trainer
+from .DoubleFC_Test_trainer import DoubleFC_Test_Trainer
 import pdb
 
 def trainer(*args):
