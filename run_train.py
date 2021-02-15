@@ -57,6 +57,7 @@ train_criterion = '\'{"type":"CE_loss","args":{"reduction":"none"}}\''
 # train_criterion = '\'{"type":"ML_3Layer_Loss","args":{"in_dim":20,"hidden_dim":[50,50]}}\''
 # extra= 'only_function'
 extra = 'all_samples'
+extra = 'only_clean_samples'
 # extra= ''
 
 

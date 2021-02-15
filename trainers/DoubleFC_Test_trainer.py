@@ -39,13 +39,14 @@ class DoubleFC_Test_Trainer(BaseTrainer):
             inputs, noisy_labels, soft_labels, gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
             # corrupted_flag = ~ noisy_labels.eq(gt_labels)
-            # clean_flag = noisy_labels.eq(gt_labels)
+            clean_flag = noisy_labels.eq(gt_labels)
 
             outputs = self.model(inputs)
 
             # 这样操作是否batch大小，或者说是梯度大小？需要检查一下 TODO
-            loss = (self.train_criterion(outputs[0],noisy_labels)).mean()
-            # loss_clean = (self.train_criterion(outputs[0],noisy_labels) * clean_flag).mean()
+            # loss = (self.train_criterion(outputs[0],noisy_labels)).mean()
+            loss_clean = (self.train_criterion(outputs[0],noisy_labels) * clean_flag).mean()
+            loss = loss_clean
             # loss_corrupted = (self.train_criterion(outputs[1],noisy_labels) * corrupted_flag).mean()
             
             # pdb.set_trace()
