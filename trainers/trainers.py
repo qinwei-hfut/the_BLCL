@@ -23,3 +23,6 @@ def neg_trainer(*args):
 
 def doubleFC_trainer(*args):
     return DoubleFC_Trainer(*args)
+
+def doubleFC_Test_trainer(*args):
+    return DoubleFC_Test_Trainer(*args)

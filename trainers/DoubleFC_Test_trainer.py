@@ -38,20 +38,22 @@ class DoubleFC_Trainer(BaseTrainer):
             # print(batch_idx)
             inputs, noisy_labels, soft_labels, gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
-            corrupted_flag = ~ noisy_labels.eq(gt_labels)
-            clean_flag = noisy_labels.eq(gt_labels)
+            # corrupted_flag = ~ noisy_labels.eq(gt_labels)
+            # clean_flag = noisy_labels.eq(gt_labels)
 
             outputs = self.model(inputs)
 
             # 这样操作是否batch大小，或者说是梯度大小？需要检查一下 TODO
-            loss_clean = (self.train_criterion(outputs[0],noisy_labels) * clean_flag).mean()
-            loss_corrupted = (self.train_criterion(outputs[1],noisy_labels) * corrupted_flag).mean()
+            loss = (self.train_criterion(outputs[0],noisy_labels)).mean()
+            # loss_clean = (self.train_criterion(outputs[0],noisy_labels) * clean_flag).mean()
+            # loss_corrupted = (self.train_criterion(outputs[1],noisy_labels) * corrupted_flag).mean()
             
             # pdb.set_trace()
 
             self.optimizer.zero_grad()
-            loss_corrupted.backward(retain_graph=True)
-            loss_clean.backward()
+            # loss_corrupted.backward(retain_graph=True)
+            # loss_clean.backward()
+            loss.backward()
 
             # ################ print log
             # for group in self.optimizer.param_groups:
@@ -63,7 +65,7 @@ class DoubleFC_Trainer(BaseTrainer):
 
             Nprec1, Nprec5 = accuracy(outputs[0],noisy_labels,topk=(1,5))
             Cprec1, Cprec5 = accuracy(outputs[0],gt_labels,topk=(1,5))
-            losses.update(loss_clean.item(), inputs.size(0))
+            losses.update(loss.item(), inputs.size(0))
             Ntop1.update(Nprec1.item(), inputs.size(0))
             Ntop5.update(Nprec5.item(), inputs.size(0))
             Ctop1.update(Cprec1.item(), inputs.size(0))
@@ -122,11 +124,10 @@ class DoubleFC_Trainer(BaseTrainer):
 
                 # 在处理两个fc之间的输出时，需要normalize一下，把每一个样本都变成单位长度？sample方向的normalize
                 outputs = self.model(inputs)
-                output_clean, output_corrupted = self.normalize_logit(outputs)
-
+                # output_clean, output_corrupted = self.normalize_logit(outputs)
                 # pdb.set_trace()
-
-                output_final = output_clean - output_corrupted
+                # output_final = output_clean - output_corrupted
+                output_final = outputs[0]
 
                 loss = self.val_criterion(output_final,gt_labels)
 
@@ -152,9 +153,9 @@ class DoubleFC_Trainer(BaseTrainer):
 
                 # 在处理两个fc之间的输出时，需要normalize一下，把每一个样本都变成单位长度？sample方向的normalize
                 outputs = self.model(inputs)
-                output_clean, output_corrupted = self.normalize_logit(outputs)
-
-                output_final = output_clean - output_corrupted
+                # output_clean, output_corrupted = self.normalize_logit(outputs)
+                # output_final = output_clean - output_corrupted
+                output_final = outputs[0]
 
                 loss = self.val_criterion(output_final,gt_labels)
 
