@@ -11,7 +11,7 @@ import model.model as model_zoo
 import torch.nn.functional as F
 
 
-class DoubleFC_Trainer(BaseTrainer):
+class DoubleFC_Test_Trainer(BaseTrainer):
     def __init__(self,model,datasets,logger,resuls_saved_path,args):
         super().__init__(model,datasets,logger,resuls_saved_path,args)
         # self.minuend_model = getattr(model_zoo,args.model_dict['type'])(**args.model_dict['args'])
