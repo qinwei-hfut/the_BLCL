@@ -2,6 +2,7 @@ import numpy as np
 from PIL import Image
 import pdb
 import torch
+import random
 
 import torchvision
 import torchvision.transforms as transforms
@@ -113,6 +114,8 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
             self.asymmetric_noise()
         elif self.args.noise_type == 'sym':
             self.symmetric_noise()
+        elif self.args.noise_type == 'asym+':
+            self.asymmetric_noise_plus()
 
 
     def get_soft_labels_acc(self):
@@ -162,6 +165,71 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
                         self.noisy_labels[idx] = 7
                     self.noisy_idx.append(idx)
                 # self.soft_labels[idx][self.noisy_labels[idx]] = 1.   
+
+    def asymmetric_noise_plus(self):
+        for i in range(10):
+            indices = np.where(self.noisy_labels == i)[0]
+            np.random.shuffle(indices)
+            for j, idx in enumerate(indices):
+                if j < self.args.noise_rate * len(indices):
+                    # truck -> automobile
+                    flag = random.random()
+                    if i == 9:
+                        if flag < 0.85:
+                            self.noisy_labels[idx] = 1
+                        else:
+                            # ship
+                            self.noisy_labels[idx] = 8
+                    # automobile -> truck
+                    elif i == 1:
+                        if flag < 0.85:
+                            self.noisy_labels[idx] = 9
+                        else:
+                            # airplane
+                            self.noisy_labels[idx] = 0   
+                    # bird -> airplane
+                    elif i == 2:
+                        if flag < 0.85:
+                            self.noisy_labels[idx] = 0
+                        else:
+                            # frog
+                            self.noisy_labels[idx] = 6
+                    # airplane -> bird
+                    elif i == 0:
+                        if flag < 0.85:
+                            self.noisy_labels[idx] = 2
+                        else:
+                            # ship
+                            self.noisy_labels[idx] = 8
+                    # cat -> dog
+                    elif i == 3:
+                        if flag < 0.85:
+                            self.noisy_labels[idx] = 5
+                        else:
+                            # deer
+                            self.noisy_labels[idx] = 4
+                    # dog -> cat
+                    elif i == 5:
+                        if flag < 0.85:
+                            self.noisy_labels[idx] = 3
+                        else:
+                            # horse
+                            self.noisy_labels[idx] = 7
+                    # deer -> horse
+                    elif i == 4:
+                        if flag < 0.85:
+                            self.noisy_labels[idx] = 7
+                        else:
+                            # cat
+                            self.noisy_labels[idx] = 3
+                    # horse -> deer
+                    elif i == 7:
+                        if flag < 0.85:
+                            self.noisy_labels[idx] = 4
+                        else:
+                            # dog
+                            self.noisy_labels[idx] =  5
+                    self.noisy_idx.append(idx)
 
     def update_data(self, indices, updated_soft_targets):
         indices = indices.cpu()
