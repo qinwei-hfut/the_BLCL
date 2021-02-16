@@ -85,8 +85,8 @@ finetune_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[5],"gamma
 split_dataset = '\'{"trainset":"train_dataset","valset":"val_dataset","metaset":"meta_set","testset":"test_set"}\''
 
 
-dataset = '\'{"type":"cifar100","args":{"root":"./data","meta":1000,"val":1000}}\''
-arch = '\'{"type":"Multi_FC_PreActResNet18","args":{"num_classes":100}}\''
+dataset = '\'{"type":"cifar10","args":{"root":"./data","meta":1000,"val":1000}}\''
+arch = '\'{"type":"Multi_FC_PreActResNet18","args":{"num_classes":10}}\''
 # arch = '\'{"type":"toymodel","args":{}}\''
 
 # minuend_path = "/sharedir/project/the_BLCL/cifar10_8693"
