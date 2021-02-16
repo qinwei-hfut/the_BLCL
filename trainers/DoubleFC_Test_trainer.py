@@ -44,7 +44,13 @@ class DoubleFC_Test_Trainer(BaseTrainer):
             outputs = self.model(inputs)
 
             # 这样操作是否batch大小，或者说是梯度大小？需要检查一下 TODO
-            loss = (self.train_criterion(outputs[0],gt_labels)).mean()
+            # loss = (self.train_criterion(outputs[0],gt_labels)).mean()
+            if self.args.extra == 'all_noisy_samples':
+                loss = (self.train_criterion(outputs[0],noisy_labels)).mean()
+            elif self.args.extra == 'all_samples_gt':
+                loss = (self.train_criterion(outputs[0],gt_labels)).mean()
+            elif self.args.extra == 'only_clean_samples':
+                loss = (self.train_criterion(outputs[0],noisy_labels) * clean_flag).mean()
             # loss_clean = (self.train_criterion(outputs[0],noisy_labels) * clean_flag).mean()
             # loss = loss_clean
             # loss_corrupted = (self.train_criterion(outputs[1],noisy_labels) * corrupted_flag).mean()
@@ -85,28 +91,6 @@ class DoubleFC_Test_Trainer(BaseTrainer):
             'test_acc_1':test_acc1}
         return log
 
-
-    # def _test_minuend_model(self):
-    #     self.minuend_model.eval()
-
-    #     losses = AverageMeter()
-    #     top1 = AverageMeter()
-    #     top5 = AverageMeter()
-
-    #     with torch.no_grad():
-    #         # with tqdm(self.test_loader) as progress:
-    #         for batch_idx, (inputs,gt_labels) in enumerate(self.test_loader):
-    #             inputs,gt_labels = inputs.cuda(),gt_labels.cuda()
-
-    #             outputs = self.minuend_model(inputs)
-    #             loss = self.val_criterion(outputs,gt_labels)
-
-    #             prec1, prec5 = accuracy(outputs,gt_labels,topk=(1,5))
-    #             losses.update(loss.item(),inputs.size(0))
-    #             top1.update(prec1,inputs.size(0))
-    #             top5.update(prec5,inputs.size(0))
-
-    #     return losses.avg, top1.avg, top5.avg
 
     def normalize_logit(self, logits):
         return F.normalize(logits[0],p=2,dim=1),F.normalize(logits[1],p=2,dim=1),
