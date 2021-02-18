@@ -41,9 +41,9 @@ gpu=3
 
 
 
-val_criterion = '\'{"type":"CE_loss","args":{}}\''
-warm_up_criterion = '\'{"type":"CE_loss","args":{}}\''
-finetune_criterion = '\'{"type":"CE_loss","args":{}}\''
+val_criterion = '\'{"type":"CE_loss","args":{"reduction":"mean"}}\''
+warm_up_criterion = '\'{"type":"CE_loss","args":{"reduction":"mean"}}\''
+finetune_criterion = '\'{"type":"CE_loss","args":{"reduction":"mean"}}\''
 
 # train_criterion = '\'{"type":"MAE_one_hot_loss","args":{}}\''
 # train_criterion = '\'{"type":"MSE_one_hot_loss","args":{}}\''
