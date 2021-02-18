@@ -87,7 +87,8 @@ split_dataset = '\'{"trainset":"train_Cval_dataset","valset":"val_dataset","meta
 
 
 dataset = '\'{"type":"cifar10","args":{"root":"./data","meta":1000,"val":1000}}\''
-arch = '\'{"type":"Multi_FC_PreActResNet18","args":{"num_classes":10}}\''
+# arch = '\'{"type":"Multi_FC_PreActResNet18","args":{"num_classes":10}}\''
+arch = '\'{"type":"PreActResNet18","args":{"num_classes":10}}\''
 # arch = '\'{"type":"toymodel","args":{}}\''
 
 # minuend_path = "/sharedir/project/the_BLCL/cifar10_8693"
