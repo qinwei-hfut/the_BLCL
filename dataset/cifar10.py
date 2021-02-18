@@ -175,56 +175,56 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
                     # truck -> automobile
                     flag = random.random()
                     if i == 9:
-                        if flag < 0.85:
+                        if flag < 0.80:
                             self.noisy_labels[idx] = 1
                         else:
                             # ship
                             self.noisy_labels[idx] = 8
                     # automobile -> truck
                     elif i == 1:
-                        if flag < 0.85:
+                        if flag < 0.80:
                             self.noisy_labels[idx] = 9
                         else:
                             # airplane
                             self.noisy_labels[idx] = 0   
                     # bird -> airplane
                     elif i == 2:
-                        if flag < 0.85:
+                        if flag < 0.80:
                             self.noisy_labels[idx] = 0
                         else:
                             # frog
                             self.noisy_labels[idx] = 6
                     # airplane -> bird
                     elif i == 0:
-                        if flag < 0.85:
+                        if flag < 0.80:
                             self.noisy_labels[idx] = 2
                         else:
                             # ship
                             self.noisy_labels[idx] = 8
                     # cat -> dog
                     elif i == 3:
-                        if flag < 0.85:
+                        if flag < 0.80:
                             self.noisy_labels[idx] = 5
                         else:
                             # deer
                             self.noisy_labels[idx] = 4
                     # dog -> cat
                     elif i == 5:
-                        if flag < 0.85:
+                        if flag < 0.80:
                             self.noisy_labels[idx] = 3
                         else:
                             # horse
                             self.noisy_labels[idx] = 7
                     # deer -> horse
                     elif i == 4:
-                        if flag < 0.85:
+                        if flag < 0.80:
                             self.noisy_labels[idx] = 7
                         else:
                             # cat
                             self.noisy_labels[idx] = 3
                     # horse -> deer
                     elif i == 7:
-                        if flag < 0.85:
+                        if flag < 0.80:
                             self.noisy_labels[idx] = 4
                         else:
                             # dog
