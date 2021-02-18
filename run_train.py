@@ -47,7 +47,7 @@ finetune_criterion = '\'{"type":"CE_loss","args":{}}\''
 
 # train_criterion = '\'{"type":"MAE_one_hot_loss","args":{}}\''
 # train_criterion = '\'{"type":"MSE_one_hot_loss","args":{}}\''
-train_criterion = '\'{"type":"CE_loss","args":{"reduction":"none"}}\''
+train_criterion = '\'{"type":"CE_loss","args":{"reduction":"mean"}}\''
 # train_criterion = '\'{"type":"SCE_loss","args":{"alpha":0.1,"beta":1.0}}\''
 # train_criterion = '\'{"type":"CE_MAE_loss","args":{"alpha":0.1,"beta":1.0}}\''
 # train_criterion = '\'{"type":"CE_LS_loss","args":{}}\''
@@ -59,7 +59,8 @@ train_criterion = '\'{"type":"CE_loss","args":{"reduction":"none"}}\''
 
 # extra= 'all_noisy_samples'
 # extra = 'all_samples_gt'
-extra = 'only_clean_samples'
+# extra = 'only_clean_samples'
+extra = ''
 
 
 # train_criterion = '\'{"type":"NFLandRCE","args":{"alpha":1.0,"beta":1.0,"num_classes":10}}\''
@@ -81,8 +82,8 @@ meta_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[35,75],"gamma
 finetune_optim = '\'{"type":"SGD","args":{"lr":0.01,"momentum":0.9,"weight_decay":1e-4}}\''
 finetune_lr_scheduler = '\'{"type":"MultiStepLR","args":{"milestones":[5],"gamma":0.1}}\''
 
-# split_dataset = '\'{"trainset":"train_Cval_dataset","valset":"val_dataset","metaset":"meta_set","testset":"test_set"}\''
-split_dataset = '\'{"trainset":"train_dataset","valset":"val_dataset","metaset":"meta_set","testset":"test_set"}\''
+split_dataset = '\'{"trainset":"train_Cval_dataset","valset":"val_dataset","metaset":"meta_set","testset":"test_set"}\''
+# split_dataset = '\'{"trainset":"train_dataset","valset":"val_dataset","metaset":"meta_set","testset":"test_set"}\''
 
 
 dataset = '\'{"type":"cifar10","args":{"root":"./data","meta":1000,"val":1000}}\''
@@ -95,8 +96,8 @@ minuend_path = "/sharedir/project/the_BLCL/cifar10_asym2_9200"
 meta_batch_size = 128
 
 total_epochs = 120
-warm_up_epochs = 0
-finetune_epochs = 0
+warm_up_epochs = 5
+finetune_epochs = 10
 batch_size = 128
 
 
@@ -117,18 +118,18 @@ batch_size = 128
 # run_exp(trainer='trainer',noise_type='sym',noise_rate=0.8,epochs=120,warm_up_epochs=5,finetune_epochs=10,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra)
 # run_exp(trainer='trainer',noise_type='sym',noise_rate=0.8,epochs=120,warm_up_epochs=5,finetune_epochs=10,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra)
 
-# run_exp(trainer='trainer',noise_type='asym',noise_rate=0.4,epochs=120,warm_up_epochs=5,finetune_epochs=10,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra)
-# run_exp(trainer='trainer',noise_type='asym',noise_rate=0.4,epochs=120,warm_up_epochs=5,finetune_epochs=10,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra)
+run_exp(trainer='trainer',noise_type='asym+',noise_rate=0.4,epochs=total_epochs,warm_up_epochs=warm_up_epochs,finetune_epochs=finetune_epochs,minuend_path=minuend_path,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra)
+run_exp(trainer='trainer',noise_type='asym+',noise_rate=0.4,epochs=total_epochs,warm_up_epochs=warm_up_epochs,finetune_epochs=finetune_epochs,minuend_path=minuend_path,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra)
 
-# run_exp(trainer='trainer',noise_type='asym',noise_rate=0.2,epochs=120,warm_up_epochs=5,finetune_epochs=10,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra)
-# run_exp(trainer='trainer',noise_type='asym',noise_rate=0.2,epochs=120,warm_up_epochs=5,finetune_epochs=10,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra)
+run_exp(trainer='trainer',noise_type='asym+',noise_rate=0.2,epochs=total_epochs,warm_up_epochs=warm_up_epochs,finetune_epochs=finetune_epochs,minuend_path=minuend_path,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra)
+run_exp(trainer='trainer',noise_type='asym+',noise_rate=0.2,epochs=total_epochs,warm_up_epochs=warm_up_epochs,finetune_epochs=finetune_epochs,minuend_path=minuend_path,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra)
 
 
 # run_exp(trainer='meta_trainer',noise_type='sym',noise_rate=0.9,epochs=120,warm_up_epochs=0,finetune_epochs=10,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=128,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra)
 
 
-run_exp(trainer='doubleFC_Test_trainer',noise_type='asym+',noise_rate=0.46,epochs=total_epochs,warm_up_epochs=warm_up_epochs,finetune_epochs=finetune_epochs,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=batch_size,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra,minuend_path=minuend_path)
-run_exp(trainer='doubleFC_Test_trainer',noise_type='asym+',noise_rate=0.46,epochs=total_epochs,warm_up_epochs=warm_up_epochs,finetune_epochs=finetune_epochs,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=batch_size,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra,minuend_path=minuend_path)
+# run_exp(trainer='doubleFC_Test_trainer',noise_type='asym+',noise_rate=0.46,epochs=total_epochs,warm_up_epochs=warm_up_epochs,finetune_epochs=finetune_epochs,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=batch_size,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra,minuend_path=minuend_path)
+# run_exp(trainer='doubleFC_Test_trainer',noise_type='asym+',noise_rate=0.46,epochs=total_epochs,warm_up_epochs=warm_up_epochs,finetune_epochs=finetune_epochs,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=batch_size,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra,minuend_path=minuend_path)
 # run_exp(trainer='doubleFC_trainer',noise_type='asym+',noise_rate=0.46,epochs=total_epochs,warm_up_epochs=warm_up_epochs,finetune_epochs=finetune_epochs,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=batch_size,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra,minuend_path=minuend_path)
 # run_exp(trainer='doubleFC_trainer',noise_type='asym+',noise_rate=0.46,epochs=total_epochs,warm_up_epochs=warm_up_epochs,finetune_epochs=finetune_epochs,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=batch_size,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra,minuend_path=minuend_path)
 # run_exp(trainer='neg_trainer',noise_type='asym',noise_rate=0.2,epochs=total_epochs,warm_up_epochs=warm_up_epochs,finetune_epochs=finetune_epochs,dataset=dataset,meta_batch_size=meta_batch_size,batch_size=batch_size,arch=arch,optim=optim,meta_optim=meta_optim,lr_scheduler=lr_scheduler,meta_lr_scheduler=meta_lr_scheduler,warm_up_criterion=warm_up_criterion,split_dataset=split_dataset,train_criterion=train_criterion,val_criterion=val_criterion,gpu=gpu,finetune_optim=finetune_optim,finetune_lr_scheduler=finetune_lr_scheduler,finetune_criterion=finetune_criterion,extra=extra,minuend_path=minuend_path)
