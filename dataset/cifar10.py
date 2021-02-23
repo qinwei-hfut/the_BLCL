@@ -94,9 +94,11 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
         if val_indices is not None:
             # self.soft_labels = np.zeros((50000, 10), dtype=np.float32)     #由noisy label产生的soft label
             self.soft_labels = np.zeros((len(indexs)+len(val_indices),10),dtype=np.float32)
+            self.loss_weight = np.ones((len(indexs)+len(val_indices),4),dtype=np.float32)
         else:
             # self.soft_labels = np.zeros((45000, 10), dtype=np.float32)
             self.soft_labels = np.zeros((len(indexs),10),dtype=np.float32)
+            self.loss_weight = np.ones((len(indexs),4),dtype=np.float32)
         
         self.noisy_idx = []
         self.add_noise()
@@ -107,7 +109,16 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
             self.gt_labels = np.concatenate((self.gt_labels,np.array(self.targets)[val_indices]),axis=0)
 
         self.init_soft_labels_from_constant_values()
+        self.init_loss_weight()
+        self.extra_data = self.pack_extra_data()
         # self.init_soft_labels_from_noisy_labels()
+    
+    def init_loss_weight(self):
+        self.loss_weight = self.loss_weight * 0.5
+
+    def pack_extra_data(self):
+        return np.concatenate((self.soft_labels,self.loss_weight), axis=1)
+
         
     def add_noise(self):
         if self.args.noise_type == 'asym':
@@ -119,7 +130,7 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
 
 
     def get_soft_labels_acc(self):
-        return (np.argmax(self.soft_labels,axis=1)  == self.gt_labels).sum() / len(self.gt_labels)
+        return (np.argmax(self.extra_data[:,0:10],axis=1)  == self.gt_labels).sum() / len(self.gt_labels)
 
 
     def get_noisy_label_acc(self):
@@ -231,11 +242,11 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
                             self.noisy_labels[idx] =  5
                     self.noisy_idx.append(idx)
 
-    def update_data(self, indices, updated_soft_targets):
+    def update_extra_data(self, indices, updated_extra_data):
         indices = indices.cpu()
-        updated_soft_targets = updated_soft_targets.detach().cpu()
+        updated_extra_data = updated_extra_data.detach().cpu()
         for i,idx in enumerate(indices):
-            self.soft_labels[idx] = updated_soft_targets[i]
+            self.extra_data[idx] = updated_extra_data[i]
 
     def __len__(self):
         return len(self.train_data)
@@ -249,7 +260,7 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
             tuple: (image, target) where target is index of the target class.
         """
         img, noisy_target = self.train_data[index], self.noisy_labels[index] 
-        soft_targets, gt_targets = self.soft_labels[index], self.gt_labels[index]
+        extra_data, gt_targets = self.extra_data[index], self.gt_labels[index]
 
         # doing this so that it is consistent with all other datasets
         # to return a PIL Image
@@ -262,7 +273,7 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
         #     target = self.target_transform(target)
 
         # image;   noisy label; soft label; GT label; index 
-        return img, noisy_target, soft_targets, gt_targets, index
+        return img, noisy_target, extra_data, gt_targets, index
 
 
 
