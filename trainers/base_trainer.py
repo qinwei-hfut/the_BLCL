@@ -19,8 +19,9 @@ class BaseTrainer(torch.nn.Module):
         super(BaseTrainer,self).__init__()
         # self.train_dataset, self.val_dataset, self.train_Cval_dataset, self.train_Nval_dataset,self.test_dataset = datasets
         self.args = args
-        print('trainset clean rate:' + str(datasets[self.args.split_dataset['trainset']].get_noisy_label_acc()))
-        self.train_loader = data.DataLoader(datasets[self.args.split_dataset['trainset']],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
+        self.trainset = datasets[self.args.split_dataset['trainset']]
+        print('trainset clean rate:' + str(self.trainset.get_noisy_label_acc()))
+        self.train_loader = data.DataLoader(self.trainset,batch_size=self.args.batch_size,shuffle=True,num_workers=4)
         self.val_loader = data.DataLoader(datasets[self.args.split_dataset['valset']],batch_size=self.args.batch_size,shuffle=False,num_workers=4)
         self.test_loader = data.DataLoader(datasets[self.args.split_dataset['testset']],batch_size=self.args.batch_size,shuffle=False,num_workers=4)
         self.meta_loader = data.DataLoader(datasets[self.args.split_dataset['metaset']],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
@@ -198,10 +199,10 @@ class BaseTrainer(torch.nn.Module):
 
         for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.train_loader):
 
-            if batch_idx % 400 == 0:
-                print(batch_idx)
-            if batch_idx == 1000:
-                break
+            # if batch_idx % 400 == 0:
+            #     print(batch_idx)
+            # if batch_idx == 1000:
+            #     break
 
             inputs, noisy_labels, soft_labels, gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
