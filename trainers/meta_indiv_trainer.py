@@ -96,7 +96,7 @@ class MetaIndivTrainer(BaseTrainer):
                         break
 
                 # self.meta_optimizer.step()
-                inner_extra_data = inner_extra_data - self.args.meta_lr * inner_extra_data.grad
+                inner_extra_data = inner_extra_data - self.meta_lr * inner_extra_data.grad
                 self.trainset.update_extra_data(index,inner_extra_data)
                 
 
