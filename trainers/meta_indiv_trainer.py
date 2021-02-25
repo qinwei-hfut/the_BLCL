@@ -70,8 +70,8 @@ class MetaIndivTrainer(BaseTrainer):
             inner_inputs, inner_noisy_labels, inner_extra_data, inner_gt_labels = inputs.cuda(),noisy_labels.cuda(),extra_data.cuda(),gt_labels.cuda()
             # inner_loss_weight_per_sample = inner_extra_data[:,self.num_classes:self.num_classes+4]
             inner_extra_data.requires_grad_(True)
-            pdb.set_trace()
-            inner_extra_data.grad = torch.zeros(inner_extra_data.size())
+            # pdb.set_trace()
+            inner_extra_data.grad = torch.zeros(inner_extra_data.size(),device='cuda')
             inner_extra_data.grad.zero_()
 
             
