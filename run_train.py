@@ -99,7 +99,7 @@ minuend_path = "/sharedir/project/the_BLCL/cifar10_asym2_9200"
 meta_batch_size = 128
 
 total_epochs = 120
-warm_up_epochs = 5
+warm_up_epochs = 0
 finetune_epochs = 10
 batch_size = 128
 
