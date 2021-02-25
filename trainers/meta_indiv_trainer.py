@@ -28,7 +28,7 @@ class MetaIndivTrainer(BaseTrainer):
         if self.train_criterion_dict['type'] == 'Mixed_loss':
             self.activation = getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])()
 
-        self.num_classes = self.arch['args']['num_classes']
+        self.num_classes = self.args.arch['args']['num_classes']
 
     def _plot_loss_weight(self):
         # pdb.set_trace()
