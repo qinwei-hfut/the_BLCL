@@ -11,20 +11,24 @@ from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 import pdb
 import higher
 
-class MetaTrainer(BaseTrainer):
+class MetaIndivTrainer(BaseTrainer):
+    # 这个trainer的训练方式是每个样本都有一个单独可以meta学习loss function 权重；
     def __init__(self,model,datasets,logger,resuls_saved_path,args):
         super().__init__(model,datasets,logger,resuls_saved_path,args)
         # self.meta_val_loader = data.DataLoader(datasets[self.args.split_dataset['valset']],batch_size=self.args.meta_batch_size,shuffle=True,num_workers=4)
         # self.meta_loader = data.DataLoader(datasets[self.args.split_dataset['metaset']],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
 
-        if self.args.extra == 'only_function':
-            self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
-        else:
-            self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
+        # if self.args.extra == 'only_function':
+        self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
+        self.meta_lr = args.meta_optim['args']['lr']
+        # else:
+        #     self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
         # pdb.set_trace()
         self.meta_scheduler = getattr(optim.lr_scheduler,self.args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
         if self.train_criterion_dict['type'] == 'Mixed_loss':
             self.activation = getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])()
+
+        self.num_classes = self.arch['args']['num_classes']
 
     def _plot_loss_weight(self):
         # pdb.set_trace()
@@ -52,6 +56,7 @@ class MetaTrainer(BaseTrainer):
         Ctop5 = AverageMeter()
 
         # pdb.set_trace()
+        self.train_loader = data.DataLoader(self.trainset,batch_size=self.args.batch_size,shuffle=True,num_workers=4)
 
         if self.train_criterion_dict['type'] == 'Mixed_loss':
             print('ce_weight:'+str(self.activation(self.train_criterion.alpha_ce).item()))
@@ -60,27 +65,25 @@ class MetaTrainer(BaseTrainer):
             print('mse_weight:'+str(self.activation(self.train_criterion.alpha_mse).item()))
 
 
-        for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.train_loader):
-            inner_inputs, inner_noisy_labels, inner_soft_labels, inner_gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
+        for batch_idx, (inputs, noisy_labels, extra_data, gt_labels, index) in enumerate(self.train_loader):
+            inner_inputs, inner_noisy_labels, inner_extra_data, inner_gt_labels = inputs.cuda(),noisy_labels.cuda(),extra_data.cuda(),gt_labels.cuda()
+            # inner_loss_weight_per_sample = inner_extra_data[:,self.num_classes:self.num_classes+4]
+            inner_extra_data.requires_grad_(True)
+            inner_extra_data.grad = torch.zeros(inner_extra_data.size())
+            inner_extra_data.grad.zero_()
 
-            # print(batch_idx)
-            if batch_idx % 400 == 0:
-                print(batch_idx)
-            # print(batch_idx)
-            if batch_idx == 1000:
-                break
             
             with higher.innerloop_ctx(self.model,self.optimizer,copy_initial_weights=False) as (fnet,diffopt):
                 
                 # inner loop
                 inner_outputs = fnet(inner_inputs)
-                inner_loss = self.train_criterion(inner_outputs,inner_noisy_labels)
+                inner_loss = self.train_criterion(inner_outputs,inner_noisy_labels,inner_extra_data[:,self.num_classes:self.num_classes+4])
                 diffopt.step(inner_loss)
 
 
 
                 # outer loop
-                self.meta_optimizer.zero_grad()
+                # self.meta_optimizer.zero_grad()
                 for out_batch_idx, (out_inputs, out_noisy_labels, out_soft_labels,out_gt_labels,out_index) in enumerate(self.meta_loader):
                     out_inputs,out_noisy_labels,out_soft_labels,out_gt_labels = out_inputs.cuda(),out_noisy_labels.cuda(),out_soft_labels.cuda(),out_gt_labels.cuda()
                     # print(out_index)
@@ -90,7 +93,9 @@ class MetaTrainer(BaseTrainer):
                     if out_batch_idx == 0:
                         break
 
-                self.meta_optimizer.step()
+                # self.meta_optimizer.step()
+                inner_extra_data = inner_extra_data - self.args.meta_lr * inner_extra_data.grad
+                self.trainset.update_extra_data(index,inner_extra_data)
                 
 
             # actual training
@@ -112,9 +117,9 @@ class MetaTrainer(BaseTrainer):
         val_loss, val_acc1, val_acc5 = self._val_epoch()
         test_loss, test_acc1, test_acc5 = self._test_epoch()
 
-        self.meta_scheduler.step()
+        # self.meta_scheduler.step()
 
-        print("meta lr: "+str(self.meta_optimizer.param_groups[0]['lr']))
+        print("meta lr: "+str(self.meta_lr))
 
         log = {'train_loss':losses.avg,
             'train_N_acc_1':Ntop1.avg,
