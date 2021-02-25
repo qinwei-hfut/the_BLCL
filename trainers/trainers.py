@@ -5,6 +5,7 @@ from .meta_layer_trainer import MetaLayerTrainer
 from .neg_trainer import Neg_Trainer
 from .DoubleFC_trainer import DoubleFC_Trainer
 from .DoubleFC_Test_trainer import DoubleFC_Test_Trainer
+from .meta_indiv_trainer import MetaIndivTrainer
 import pdb
 
 def trainer(*args):
@@ -27,3 +28,5 @@ def doubleFC_trainer(*args):
 
 def doubleFC_Test_trainer(*args):
     return DoubleFC_Test_Trainer(*args)
+def meta_indiv_trainer(*args):
+    return MetaIndivTrainer(*args)
