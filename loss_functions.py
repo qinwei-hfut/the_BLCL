@@ -164,7 +164,42 @@ class Mixed_loss(torch.nn.Module):
         loss = ce_weight * ce + rce_weight * rce + mae_weight * mae + mse_weight * mse
         return loss
 
+class Mixed_loss_sample(torch.nn.Module):
+    def __init__(self,activation_type):
+        super(Mixed_loss_sample, self).__init__()
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+
+        self.cross_entropy = torch.nn.CrossEntropyLoss(reduction='none')
+        self.activation = getattr(torch.nn,activation_type)()
+
+    def forward(self, pred, labels, loss_weight_per_sample):
+
+        self.to(self.device)
+        num_classes = pred.size(1)
+        batch_size = pred.size(0)
+
+        # alpha_ce, alpha_mae, alpha_mse,alpha_rce = alpha_ce.view(batch_size,-1), alpha_mae.view(batch_size,-1), alpha_mse.view(batch_size,-1), alpha_rce.view(batch_size,-1)
+        alpha_ce, alpha_mae, alpha_mse,alpha_rce = loss_weight_per_sample[:,0].view(batch_size), loss_weight_per_sample[:,1].view(batch_size), loss_weight_per_sample[:,2].view(batch_size), loss_weight_per_sample[:,3].view(batch_size)
+        # CCE
+        ce = self.cross_entropy(pred, labels)
+
+        pred = F.softmax(pred, dim=1)
+        label_one_hot = torch.nn.functional.one_hot(labels, num_classes).float().to(self.device)
+        # MAE
+        mae = F.l1_loss(pred,label_one_hot,reduction='none').sum(dim=1)
+        # MSE
+        mse = F.mse_loss(pred,label_one_hot,reduction='none').sum(dim=1)
+        # RCE
+        pred = torch.clamp(pred, min=1e-7, max=1.0)
+        label_one_hot = torch.clamp(label_one_hot, min=1e-4, max=1.0)
+        rce = (-1*torch.sum(pred * torch.log(label_one_hot), dim=1))
+
+        # Loss
+        ce_weight,rce_weight,mae_weight,mse_weight = self.activation(alpha_ce),self.activation(alpha_rce),self.activation(alpha_mae),self.activation(alpha_mse)
+        loss = ce_weight * ce + rce_weight * rce + mae_weight * mae + mse_weight * mse
+        loss = loss.mean()
+        return loss
 
 class Mixed_loss_A(torch.nn.Module):
     def __init__(self, alpha_ce, alpha_rce, alpha_mae, alpha_mse,activation_type):
