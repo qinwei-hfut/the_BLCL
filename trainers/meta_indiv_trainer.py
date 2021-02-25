@@ -103,7 +103,7 @@ class MetaIndivTrainer(BaseTrainer):
             # actual training
             outputs = self.model(inner_inputs)
 
-            loss = self.train_criterion(outputs,inner_noisy_labels)
+            loss = self.train_criterion(outputs,inner_noisy_labels,inner_extra_data[:,self.num_classes:self.num_classes+4])
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
