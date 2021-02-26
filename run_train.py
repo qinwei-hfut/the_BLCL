@@ -62,7 +62,7 @@ train_criterion = '\'{"type":"CE_loss","args":{"reduction":"mean"}}\''
 # extra= 'all_noisy_samples'
 # extra = 'all_samples_gt'
 # extra = 'only_clean_samples'
-extra = ''
+extra = 'model_params'
 
 
 # train_criterion = '\'{"type":"NFLandRCE","args":{"alpha":1.0,"beta":1.0,"num_classes":10}}\''
