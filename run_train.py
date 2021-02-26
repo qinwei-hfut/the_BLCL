@@ -64,8 +64,8 @@ train_criterion = '\'{"type":"CE_loss","args":{"reduction":"mean"}}\''
 # extra = 'all_samples_gt'
 # extra = 'only_clean_samples'
 extra = 'model_params'
-val_type = 'clean'
-# val_type = 'noisy'
+# val_type = 'clean'
+val_type = 'noisy'
 
 
 # train_criterion = '\'{"type":"NFLandRCE","args":{"alpha":1.0,"beta":1.0,"num_classes":10}}\''
@@ -103,7 +103,7 @@ meta_batch_size = 128
 
 total_epochs = 120
 warm_up_epochs = 0
-finetune_epochs = 10
+finetune_epochs = 0
 batch_size = 128
 
 
