@@ -21,7 +21,7 @@ class MetaTrainer(BaseTrainer):
             self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
         elif self.args.extra == 'model_params':
             self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.model.parameters(),**args.meta_optim['args'])
-            pdb.set_trace()
+            # pdb.set_trace()
         else:
             self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
         # pdb.set_trace()
@@ -82,7 +82,10 @@ class MetaTrainer(BaseTrainer):
                     out_inputs,out_noisy_labels,out_soft_labels,out_gt_labels = out_inputs.cuda(),out_noisy_labels.cuda(),out_soft_labels.cuda(),out_gt_labels.cuda()
                     # print(out_index)
                     out_outputs = fnet(out_inputs)
-                    out_loss = self.val_criterion(out_outputs,out_gt_labels)
+                    if self.args.val_type == 'clean':
+                        out_loss = self.val_criterion(out_outputs,out_gt_labels)
+                    elif self.args.val_type == 'noisy':
+                        out_loss = self.val_criterion(out_outputs,out_noisy_labels)
                     out_loss.backward()
                     if out_batch_idx == 0:
                         break
