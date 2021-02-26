@@ -21,7 +21,7 @@ class MetaTrainer(BaseTrainer):
             self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
         else:
             self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
-        # pdb.set_trace()
+        pdb.set_trace()
         self.meta_scheduler = getattr(optim.lr_scheduler,self.args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
         if self.train_criterion_dict['type'] == 'Mixed_loss':
             self.activation = getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])()
@@ -63,12 +63,6 @@ class MetaTrainer(BaseTrainer):
         for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.train_loader):
             inner_inputs, inner_noisy_labels, inner_soft_labels, inner_gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
-            # print(batch_idx)
-            if batch_idx % 400 == 0:
-                print(batch_idx)
-            # print(batch_idx)
-            if batch_idx == 1000:
-                break
             
             with higher.innerloop_ctx(self.model,self.optimizer,copy_initial_weights=False) as (fnet,diffopt):
                 
