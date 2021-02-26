@@ -63,6 +63,7 @@ parser.add_argument('--noise-rate', '--nr',default=0.0, type=float)
 
 parser.add_argument('--extra',type=str,default='',help='extra information for the exp')
 parser.add_argument('--minuend_path',type=str)
+parser.add_argument('--val_type',type=str)
 
 # Miscs
 parser.add_argument('--manualSeed', type=int, default=1, help='manual seed')
