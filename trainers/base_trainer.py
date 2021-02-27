@@ -165,6 +165,27 @@ class BaseTrainer(torch.nn.Module):
 
         return losses.avg, top1.avg, top5.avg
 
+    def _noisy_val_epoch(self):
+        self.model.eval()
+
+        losses = AverageMeter()
+        top1 = AverageMeter()
+        top5 = AverageMeter()
+
+        with torch.no_grad():
+            # with tqdm(self.test_loader) as progress:
+            for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.val_loader):
+                inputs,noisy_labels = inputs.cuda(),noisy_labels.cuda()
+
+                outputs = self.model(inputs)
+                loss = self.val_criterion(outputs,noisy_labels)
+
+                prec1, prec5 = accuracy(outputs,noisy_labels,topk=(1,5))
+                losses.update(loss.item(),inputs.size(0))
+                top1.update(prec1,inputs.size(0))
+                top5.update(prec5,inputs.size(0))
+
+        return losses.avg, top1.avg, top5.avg
 
     def _test_epoch(self):
         self.model.eval()

@@ -59,6 +59,7 @@ class Trainer(BaseTrainer):
             Ctop5.update(Cprec5.item(), inputs.size(0))
 
         val_loss, val_acc1, val_acc5 = self._val_epoch()
+        noisy_val_loss, noisy_val_acc1, _ = self._noisy_val_epoch()
         test_loss, test_acc1, test_acc5 = self._test_epoch()
 
         log = {'train_loss':losses.avg,
@@ -66,6 +67,7 @@ class Trainer(BaseTrainer):
             'train_C_acc_1':Ctop1.avg,
             'val_loss':val_loss,
             'val_acc_1':val_acc1,
+            'noisy_val_acc_1':noisy_val_acc1,
             'test_loss':test_loss,
             'test_acc_1':test_acc1}
         return log
