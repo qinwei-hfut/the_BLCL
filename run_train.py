@@ -64,6 +64,7 @@ train_criterion = '\'{"type":"Mixed_loss_ce","args":{"alpha_ce":0.0,"alpha_rce":
 # extra= 'all_noisy_samples'
 # extra = 'all_samples_gt'
 # extra = 'only_clean_samples'
+extra = ''
 # meta_optim_param = 'model_params'
 meta_optim_param = 'only_function'
 
