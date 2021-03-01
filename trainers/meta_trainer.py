@@ -17,33 +17,40 @@ class MetaTrainer(BaseTrainer):
         # self.meta_val_loader = data.DataLoader(datasets[self.args.split_dataset['valset']],batch_size=self.args.meta_batch_size,shuffle=True,num_workers=4)
         # self.meta_loader = data.DataLoader(datasets[self.args.split_dataset['metaset']],batch_size=self.args.batch_size,shuffle=True,num_workers=4)
 
-        if self.args.extra == 'only_function':
+        if self.args.meta_optim_param == 'only_function':
             self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.train_criterion.parameters(),**args.meta_optim['args'])
-        elif self.args.extra == 'model_params':
+        elif self.args.meta_optim_param == 'model_params':
             self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.model.parameters(),**args.meta_optim['args'])
             # pdb.set_trace()
-        else:
+        elif self.args.meta_optim_param == 'both_params':
             self.meta_optimizer = getattr(optim,self.args.meta_optim['type'])(self.parameters(),**args.meta_optim['args'])
         # pdb.set_trace()
         self.meta_scheduler = getattr(optim.lr_scheduler,self.args.meta_lr_scheduler['type'])(self.meta_optimizer,**args.meta_lr_scheduler['args'])
-        if self.train_criterion_dict['type'] == 'Mixed_loss':
+        if 'Mixed' in self.train_criterion_dict['type']:
             self.activation = getattr(torch.nn,self.train_criterion_dict['args']['activation_type'])()
 
     def _plot_loss_weight(self):
         # pdb.set_trace()
-        self.tensorplot.add_scalers('loss_weight',{
-                'ce_weight':self.activation(self.train_criterion.alpha_ce).item(),
-                'rce_weight':self.activation(self.train_criterion.alpha_rce).item(),
-                'mae_weight':self.activation(self.train_criterion.alpha_mae).item(),
-                'mse_weight':self.activation(self.train_criterion.alpha_mse).item()
-            },self.epoch)
-        self.writer.add_scalars('loss_weight',{
-                'ce_weight':self.activation(self.train_criterion.alpha_ce).item(),
-                'rce_weight':self.activation(self.train_criterion.alpha_rce).item(),
-                'mae_weight':self.activation(self.train_criterion.alpha_mae).item(),
-                'mse_weight':self.activation(self.train_criterion.alpha_mse).item()
-            },self.epoch)
+        if 'Mixed' in self.train_criterion_dict['type']:
+            self.tensorplot.add_scalers('loss_weight',{
+                    'ce_weight':self.activation(self.train_criterion.alpha_ce).item(),
+                    'rce_weight':self.activation(self.train_criterion.alpha_rce).item(),
+                    'mae_weight':self.activation(self.train_criterion.alpha_mae).item(),
+                    'mse_weight':self.activation(self.train_criterion.alpha_mse).item()
+                },self.epoch)
+            self.writer.add_scalars('loss_weight',{
+                    'ce_weight':self.activation(self.train_criterion.alpha_ce).item(),
+                    'rce_weight':self.activation(self.train_criterion.alpha_rce).item(),
+                    'mae_weight':self.activation(self.train_criterion.alpha_mae).item(),
+                    'mse_weight':self.activation(self.train_criterion.alpha_mse).item()
+                },self.epoch)
 
+    def _print_loss_weight(self):
+        if 'Mixed' in self.train_criterion_dict['type']:
+            print('ce_weight:'+str(self.activation(self.train_criterion.alpha_ce).item()))
+            print('rce_weight:'+str(self.activation(self.train_criterion.alpha_rce).item()))
+            print('mae_weight:'+str(self.activation(self.train_criterion.alpha_mae).item()))
+            print('mse_weight:'+str(self.activation(self.train_criterion.alpha_mse).item()))
 
     def _train_epoch(self):
         self.model.train()
@@ -56,11 +63,7 @@ class MetaTrainer(BaseTrainer):
 
         # pdb.set_trace()
 
-        if self.train_criterion_dict['type'] == 'Mixed_loss':
-            print('ce_weight:'+str(self.activation(self.train_criterion.alpha_ce).item()))
-            print('rce_weight:'+str(self.activation(self.train_criterion.alpha_rce).item()))
-            print('mae_weight:'+str(self.activation(self.train_criterion.alpha_mae).item()))
-            print('mse_weight:'+str(self.activation(self.train_criterion.alpha_mse).item()))
+        self._print_loss_weight()
 
 
         for batch_idx, (inputs, noisy_labels, soft_labels, gt_labels, index) in enumerate(self.train_loader):
