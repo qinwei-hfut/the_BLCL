@@ -56,7 +56,7 @@ class DoubleFC_Trainer(BaseTrainer):
             # predictions = self.softmax(output_main)
             full_batch_index = torch.tensor([i for i in range(gt_labels.size(0))],device='cuda')
             output_main.detach_()
-            output_main[full_batch_index,gt_labels] = torch.tensor(float('-inf'))
+            output_main[full_batch_index,gt_labels] = torch.tensor(float('-inf'),device='cuda')
             _,negative_label = output_main.max(dim=1)
             loss_2 = self.train_criterion(output_main,negative_label)   #TODO .mean()?
             
