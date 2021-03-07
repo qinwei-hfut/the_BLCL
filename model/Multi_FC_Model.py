@@ -12,7 +12,7 @@ class Multi_FC_Model(nn.Module):
         super(Multi_FC_Model,self).__init__()
         self.num_fc = num_fc
         self.CNN = nn.Sequential(*list(model.children())[:-1])
-        self.fc_list = nn.ModuleList()
+        # self.fc_list = nn.ModuleList()
         # pdb.set_trace()
         # for i in range(self.num_fc):
         #     self.fc_list.append(nn.Linear(512*block_expansion,num_classes))
