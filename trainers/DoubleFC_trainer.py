@@ -55,7 +55,7 @@ class DoubleFC_Trainer(BaseTrainer):
 
             
             full_batch_index = torch.tensor([i for i in range(gt_labels.size(0))],device='cuda')
-            output_main_copy = output_main.detach()
+            output_main_copy = output_main.clone()
             output_main_copy[full_batch_index,gt_labels] = torch.tensor(float('-inf'),device='cuda')
             _,negative_label = output_main_copy.max(dim=1)
             # pdb.set_trace()
