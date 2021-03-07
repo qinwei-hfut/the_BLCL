@@ -49,9 +49,9 @@ class DoubleFC_Trainer(BaseTrainer):
             # TODO .mean()?
             loss_main = self.train_criterion(output_main,gt_labels)
             # pdb.set_trace()
-            self.optimizer.zero_grad()
-            loss_main.backward()
-            self.optimizer.step()
+            # self.optimizer.zero_grad()
+            # loss_main.backward()
+            # self.optimizer.step()
 
             '''
             full_batch_index = torch.tensor([i for i in range(gt_labels.size(0))],device='cuda')
@@ -64,6 +64,7 @@ class DoubleFC_Trainer(BaseTrainer):
             loss_2 = self.train_criterion(output_2,gt_labels)
             
             self.optimizer.zero_grad()
+            loss_main.backward()
             loss_2.backward()
             self.optimizer.step()
 
