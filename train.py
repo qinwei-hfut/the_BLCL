@@ -65,6 +65,7 @@ parser.add_argument('--extra',type=str,default='',help='extra information for th
 parser.add_argument('--minuend_path',type=str)
 parser.add_argument('--val_type',type=str)
 parser.add_argument('--meta_optim_param',type=str)
+parser.add_argument('--norm_mode',type=str)
 
 # Miscs
 parser.add_argument('--manualSeed', type=int, default=1, help='manual seed')
