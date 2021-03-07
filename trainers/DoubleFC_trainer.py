@@ -38,48 +38,60 @@ class DoubleFC_Trainer(BaseTrainer):
             # print(batch_idx)
             inputs, noisy_labels, soft_labels, gt_labels = inputs.cuda(),noisy_labels.cuda(),soft_labels.cuda(),gt_labels.cuda()
 
-            corrupted_flag = ~ noisy_labels.eq(gt_labels)
-            clean_flag = noisy_labels.eq(gt_labels)
+            # corrupted_flag = ~ noisy_labels.eq(gt_labels)
+            # clean_flag = noisy_labels.eq(gt_labels)
 
-            outputs = self.model(inputs)
+            output_main, output_2 = self.model(inputs)
 
             # 这样操作是否batch大小，或者说是梯度大小？需要检查一下 TODO
-            loss_clean = (self.train_criterion(outputs[0],noisy_labels) * clean_flag).mean()
-            loss_corrupted = (self.train_criterion(outputs[1],noisy_labels) * corrupted_flag).mean()
-            
+            # loss_clean = (self.train_criterion(outputs[0],noisy_labels) * clean_flag).mean()
+            # loss_corrupted = (self.train_criterion(outputs[1],noisy_labels) * corrupted_flag).mean()
+            # TODO .mean()?
+            loss_main = self.train_criterion(output_main,gt_labels)
             # pdb.set_trace()
-
             self.optimizer.zero_grad()
-            loss_corrupted.backward(retain_graph=True)
-            loss_clean.backward()
-
-            # ################ print log
-            # for group in self.optimizer.param_groups:
-            #     for p in group['params']:
-            #         print(p.grad)
-
-
+            loss_main.backward()
             self.optimizer.step()
 
-            Nprec1, Nprec5 = accuracy(outputs[0],noisy_labels,topk=(1,5))
-            Cprec1, Cprec5 = accuracy(outputs[0],gt_labels,topk=(1,5))
-            losses.update(loss_clean.item(), inputs.size(0))
+            # predictions = self.softmax(output_main)
+            full_batch_index = torch.tensor([i for i in range(gt_labels.size(0))])
+            output_main.detach_()
+            output_main[full_batch_index,gt_labels] = torch.tensor(float('-inf'))
+            _,negative_label = output_main.max(dim=1)
+            loss_2 = self.train_criterion(output_main,negative_label)   #TODO .mean()?
+            
+            self.optimizer.zero_grad()
+            loss_2.backward()
+            self.optimizer.step()
+
+
+
+
+            
+
+            Nprec1, Nprec5 = accuracy(output_2,gt_labels,topk=(1,5))
+            Cprec1, Cprec5 = accuracy(output_main,gt_labels,topk=(1,5))
+            losses.update(loss_main.item(), inputs.size(0))
             Ntop1.update(Nprec1.item(), inputs.size(0))
             Ntop5.update(Nprec5.item(), inputs.size(0))
             Ctop1.update(Cprec1.item(), inputs.size(0))
             Ctop5.update(Cprec5.item(), inputs.size(0))
 
-        val_loss, val_acc1, _ = self._val_epoch()
-        test_loss, test_acc1, _ = self._test_epoch()
+        val_loss, val_final_acc, val_clean_acc, val_neg_acc = self._val_epoch()
+        test_loss, test_final_acc,test_clean_acc,test_neg_acc = self._test_epoch()
 
 
         log = {'train_loss':losses.avg,
-            'train_N_acc_1':Ntop1.avg,
-            'train_C_acc_1':Ctop1.avg,
+            'Neg_train_acc':Ntop1.avg,
+            'Pos_train_acc':Ctop1.avg,
             'val_loss':val_loss,
-            'val_acc_1':val_acc1,
+            'val_final_acc':val_final_acc,
+            'val_clean_acc':val_clean_acc,
+            'val_neg_acc':val_neg_acc,
             'test_loss':test_loss,
-            'test_acc_1':test_acc1}
+            'test_final_acc':test_final_acc,
+            'test_clean_acc':test_clean_acc,
+            'test_neg_acc':test_neg_acc,}
         return log
 
 
@@ -106,14 +118,18 @@ class DoubleFC_Trainer(BaseTrainer):
     #     return losses.avg, top1.avg, top5.avg
 
     def normalize_logit(self, logits):
-        return F.normalize(logits[0],p=2,dim=1),F.normalize(logits[1],p=2,dim=1),
+        if self.args.norm_mode == 'l2':
+            return F.normalize(logits[0],p=2,dim=1),F.normalize(logits[1],p=2,dim=1),
+        elif self.args.norm_mode == 'softmax':
+            return self.softmax(logits[0],dim=1), self.softmax(logits[1],dim=1)
 
     def _val_epoch(self):
         self.model.eval()
 
         losses = AverageMeter()
-        top1 = AverageMeter()
-        top5 = AverageMeter()
+        top1_final = AverageMeter()
+        top1_clean = AverageMeter()
+        top1_neg = AverageMeter()
 
         with torch.no_grad():
             # with tqdm(self.test_loader) as progress:
@@ -121,29 +137,33 @@ class DoubleFC_Trainer(BaseTrainer):
                 inputs,gt_labels = inputs.cuda(),gt_labels.cuda()
 
                 # 在处理两个fc之间的输出时，需要normalize一下，把每一个样本都变成单位长度？sample方向的normalize
-                outputs = self.model(inputs)
+                output_main, output_2 = self.model(inputs)
 
-                # output_clean, output_corrupted = self.normalize_logit(outputs)
-                # output_final = output_clean - output_corrupted
+                output_clean, output_corrupted = self.normalize_logit([output_main, output_2])
+                output_final = output_clean - output_corrupted
 
-                output_final = outputs[0]
+                # output_final = outputs[0]
 
                 loss = self.val_criterion(output_final,gt_labels)
 
-                prec1, prec5 = accuracy(output_final,gt_labels,topk=(1,5))
+                prec1_final = accuracy(output_final,gt_labels,topk=(1))
+                prec1_clean = accuracy(output_clean,gt_labels,topk=(1))
+                prec1_neg = accuracy(output_corrupted,gt_labels,topk=(1))
                 losses.update(loss.item(),inputs.size(0))
-                top1.update(prec1,inputs.size(0))
-                top5.update(prec5,inputs.size(0))
+                top1_final.update(prec1_final,inputs.size(0))
+                top1_clean.update(prec1_clean,inputs.size(0))
+                top1_neg.update(prec1_neg, inputs.size(0))
 
-        return losses.avg, top1.avg, top5.avg
+        return losses.avg, top1_final.avg, top1_clean.avg, top1_neg.avg
 
 
     def _test_epoch(self):
         self.model.eval()
 
         losses = AverageMeter()
-        top1 = AverageMeter()
-        top5 = AverageMeter()
+        top1_final = AverageMeter()
+        top1_clean = AverageMeter()
+        top1_neg = AverageMeter()
 
         with torch.no_grad():
             # with tqdm(self.test_loader) as progress:
@@ -151,17 +171,21 @@ class DoubleFC_Trainer(BaseTrainer):
                 inputs,gt_labels = inputs.cuda(),gt_labels.cuda()
 
                 # 在处理两个fc之间的输出时，需要normalize一下，把每一个样本都变成单位长度？sample方向的normalize
-                outputs = self.model(inputs)
-                # output_clean, output_corrupted = self.normalize_logit(outputs)
+                output_main, output_2 = self.model(inputs)
 
-                # output_final = output_clean - output_corrupted
-                output_final = outputs[0]
+                output_clean, output_corrupted = self.normalize_logit([output_main, output_2])
+                output_final = output_clean - output_corrupted
+
+                # output_final = outputs[0]
 
                 loss = self.val_criterion(output_final,gt_labels)
 
-                prec1, prec5 = accuracy(output_final,gt_labels,topk=(1,5))
+                prec1_final = accuracy(output_final,gt_labels,topk=(1))
+                prec1_clean = accuracy(output_clean,gt_labels,topk=(1))
+                prec1_neg = accuracy(output_corrupted,gt_labels,topk=(1))
                 losses.update(loss.item(),inputs.size(0))
-                top1.update(prec1,inputs.size(0))
-                top5.update(prec5,inputs.size(0))
+                top1_final.update(prec1_final,inputs.size(0))
+                top1_clean.update(prec1_clean,inputs.size(0))
+                top1_neg.update(prec1_neg, inputs.size(0))
 
-        return losses.avg, top1.avg, top5.avg
+        return losses.avg, top1_final.avg, top1_clean.avg, top1_neg.avg

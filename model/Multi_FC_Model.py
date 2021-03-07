@@ -14,9 +14,11 @@ class Multi_FC_Model(nn.Module):
         self.CNN = nn.Sequential(*list(model.children())[:-1])
         self.fc_list = nn.ModuleList()
         # pdb.set_trace()
-        for i in range(self.num_fc):
-            self.fc_list.append(nn.Linear(512*block_expansion,num_classes))
+        # for i in range(self.num_fc):
+        #     self.fc_list.append(nn.Linear(512*block_expansion,num_classes))
         # self.train_FLAG = True
+        self.fc_main = nn.Linear(512*block_expansion,num_classes)
+        self.fc_2 = nn.Linear(512*block_expansion,num_classes)
     
     def forward(self,x):
         x = self.CNN(x)
@@ -24,11 +26,13 @@ class Multi_FC_Model(nn.Module):
         x = torch.nn.functional.avg_pool2d(x, 4)
         x = x.view(x.size(0), -1)
 
-        outputs = []
-        # pdb.set_trace()
-        for fc in self.fc_list:
-            outputs.append(fc(x))
-        return outputs
+        # outputs = []
+        # for fc in self.fc_list:
+        #     outputs.append(fc(x))
+        output_main = self.fc_main(x)
+        output_2 = self.fc_2(x.detach())
+
+        return output_main, output_2
 
 
     # def eval(self):
