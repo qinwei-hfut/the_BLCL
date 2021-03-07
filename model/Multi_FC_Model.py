@@ -35,14 +35,4 @@ class Multi_FC_Model(nn.Module):
         return output_main, output_2
 
 
-    # def eval(self):
-    #     super().eval()
-    #     self.train_FLAG = False
-    
-    # def train(self):
-    #     super().train()
-    #     self.train_FLAG = True
-    
-
-
 
