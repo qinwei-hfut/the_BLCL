@@ -125,7 +125,7 @@ class DoubleFC_Trainer(BaseTrainer):
         if self.args.norm_mode == 'l2':
             return F.normalize(logits[0],p=2,dim=1),F.normalize(logits[1],p=2,dim=1),
         elif self.args.norm_mode == 'softmax':
-            return self.softmax(logits[0],dim=1), self.softmax(logits[1],dim=1)
+            return self.softmax(logits[0]), self.softmax(logits[1])
 
     def _val_epoch(self):
         self.model.eval()
