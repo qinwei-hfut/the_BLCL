@@ -121,7 +121,7 @@ class BaseTrainer(torch.nn.Module):
             
             print(results)
             # self._plot(results)
-            # self._save_checkpoint(epoch,results)
+            self._save_checkpoint(epoch,results)
         self.logger.close()
         self.writer.close()
 

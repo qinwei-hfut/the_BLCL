@@ -197,3 +197,23 @@ class DoubleFC_Trainer(BaseTrainer):
                 top1_neg.update(prec1_neg, inputs.size(0))
 
         return losses.avg, top1_final.avg, top1_clean.avg, top1_neg.avg
+
+
+    def _save_checkpoint(self,epoch,results):
+        self.best_final = max(results['test_final_acc'],self.best_final)
+        self.best_clean = max(results['test_clean_acc'],self.best_clean)
+        state = {'epoch':epoch,
+                'state_dict':self.model.state_dict(),
+                'test_final_acc':results['test_final_acc'],
+                'test_clean_acc':results['test_clean_acc'],
+                'best_acc':self.best_final,}
+        if self.epoch % 4 ==0:
+            torch.save(state,os.path.join(self.result_saved_path,'checkpoints/epoch_'+str(epoch)+'.ckp'))
+        if self.best_final == results['test_final_acc']:
+            torch.save(state,os.path.join(self.result_saved_path,'test_final_acc'+'.ckp'))
+            torch.save(torch.zeros((1)),os.path.join(self.result_saved_path,'test_final_acc_epoch_'+str(epoch)+str('_')+str(results['test_clean_acc'])+'_'+str(results['test_final_acc'])))
+
+        if self.best_clean == results['test_clean_acc']:
+            torch.save(state,os.path.join(self.result_saved_path,'test_clean_acc'+'.ckp'))
+            torch.save(torch.zeros((1)),os.path.join(self.result_saved_path,'test_clean_acc_epoch_'+str(epoch)+str('_')+str(results['test_clean_acc'])+'_'+str(results['test_final_acc'])))
+    
