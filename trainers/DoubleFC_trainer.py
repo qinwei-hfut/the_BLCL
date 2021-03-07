@@ -20,6 +20,9 @@ class DoubleFC_Trainer(BaseTrainer):
         # self.minuend_model.load_state_dict(torch.load(args.minuend_path)['state_dict'])
         self.softmax = torch.nn.Softmax(dim=1)
 
+        self.best_final = 0.0
+        self.best_clean = 0.0
+
 
 
     def _train_epoch(self):
