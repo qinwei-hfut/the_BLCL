@@ -150,9 +150,9 @@ class DoubleFC_Trainer(BaseTrainer):
 
                 loss = self.val_criterion(output_final,gt_labels)
 
-                prec1_final = accuracy(output_final,gt_labels,topk=(1))
-                prec1_clean = accuracy(output_clean,gt_labels,topk=(1))
-                prec1_neg = accuracy(output_corrupted,gt_labels,topk=(1))
+                prec1_final = accuracy(output_final,gt_labels,topk=(1,))
+                prec1_clean = accuracy(output_clean,gt_labels,topk=(1,))
+                prec1_neg = accuracy(output_corrupted,gt_labels,topk=(1,))
                 losses.update(loss.item(),inputs.size(0))
                 top1_final.update(prec1_final,inputs.size(0))
                 top1_clean.update(prec1_clean,inputs.size(0))
@@ -184,9 +184,9 @@ class DoubleFC_Trainer(BaseTrainer):
 
                 loss = self.val_criterion(output_final,gt_labels)
 
-                prec1_final = accuracy(output_final,gt_labels,topk=(1))
-                prec1_clean = accuracy(output_clean,gt_labels,topk=(1))
-                prec1_neg = accuracy(output_corrupted,gt_labels,topk=(1))
+                prec1_final = accuracy(output_final,gt_labels,topk=(1,))
+                prec1_clean = accuracy(output_clean,gt_labels,topk=(1,))
+                prec1_neg = accuracy(output_corrupted,gt_labels,topk=(1,))
                 losses.update(loss.item(),inputs.size(0))
                 top1_final.update(prec1_final,inputs.size(0))
                 top1_clean.update(prec1_clean,inputs.size(0))
