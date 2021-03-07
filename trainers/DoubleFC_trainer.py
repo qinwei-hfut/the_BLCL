@@ -58,6 +58,7 @@ class DoubleFC_Trainer(BaseTrainer):
             output_main.detach_()
             output_main[full_batch_index,gt_labels] = torch.tensor(float('-inf'),device='cuda')
             _,negative_label = output_main.max(dim=1)
+            pdb.set_trace()
             loss_2 = self.train_criterion(output_2,negative_label)   #TODO .mean()?
             
             self.optimizer.zero_grad()
