@@ -62,8 +62,8 @@ class DoubleFC_Trainer(BaseTrainer):
             output_main_copy[full_batch_index,gt_labels] = torch.tensor(float('-inf'),device='cuda')
             _,negative_label = output_main_copy.max(dim=1)
             # pdb.set_trace()
-            if self.epoch == 90:
-                pdb.set_trace()
+            # if self.epoch == 90:
+            #     pdb.set_trace()
 
 
             loss_2 = self.train_criterion(output_2,negative_label.detach())   #TODO .mean()?
@@ -80,7 +80,7 @@ class DoubleFC_Trainer(BaseTrainer):
 
             
 
-            Nprec1, Nprec5 = accuracy(output_2,gt_labels,topk=(1,5))
+            Nprec1, Nprec5 = accuracy(output_2,negative_label.detach(),topk=(1,5))
             Cprec1, Cprec5 = accuracy(output_main,gt_labels,topk=(1,5))
             losses.update(loss_main.item(), inputs.size(0))
             Ntop1.update(Nprec1.item(), inputs.size(0))
